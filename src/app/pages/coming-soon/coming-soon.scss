@@ -1,15 +1,22 @@
-// 1. Fuentes Importadas
+// 1. FUENTES (Inter + JetBrains Mono)
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@500&display=swap');
 
-// 2. Variables (Paleta Dark Mode Premium)
-$bg-color: #050505;
-$text-white: #ffffff;
-$text-muted: #94a3b8;
-$accent-primary: #6366f1; // Indigo
-$accent-secondary: #a855f7; // Purple
-$glass-border: rgba(255, 255, 255, 0.08);
+// 2. PALETA "NEBULA TECH" + #FF2E63
+// ------------------------------------------------
+$bg-color:       #09090b; // Zinc 950 (Oscuridad profunda)
+$text-white:     #ffffff;
+$text-muted:     #a1a1aa; // Zinc 400
 
-// Reset básico
+// COLORES DE MARCA
+$brand-primary:  #6366f1; // Indigo (Para el fondo/atmósfera)
+$accent-action:  #FF2E63; // NEON RED (Para Botones e Interacción)
+
+// UI ELEMENTS
+$glass-border:   rgba(255, 255, 255, 0.08);
+$glass-bg:       rgba(255, 255, 255, 0.02);
+
+// ------------------------------------------------
+
 :host {
   display: block;
   width: 100%;
@@ -31,7 +38,7 @@ $glass-border: rgba(255, 255, 255, 0.08);
 
   // --- FONDOS ---
   
-  // La "Nebulosa"
+  // La "Nebulosa" (Mantiene el Indigo para dar profundidad y misterio)
   .nebula-glow {
     position: absolute;
     top: -30%;
@@ -39,7 +46,7 @@ $glass-border: rgba(255, 255, 255, 0.08);
     transform: translateX(-50%);
     width: 80vw;
     height: 60vw;
-    background: radial-gradient(circle, rgba($accent-primary, 0.15) 0%, transparent 60%);
+    background: radial-gradient(circle, rgba($brand-primary, 0.15) 0%, transparent 60%);
     filter: blur(100px);
     z-index: 0;
     animation: breathe 8s infinite alternate ease-in-out;
@@ -65,6 +72,7 @@ $glass-border: rgba(255, 255, 255, 0.08);
     padding: 0 20px;
     max-width: 900px;
 
+    // BADGE SUPERIOR
     .status-badge {
       display: inline-flex;
       align-items: center;
@@ -79,12 +87,13 @@ $glass-border: rgba(255, 255, 255, 0.08);
       margin-bottom: 30px;
       backdrop-filter: blur(10px);
 
+      // El punto ahora usa tu color NEON RED para llamar la atención
       .status-dot {
         width: 6px;
         height: 6px;
-        background: #22c55e;
+        background: $accent-action; 
         border-radius: 50%;
-        box-shadow: 0 0 8px #22c55e;
+        box-shadow: 0 0 10px $accent-action; // Glow rojo
       }
     }
 
@@ -95,8 +104,9 @@ $glass-border: rgba(255, 255, 255, 0.08);
       margin-bottom: 24px;
       letter-spacing: -2px;
 
+      // Gradiente sutil entre blanco y tu rojo
       .gradient-text {
-        background: linear-gradient(135deg, #fff 30%, $accent-primary 100%);
+        background: linear-gradient(135deg, #fff 40%, $accent-action 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
       }
@@ -124,27 +134,27 @@ $glass-border: rgba(255, 255, 255, 0.08);
         gap: 12px;
 
         .glass-card {
-          position: relative; // Necesario para el spotlight absoluto
+          position: relative;
           width: 90px;
           height: 110px;
-          background: rgba(255, 255, 255, 0.02);
+          background: $glass-bg;
           border: 1px solid $glass-border;
           border-radius: 20px;
           display: flex;
           align-items: center;
           justify-content: center;
-          overflow: hidden; // Contiene el brillo
-          transition: transform 0.3s ease;
+          overflow: hidden;
+          transition: transform 0.3s ease, border-color 0.3s;
 
           .value {
             font-family: 'JetBrains Mono', monospace;
             font-size: 3rem;
             font-weight: 500;
-            z-index: 2; // Encima del brillo
+            z-index: 2;
             position: relative;
           }
 
-          // EL EFECTO DE LUZ (SPOTLIGHT)
+          // EL SPOTLIGHT (Brillo del mouse)
           .spotlight {
             position: absolute;
             pointer-events: none;
@@ -152,10 +162,10 @@ $glass-border: rgba(255, 255, 255, 0.08);
             opacity: 0;
             z-index: 1;
             transition: opacity 0.5s;
-            // Usa las variables inyectadas por TS
+            // El brillo usa el Indigo de la marca para no saturar de rojo
             background: radial-gradient(
               500px circle at var(--mouse-x) var(--mouse-y),
-              rgba(99, 102, 241, 0.15),
+              rgba($brand-primary, 0.15), 
               transparent 40%
             );
           }
@@ -163,7 +173,6 @@ $glass-border: rgba(255, 255, 255, 0.08);
           &:hover {
             transform: translateY(-5px);
             border-color: rgba(255,255,255,0.2);
-            
             .spotlight { opacity: 1; }
           }
         }
@@ -181,7 +190,6 @@ $glass-border: rgba(255, 255, 255, 0.08);
         font-family: 'JetBrains Mono';
         color: rgba(255,255,255,0.1);
         margin-top: 20px;
-        
         @media (max-width: 768px) { display: none; }
       }
     }
@@ -200,9 +208,10 @@ $glass-border: rgba(255, 255, 255, 0.08);
         transition: all 0.3s;
         box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
 
+        // Al hacer click en el input, el borde se ilumina con tu ROJO
         &:focus-within {
-          border-color: $accent-primary;
-          box-shadow: 0 0 0 4px rgba($accent-primary, 0.15);
+          border-color: $accent-action;
+          box-shadow: 0 0 0 4px rgba($accent-action, 0.15);
         }
 
         input {
@@ -217,17 +226,48 @@ $glass-border: rgba(255, 255, 255, 0.08);
 
         button {
           background: white;
-          color: black;
+          color: black; // Texto negro para contraste máximo
           border: none;
           padding: 14px 28px;
           border-radius: 100px;
           font-weight: 700;
           cursor: pointer;
-          transition: transform 0.2s;
+          transition: all 0.2s ease;
 
-          &:hover { transform: scale(1.05); }
+          // HOVER DEL BOTÓN: Aquí explota tu color NEON RED
+          &:hover { 
+            transform: scale(1.05);
+            background: $accent-action; // Se pone rojo
+            color: white; // Texto blanco
+            box-shadow: 0 0 20px rgba($accent-action, 0.5); // Glow sexy
+          }
+          
           &:active { transform: scale(0.95); }
         }
+      }
+      
+      // Estilos para el mensaje de éxito (si lo añadiste)
+      .success-pill {
+        background: rgba($accent-action, 0.1); 
+        border: 1px solid rgba($accent-action, 0.3);
+        border-radius: 100px;
+        padding: 12px 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+        .icon-circle {
+          background: $accent-action;
+          color: white;
+          width: 28px;
+          height: 28px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        span { font-weight: 600; color: $accent-action; }
       }
 
       .micro-copy {
@@ -266,7 +306,8 @@ $glass-border: rgba(255, 255, 255, 0.08);
           color: rgba(255,255,255,0.4);
           letter-spacing: 2px;
           
-          &.dot { color: $accent-primary; }
+          // Puntos separadores en ROJO
+          &.dot { color: $accent-action; } 
         }
       }
     }
@@ -283,25 +324,95 @@ $glass-border: rgba(255, 255, 255, 0.08);
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
+@keyframes popIn {
+  0% { transform: scale(0.8); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
 
-// RESPONSIVE
+// ============================================
+// RESPONSIVE (MÓVILES OPTIMIZADO)
+// ============================================
 @media (max-width: 600px) {
-  .hero-content .timer-grid {
-    gap: 10px;
-    flex-wrap: wrap; // En móviles se ponen en 2 filas si es necesario
+  
+  .coming-soon-wrapper {
+    justify-content: flex-start; // Subimos el contenido
+    padding-top: 5vh; // Espacio superior
+    height: auto;
+    min-height: 100vh;
+  }
 
-    .glass-card {
-      width: 70px;
-      height: 80px;
-      .value { font-size: 2rem; }
+  .hero-content {
+    padding: 0 15px;
+
+    .headline {
+      font-size: 2.2rem; 
+      margin-bottom: 15px;
+    }
+    
+    .subtitle {
+      font-size: 0.9rem;
+      margin-bottom: 30px;
+    }
+
+    // TIMER EN UNA LÍNEA (FIX CRÍTICO)
+    .timer-grid {
+      display: flex;
+      flex-wrap: nowrap; // Obliga a no bajar de línea
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 40px;
+
+      .time-unit {
+        gap: 6px;
+
+        .glass-card {
+          // Ajuste relativo al ancho de pantalla (4 tarjetas caben en 80%)
+          width: 19vw; 
+          max-width: 75px; 
+          height: 85px; 
+          border-radius: 12px;
+
+          .value { 
+            font-size: 1.6rem; 
+            font-weight: 600;
+          }
+        }
+
+        .label {
+          font-size: 0.65rem;
+          letter-spacing: 1px;
+        }
+      }
+      .separator { display: none; }
+    }
+
+    // Input en móviles
+    .notify-box .input-pill {
+      flex-direction: column;
+      border-radius: 20px;
+      padding: 8px;
+      
+      input { 
+        padding: 12px 10px; 
+        text-align: center; 
+        border-bottom: 1px solid rgba(255,255,255,0.1); 
+        margin-bottom: 8px;
+      }
+      
+      button { 
+        width: 100%; 
+        justify-content: center; 
+        padding: 12px;
+      }
     }
   }
 
-  .input-pill {
-    flex-direction: column;
-    border-radius: 20px !important;
-    
-    input { padding: 15px !important; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1) !important; }
-    button { width: 100%; justify-content: center; }
+  // Marquee más delgado
+  .marquee-footer {
+    padding: 15px 0;
+    .marquee-track .marquee-content span {
+      font-size: 0.9rem;
+      gap: 2rem;
+    }
   }
 }
