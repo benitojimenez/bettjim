@@ -1,0 +1,62 @@
+name: Build and Deploy Angular Project to VPS
+
+on:
+  push:
+    branches:
+      - main  # Cambia 'main' por tu rama principal si es diferente
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Paso 1: Checkout del código
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Paso 2: Configurar Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22.12.0'  # Cambia a la versión que usa tu proyecto Angular 19
+
+      # Paso 3: Instalar las dependencias
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
+
+      # Paso 4: Compilar el proyecto Angular
+      - name: Build Angular project
+        run: npm run build -- --configuration production  # Cambia 'production' si usas otra configuración
+
+      # Paso 5: Crear el directorio .ssh
+      - name: Create .ssh directory
+        run: mkdir -p ~/.ssh
+
+      # Paso 6: Añadir el host remoto a la lista de hosts conocidos
+      - name: Add host to known_hosts
+        env:
+          HOST: ${{ secrets.VPS_HOST }}  # Asegúrate de que 'VPS_HOST' esté configurado en tus secretos de GitHub
+        # run: ssh-keyscan -H $HOST >> ~/.ssh/known_hosts
+        run: ssh-keyscan -H $HOST >> ~/.ssh/known_hosts 2>/dev/null
+
+      # Paso 7: Transferir archivos compilados al VPS
+      - name: Deploy to VPS
+        env:
+          HOST: ${{ secrets.VPS_HOST }}
+          USER: ${{ secrets.VPS_USER }}
+          SSH_PRIVATE_KEY: ${{ secrets.VPS_SSH_KEY }}
+        run: |
+          # Guardar la clave privada y ajustar permisos  
+          echo "$SSH_PRIVATE_KEY" | tr -d '\r' > key.pem
+          chmod 600 key.pem
+          
+          # Transferir solo los archivos compilados al VPS
+          rsync -avz -e "ssh -i key.pem" --delete ./dist/bettjim/ ${USER}@${HOST}:/var/www/bettjim/
+          
+          # Conectarse al VPS, reiniciar PM2 y eliminar carpetas
+          ssh -i key.pem ${USER}@${HOST} "
+            source /root/.nvm/nvm.sh &&
+            pm2 restart 0 &&
+            # sudo rm -rf /var/www/bettjim/browser/shop /var/www/bettjim/browser/account &&
+            echo 'Carpetas eliminadas correctamente'
+          "
