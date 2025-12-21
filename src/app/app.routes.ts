@@ -2,14 +2,14 @@ import { Routes } from '@angular/router';
 import { guestGuard } from './guards/guest-guard';
 import { authGuard } from './guards/auth-guard';
 export const routes: Routes = [
-    {
-        path: '',
-        loadChildren: () => import('./home/home.routes').then(m => m.home),
-    },
-    //  {
+    // {
     //     path: '',
-    //     loadComponent: () => import('./pages/coming-soon/coming-soon').then(c => c.default),
+    //     loadChildren: () => import('./home/home.routes').then(m => m.home),
     // },
+     {
+        path: '',
+        loadComponent: () => import('./pages/coming-soon/coming-soon').then(c => c.default),
+    },
     {
         path: 'shop',
         loadComponent: () => import('./shop/collection/shop/shop').then(c => c.default),
