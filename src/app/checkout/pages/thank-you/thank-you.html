@@ -1,0 +1,142 @@
+<app-breadcrumbs [items]="breadcrumbs()"></app-breadcrumbs>
+<div class="thank-you-wrapper">
+  
+  <div class="confetti-container">
+    <div class="confetti c1"></div>
+    <div class="confetti c2"></div>
+    <div class="confetti c3"></div>
+    <div class="confetti c4"></div>
+    <div class="confetti c5"></div>
+    <div class="confetti c6"></div>
+  </div>
+
+  <div class="content-card">
+    
+    <header class="success-header">
+      <div class="checkmark-circle">
+        <svg class="checkmark" viewBox="0 0 52 52">
+          <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+          <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+        </svg>
+      </div>
+      
+      <h1>¡Gracias por tu compra!</h1>
+      <p class="subtitle">
+        Tu pedido <span class="order-id">#{{ order()._id }}</span> ha sido confirmado.<br>
+        Enviamos los detalles a <strong>{{ order().email }}</strong>.
+      </p>
+    </header>
+
+
+    <div class="loyalty-banner">
+      <div class="icon-box">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      </div>
+      <div class="text-content">
+        <span class="title">¡Ganaste {{ earnedPoints() }} Puntos Bettjim!</span>
+        <span class="desc">Acumúlalos para obtener descuentos en tu próxima compra.</span>
+      </div>
+    </div>
+
+
+    <div class="order-dashboard">
+      
+      <div class="tracking-column">
+        <div class="map-visual">
+          <div class="map-pattern"></div>
+          <div class="map-pin">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/></svg>
+            <div class="pulse-ring"></div>
+          </div>
+          <div class="map-info">
+            <!-- <span class="destination">Enviando a <strong>Miraflores, Lima</strong></span> -->
+            <span class="eta">Llegada estimada: {{ estimatedDate() | date:'dd MMMM, yyyy' }}</span>
+          </div>
+        </div>
+
+        <div class="timeline">
+          <div class="step completed">
+            <div class="dot">✓</div>
+            <div class="label">Confirmado</div>
+          </div>
+          <div class="line active"></div>
+          <div class="step active">
+            <div class="dot pulse"></div>
+            <div class="label">Preparando</div>
+          </div>
+          <div class="line"></div>
+          <div class="step">
+            <div class="dot"></div>
+            <div class="label">Enviado</div>
+          </div>
+        </div>
+      </div>
+      <div class="divider"></div>
+    </div>
+      <div class="items-summary">
+        <h3>Resumen de compra</h3>
+        
+        <div class="items-list">
+          @for (item of items(); track item._id) {
+            <div class="item-row">
+              <div class="item-img">
+                <img [src]="URL_IMG() + item.product.images[0].src " [alt]="item.product.title" >
+                     
+                <span class="qty-badge">{{ item.quantity }}</span>
+              </div>
+              
+              <div class="item-details">
+                <span class="p-name">{{ item.product.title }}</span>
+                @if(item.variety) {
+                  <span class="p-variety">{{ item.variety }}</span>
+                }
+              </div>
+              
+              <div class="item-price">
+                {{ item.subtotal | currency:'S/' }}
+              </div>
+            </div>
+          }
+        </div>
+    </div>
+
+    @if (!auth.isAuthenticated()) {
+      <div class="guest-signup">
+        <div class="info">
+          <h3>Guarda tu información</h3>
+          <p>Crea una contraseña para rastrear tu pedido fácilmente.</p>
+        </div>
+        <div class="action-form">
+          <input type="text" placeholder="Crear contraseña">
+          <button class="btn-dark">Crear cuenta</button>
+        </div>
+      </div>
+
+    }
+    
+    <section class="cross-sell">
+      <h3>Completa tu look</h3>
+      <div class="recommendations-grid">
+        <!-- @for (prod of recommendations(); track prod.name) {
+          <div class="mini-card">
+            <div class="card-img">
+              <img [src]="prod.image" [alt]="prod.name">
+              <button class="add-btn">+</button>
+            </div>
+            <div class="card-info">
+              <span class="p-name">{{ prod.name }}</span>
+              <span class="p-price">S/ {{ prod.price }}</span>
+            </div>
+          </div>
+        } -->
+      </div>
+    </section>
+
+
+    <footer class="page-footer">
+      <a routerLink="/" class="btn-primary">Seguir comprando</a>
+      <a routerLink="/account/orders" class="btn-secondary">Ver mis pedidos</a>
+    </footer>
+
+  </div>
+</div>

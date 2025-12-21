@@ -1,0 +1,128 @@
+<!-- <section class="slider-section">
+  <div class="header">
+    <h2>{{ title() }}</h2>
+  </div>
+
+  <div class="marquee-container">
+    <div class="marquee-track pause-on-hover">
+      <div class="track-group">
+        @for (prod of products(); track prod._id ; let i = $index) {
+        <app-product-two [product]="prod" [index]="i" />
+        }
+      </div>
+
+      <div class="track-group" aria-hidden="true">
+        @for (prod of products(); track prod._id ; let i = $index) {
+        <app-product-two [product]="prod" [index]="i" />
+        }
+      </div>
+    </div>
+  </div>
+</section> -->
+
+<!-- <section class="slider-section">
+  <div class="header">
+    <h2>{{ title() }}</h2>
+
+    <div class="swiper-nav-btns">
+      <button class="custom-prev">
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M15 18l-6-6 6-6" />
+        </svg>
+      </button>
+      <button class="custom-next">
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M9 18l6-6-6-6" />
+        </svg>
+      </button>
+    </div>
+  </div>
+  @if (products().length === 0) {
+  <div class="skeleton-container">
+    @for (dummy of [1,2,3,4,5]; track $index) {
+    <div class="skeleton-card">
+      <div class="s-img shimmer"></div>
+      <div class="s-text shimmer"></div>
+      <div class="s-price shimmer"></div>
+    </div>
+    }
+  </div>
+  } @else {
+  <swiper-container
+    loop="true"
+    autoplay-delay="3000"
+    autoplay-disable-on-interaction="true"
+    navigation-next-el=".custom-next"
+    navigation-prev-el=".custom-prev"
+    #swiperRef
+    init="false"
+    speed="800"
+    class="my-swiper"
+  >
+    @for (prod of products(); track prod._id ; let i = $index) {
+    <swiper-slide>
+      <div class="slide-inner">
+        <app-product-two [product]="prod" [index]="i" />
+      </div>
+    </swiper-slide>
+    }
+  </swiper-container>
+  <div class="custom-pagination"></div>
+  }
+</section> -->
+<section class="slider-section">
+  
+  <div class="header">
+    <h2>{{ title() }}</h2>
+    
+    @if (products().length > 0) {
+      <div class="swiper-nav-btns">
+        <button class="custom-prev" aria-label="Anterior">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <button class="custom-next" aria-label="Siguiente">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+    }
+  </div>
+
+  @if (products().length === 0) {
+    <div class="skeleton-container">
+      @for (dummy of [1,2,3,4]; track $index) {
+        <div class="skeleton-card">
+          <div class="s-img shimmer"></div>
+          <div class="s-text shimmer"></div>
+          <div class="s-price shimmer"></div>
+        </div>
+      }
+    </div>
+  } 
+
+  @else {
+    <swiper-container #swiperRef init="false" class="my-swiper">
+      @for (prod of products(); track prod._id ; let i = $index) {
+        <swiper-slide>
+          <app-product-two [product]="prod" [index]="i" />
+        </swiper-slide>
+      }
+    </swiper-container>
+
+    <div class="custom-pagination"></div>
+  }
+
+</section>

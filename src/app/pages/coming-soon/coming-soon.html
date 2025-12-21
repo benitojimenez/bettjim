@@ -1,0 +1,93 @@
+<div class="coming-soon-wrapper">
+  
+  <div class="nebula-glow"></div>
+  <div class="tech-grid"></div>
+
+  <main class="hero-content">
+    
+    <div class="status-badge">
+      <span class="status-dot"></span> BETTJIM 2.0
+    </div>
+
+    <h1 class="headline">
+      El futuro del comercio <br>
+      <span class="gradient-text">está cargando.</span>
+    </h1>
+    <p class="subtitle">
+      Una experiencia de compra diseñada para el 2025. <br>
+      Más rápida. Más inteligente. Totalmente inmersiva.
+    </p>
+
+    <div class="timer-grid">
+      
+      <div class="time-unit">
+        <div class="glass-card" #glowBox>
+          <div class="spotlight"></div> <span class="value">{{ days() }}</span>
+        </div>
+        <span class="label">Días</span>
+      </div>
+
+      <div class="separator">:</div>
+
+      <div class="time-unit">
+        <div class="glass-card" #glowBox>
+          <div class="spotlight"></div>
+          <span class="value">{{ hours() }}</span>
+        </div>
+        <span class="label">Horas</span>
+      </div>
+
+      <div class="separator">:</div>
+
+      <div class="time-unit">
+        <div class="glass-card" #glowBox>
+          <div class="spotlight"></div>
+          <span class="value">{{ minutes() }}</span>
+        </div>
+        <span class="label">Minutos</span>
+      </div>
+
+      <div class="separator">:</div>
+
+      <div class="time-unit">
+        <div class="glass-card active-pulse" #glowBox>
+          <div class="spotlight"></div>
+          <span class="value">{{ seconds() }}</span>
+        </div>
+        <span class="label">Segundos</span>
+      </div>
+
+    </div>
+
+    <div class="notify-box">
+      <div class="input-pill">
+        <input type="email" placeholder="Ingresa tu correo..." [(ngModel)]="email">
+        <button (click)="subscribe()">Unirse a la lista</button>
+      </div>
+      <p class="micro-copy">🔒 Sin spam. Solo notificaciones importantes.</p>
+    </div>
+
+  </main>
+
+  <div class="marquee-footer">
+    <div class="marquee-track">
+      <div class="marquee-content">
+        <span>MODA</span> <span class="dot">•</span>
+        <span>BELLEZA</span> <span class="dot">•</span>
+        <span>TECNOLOGIA</span> <span class="dot">•</span>
+        <span>GAMING</span> <span class="dot">•</span>
+        <span>SPORTS</span> <span class="dot">•</span>
+        <span>ACCESORIOS</span> <span class="dot">•</span>
+      </div>
+      <div class="marquee-content">
+         <span>MODA</span> <span class="dot">•</span>
+        <span>BELLEZA</span> <span class="dot">•</span>
+        <span>TECNOLOGIA</span> <span class="dot">•</span>
+        <span>GAMING</span> <span class="dot">•</span>
+        <span>SPORTS</span> <span class="dot">•</span>
+        <span>ACCESORIOS</span> <span class="dot">•</span>
+      </div>
+    </div>
+  </div>
+
+</div>

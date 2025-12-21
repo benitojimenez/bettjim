@@ -1,0 +1,79 @@
+<div class="product-card reveal" #animateItem>
+  <div class="p-image" [routerLink]="['/product', product().slug]">
+    <button class="wishlist-btn">♡</button>
+    <img
+      [src]="url_img + ImageSrc()"
+      [alt]="product().title + ' BettJim.com'"
+      [loading]="index() < 4 ? 'eager' : 'lazy'"
+      [attr.fetchpriority]="index() < 4 ? 'high' : 'auto'"
+    />
+
+    <div class="tags-wrapper">
+      @if(product().discount) {<span class="p-tag new">Nuevo</span> } @if(isDiscountActive()) {
+      <span class="p-tag">% {{ product().discount }} </span> }
+    </div>
+  </div>
+
+  <div class="p-details" [title]="[product().summary]">
+    <h4 class="p-title" [routerLink]="['/product', product().slug]">{{ product().title }}</h4>
+
+    <div class="p-rating">
+      <span class="stars">★★★★★</span>
+      <span class="count">({{ product().t_reviews }})</span>
+    </div>
+
+    <div class="p-price-row">
+      <div class="price-box">
+        <span class="current">{{
+          product().price | appDiscount : product() | currency : ps.Currency.currency
+        }}</span>
+        @if (isDiscountActive()) {
+        <span class="old">{{ product().price | currency : ps.Currency.currency }}</span>
+
+        }
+      </div>
+      @if (product().type_inventory ===1) {
+      <button
+        class="btn-add-cart"
+         [title]="['Añadir al Carrito ', product().title]"
+        (click)="cartService.addToCart(product())"
+        [disabled]="ps.productsResource.isLoading()"
+      >
+        <span class="icon">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+            ></path>
+          </svg>
+        </span>
+      </button>
+      }@else {
+      <button
+        [title]="['Ver mas de ', product().title]"
+        class="btn-add-cart"
+        [routerLink]="['/product', product().slug]"
+      >
+        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 4v16m8-8H4"
+          />
+        </svg>
+      </button>
+      }
+    </div>
+
+    <div class="p-badges">
+      <!-- @if(product().shipping === 'free') {
+      <span class="shipping-tag">Envío Gratis</span>
+      } -->
+      <span class="shipping-tag">Envío Gratis</span>
+      <span class="hot-tag">🔥 Hot</span>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,73 @@
+
+
+.breadcrumbs-nav {
+  /* 🔥 ALINEACIÓN CLAVE: */
+  /* Usamos las mismas medidas que tu .detail-container para que el texto se alinee perfectamente */
+  max-width: 1400px; 
+  margin: 0 auto; 
+  padding: 15px 20px; /* Padding vertical 15px, horizontal 20px (igual que el container) */
+}
+
+.breadcrumbs-list {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  
+  /* Scroll Horizontal para Móviles */
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  
+  /* Ocultar barra scroll */
+  &::-webkit-scrollbar { display: none; }
+  scrollbar-width: none;
+
+  li.breadcrumb-item {
+    display: flex;
+    align-items: center;
+    font-size: 0.85rem; 
+    font-family: 'Inter', system-ui, sans-serif;
+    color: #6b7280;
+  }
+}
+
+/* Enlaces */
+.breadcrumb-link {
+  color: #6b7280;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #111; /* Color primario al pasar mouse */
+    background-color: #f3f4f6; /* Pequeño fondo gris al hover estilo Notion (Opcional) */
+    // padding: 2px 6px;
+    // border-radius: 4px;
+    // margin: 0 -6px; /* Compensar el padding para que no se mueva */
+  }
+}
+
+/* Separador (/) */
+.separator {
+  margin: 0 8px;
+  color: #d1d5db;
+  font-size: 0.8rem;
+  user-select: none;
+}
+
+/* Página Actual */
+.current-page {
+  color: #111; /* Negro fuerte */
+  font-weight: 600;
+  
+  /* Truncado inteligente */
+  max-width: 200px;
+//   overflow: hidden;
+  text-overflow: ellipsis;
+  
+  @media (min-width: 768px) {
+    max-width: 500px;
+  }
+}

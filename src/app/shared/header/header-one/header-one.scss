@@ -1,0 +1,349 @@
+/* --- VARIABLES & MODERN RESET --- */
+:host {
+  --header-bg: rgba(255, 255, 255, 0.95); /* Semitransparente para efecto vidrio */
+  --header-height-pc: 72px;
+  --header-height-mobile: 115px;
+  
+  /* Colores Modernos */
+  --primary: #FF2E63; /* Un rojo/rosa más vibrante y moderno */
+  --primary-hover: #D92050;
+  --secondary: #252A34;
+  --text-main: #0F172A;
+  --text-light: #64748B;
+  --border-color: #E2E8F0;
+  --accent-blue: #3B82F6; /* Para focus del input */
+  
+  /* Sombras Suaves (Nivel Apple/Stripe) */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-glow: 0 0 0 3px rgba(255, 46, 99, 0.2);
+}
+/* --- 0. TOP BAR (Cinta Negra) --- */
+/* --- TOP BAR PREMIUM ROTATIVO --- */
+.top-bar {
+  background-color: #0f172a; /* Azul oscuro casi negro (Muy elegante) */
+  color: #ffffff;
+  height: 36px; /* Altura fija importante para la animación */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden; /* Oculta lo que se sale del marco */
+  z-index: 1002;
+  font-family: 'Inter', sans-serif;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.ticker-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-width: 600px; /* Ancho máximo de lectura */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ticker-msg {
+  position: absolute; /* Todos los mensajes uno encima del otro */
+  width: 100%;
+  margin: 0;
+  text-align: center;
+  font-size: 0.7rem; /* Letra pequeña y fina */
+  font-weight: 600;
+  letter-spacing: 1.5px; /* Espaciado premium */
+  text-transform: uppercase;
+  
+  /* ESTADO INICIAL (Oculto abajo) */
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none; /* Para que no interfiera si hay links */
+
+  /* ESTADO ACTIVO (Visible al centro) */
+  &.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: all;
+  }
+
+  /* ESTADO SALIDA (Se va hacia arriba) */
+  &.exit {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .ticker-msg { font-size: 0.65rem; padding: 0 10px; }
+}
+
+/* --- MAIN HEADER (Smart Behavior) --- */
+.main-header {
+  /* ... tus estilos previos ... */
+  position: sticky;
+  top: 0;
+  transition: transform 0.3s ease-in-out;
+  
+  /* CLASE PARA OCULTARLO AL BAJAR */
+  &.hidden {
+    transform: translateY(-100%);
+  }
+}
+
+/* --- SEARCH SECTION AVANZADO --- */
+.search-section {
+  position: relative; /* Vital para el dropdown absoluto */
+}
+
+/* Dropdown de Autocompletado */
+.search-dropdown {
+  position: absolute;
+  top: 100%; left: 0; right: 0;
+  background: white;
+  margin-top: 8px;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+  border: 1px solid #f0f0f0;
+  z-index: 10;
+  overflow: hidden;
+
+  .dropdown-header {
+    padding: 10px 16px;
+    font-size: 0.75rem; color: #888;
+    background: #f9f9f9;
+    font-weight: 600;
+  }
+
+  .suggestions-list {
+    list-style: none; padding: 0; margin: 0;
+    
+    li {
+      padding: 12px 16px;
+      display: flex; align-items: center; gap: 10px;
+      cursor: pointer;
+      transition: background 0.2s;
+      border-bottom: 1px solid #f5f5f5;
+
+      &:hover { background: #f0f7ff; }
+      
+      .icon { font-size: 1.1rem; }
+      .text { font-size: 0.9rem; color: #333; }
+      strong { color: var(--primary); }
+    }
+  }
+
+  .dropdown-footer {
+    padding: 10px; text-align: center;
+    color: var(--primary); font-size: 0.8rem; font-weight: 700;
+    cursor: pointer;
+    &:hover { text-decoration: underline; }
+  }
+}
+
+/* Animación Fade In */
+.fade-in {
+  animation: fadeIn 0.2s ease-out;
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+.main-header {
+  background: var(--header-bg);
+  backdrop-filter: blur(12px); /* Efecto Vidrio (Glassmorphism) */
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.container {
+  max-width: 1440px; /* Estándar ancho completo moderno */
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+/* --- 1. BRAND & MENU --- */
+.brand-wrapper {
+  display: flex; align-items: center; gap: 18px;
+  flex-shrink: 0;
+}
+
+.btn-menu {
+  background: transparent; border: none; padding: 8px; 
+  cursor: pointer; color: var(--text-main);
+  border-radius: 8px; transition: background 0.2s;
+  
+  &:hover { background: #F1F5F9; }
+}
+
+.brand-logo {
+  font-family: 'Inter', system-ui, sans-serif; /* Fuente moderna */
+  font-size: 1.5rem; 
+  font-weight: 800; 
+  letter-spacing: -0.05em; 
+  color: var(--text-main); 
+  text-decoration: none;
+  display: flex; align-items: baseline;
+}
+.dot { color: var(--primary); font-size: 1.8rem; line-height: 0; }
+
+/* MINI NAV */
+.mini-nav-desktop {
+  display: flex; gap: 24px; margin-left: 30px;
+  padding-left: 30px; border-left: 1px solid var(--border-color);
+  height: 32px; align-items: center;
+}
+
+.nav-link {
+  font-size: 0.85rem; font-weight: 600; color: var(--text-light); 
+  text-decoration: none; transition: 0.2s; display: inline-flex; align-items: center; gap: 4px;
+  
+  &:hover { color: var(--primary); transform: translateY(-1px); }
+  
+  &.highlight { color: #D946EF; }
+  &.xmas { color: #16A34A; }
+}
+
+/* --- 2. SEARCH SECTION (Estilo Amazon/Apple) --- */
+.search-section {
+  flex: 1; max-width: 600px;
+  transition: max-width 0.3s ease;
+}
+
+.search-box {
+  display: flex;
+  background: #F8FAFC;
+  border-radius: 12px; /* Más redondeado */
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+  overflow: hidden;
+  height: 44px; /* Altura cómoda para touch */
+  position: relative;
+  
+  &:focus-within {
+    background: #FFFFFF;
+    border-color: var(--primary);
+    box-shadow: var(--shadow-glow); /* Glow effect */
+  }
+
+  input {
+    flex: 1; padding: 0 16px;
+    background: transparent; border: none; outline: none;
+    font-size: 0.95rem; color: var(--text-main);
+    width: 100%;
+    
+    &::placeholder { color: #94A3B8; }
+  }
+}
+
+.btn-search {
+  background: transparent; color: var(--text-light);
+  border: none; padding: 0 16px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: 0.2s;
+  
+  &:hover { color: var(--primary); transform: scale(1.1); }
+}
+
+/* --- 3. ACTIONS --- */
+.actions-wrapper {
+  display: flex; align-items: center; gap: 24px;
+  flex-shrink: 0;
+}
+
+/* Animación Hover Lift */
+.hover-lift {
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  &:hover { transform: translateY(-2px); }
+  &:active { transform: translateY(0); }
+}
+
+.user-menu, .cart-btn {
+  display: flex; align-items: center; gap: 10px; cursor: pointer; text-decoration: none;
+}
+
+.icon-user, .icon-group {
+  color: var(--text-main); position: relative;
+}
+
+.user-text, .cart-info {
+  display: flex; flex-direction: column; line-height: 1.1;
+  .small-text, .label { font-size: 0.7rem; color: var(--text-light); font-weight: 500; }
+  .bold-text, .amount { font-size: 0.9rem; font-weight: 700; color: var(--text-main); }
+}
+
+/* BADGE (Notificación) */
+.badge {
+  position: absolute; top: -6px; right: -8px;
+  background: var(--primary); color: white;
+  font-size: 0.65rem; font-weight: 800;
+  height: 18px; min-width: 18px; padding: 0 4px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 4px rgba(255, 46, 99, 0.3);
+}
+
+/* Animación Pop-in para el badge */
+@keyframes popIn {
+  0% { transform: scale(0); }
+  80% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+.pop-in { animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+
+
+/* =========================================
+   📱 RESPONSIVE & MOBILE LAYOUT
+   ========================================= */
+
+@media (min-width: 901px) {
+  .main-header { height: var(--header-height-pc); }
+}
+
+@media (max-width: 900px) {
+  .main-header { padding: 10px 0; height: auto; }
+  .container { 
+    padding: 0 16px; gap: 12px; flex-wrap: wrap; 
+  }
+
+  /* 1. BRAND -> Logo más pequeño */
+  .brand-wrapper { order: 1; flex: 1; }
+  .brand-logo { font-size: 1.3rem; }
+  .mini-nav-desktop { display: none; }
+  .btn-menu svg { width: 28px; height: 28px; } /* Icono menú más grande para dedo */
+
+  /* 2. ACTIONS -> Solo iconos */
+  .actions-wrapper {
+    order: 2; margin-left: 0; gap: 18px;
+  }
+  .user-text, .cart-info { display: none; }
+  
+  /* Iconos más grandes en móvil (Touch Target) */
+  .icon-user svg, .icon-group svg { width: 26px; height: 26px; }
+
+  /* 3. SEARCH -> Fila completa abajo */
+  .search-section {
+    order: 3;
+    width: 100%; max-width: 100%; flex-basis: 100%;
+    margin-top: 4px;
+  }
+  .search-box { 
+    background: #F1F5F9; 
+    border: 1px solid #E2E8F0;
+  }
+}
+
+/* TABLET SPECIFIC (Entre 600px y 900px) */
+@media (min-width: 600px) and (max-width: 900px) {
+  .container { gap: 20px; }
+}
+

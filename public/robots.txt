@@ -1,0 +1,40 @@
+User-agent: *
+
+# ✅ PERMITIR (Prioridad SEO)
+
+Allow: /
+Allow: /shop
+Allow: /product/
+Allow: /assets/img/ 
+Allow: /nosotros
+Allow: /tracking
+Allow: /auth/login
+Allow: /auth/register
+
+# 🚫 BLOQUEAR (Áreas Privadas y Legales)
+Disallow: /account/
+
+# 🚫 BLOQUEAR (Procesos de Compra - Evita contenido duplicado)
+Disallow: /cart
+Disallow: /checkout
+Disallow: /thank-you
+
+# 🚫 BLOQUEAR (Legal y Operativo - No aporta SEO)
+Disallow: /libro-de-reclamaciones
+Disallow: /devolucion
+Disallow: /privacidad
+Disallow: /terminos-condiciones      
+
+# 🚫 BLOQUEAR (Búsquedas internas - "Search Trap")
+
+Disallow: /search
+Disallow: /?q=
+Disallow: /?cart=
+Disallow: /?minPrice=
+Disallow: /?maxPrice=
+Disallow: /*?sort=    
+Disallow: /*?filter= 
+Disallow: /*?color= 
+Disallow: /*?size= 
+
+Sitemap: https://bettjim.com/sitemap.xml

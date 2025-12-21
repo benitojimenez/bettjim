@@ -1,0 +1,187 @@
+<!-- <div
+  class="filter-overlay"
+  [class.active]="layout.filterOpen()"
+  (click)="layout.closeFilter()"
+></div> -->
+
+<div class="shop-wrapper">
+  <aside class="filters-sidebar" [class.active-mobile]="layout.filterOpen()">
+    <div class="mobile-filter-header">
+      <h3>Filtros</h3>
+      <button class="btn-close-filter" (click)="layout.closeFilter()">✕</button>
+    </div>
+
+    <div class="filter-content-scroll">
+      @if (activeCategory() || ps.searchTerm() || activeColors().length > 0 || activeSizes().length
+      > 0) {
+      <div class="reset-section">
+        <button class="btn-reset" (click)="resetFilters()">
+          <span class="icon">🗑️</span> Limpiar Filtros
+        </button>
+      </div>
+      }
+      <div class="filter-group">
+        <h3>Categorías</h3>
+        <ul class="filter-list">
+          @for (cat of categories.cleanCategories(); track $index) {
+          <li>
+            <label>
+              <input
+                type="checkbox"
+                [checked]="activeCategory() === cat.title"
+                (change)="onCategoryChange(cat.title)"
+              />
+              {{ cat.title }}
+            </label>
+          </li>
+          }
+        </ul>
+      </div>
+
+      <div class="filter-group">
+        <h3>Precio</h3>
+        <div class="price-range-wrapper">
+          <div class="price-values">
+            <span>S/ {{ minVal() }}</span>
+            <span> - </span>
+            <span>S/ {{ maxVal() }}</span>
+          </div>
+
+          <div class="multi-range-slider">
+            <div class="slider-track-bg"></div>
+
+            <div
+              class="slider-track-active"
+              [style.left.%]="(minVal() / maxLimit) * 100"
+              [style.width.%]="((maxVal() - minVal()) / maxLimit) * 100"
+            ></div>
+
+            <input
+              type="range"
+              [min]="0"
+              [max]="maxLimit"
+              [value]="minVal()"
+              (input)="updateMin($event)"
+              (change)="applyPriceFilter()"
+            />
+
+            <input
+              type="range"
+              [min]="0"
+              [max]="maxLimit"
+              [value]="maxVal()"
+              (input)="updateMax($event)"
+              (change)="applyPriceFilter()"
+            />
+          </div>
+
+          <div class="range-limits">
+            <span>S/ 0</span>
+            <span>S/ {{ maxLimit }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <h3>Color</h3>
+        <ul class="filter-list">
+          @for (color of colors; track $index) {
+          <li>
+            <label>
+              <input
+                type="checkbox"
+                [checked]="activeColors().includes(color.name)"
+                (change)="onColorChange(color.name)"
+              /><span
+                [style.background-color]="color.code"
+                style="height: 15px; width: 15px; display: inline-block; border-radius: 50%"
+                class="color-swatch"
+              ></span>
+              {{ color.name }}
+            </label>
+          </li>
+          }
+        </ul>
+      </div>
+
+      <div class="filter-group">
+        <h3>Talla</h3>
+        <div class="size-chips">
+          @for (size of sizes; track size) {
+          <button
+            class="chip"
+            [class.active]="activeSizes().includes(size)"
+            (click)="onSizeChange(size)"
+          >
+            {{ size }}
+          </button>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="mobile-apply-btn">
+      <button (click)="layout.closeFilter()">Ver Resultados</button>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="shop-toolbar">
+      <div class="toolbar-left">
+        <button class="btn-filter-mobile" (click)="layout.toggleFilter()">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"></path>
+          </svg>
+          Filtrar
+        </button>
+
+        <span class="result-count">Mostrando {{ ps.displayProducts().length }} productos</span>
+      </div>
+
+      <div class="sort-wrapper">
+        <select (change)="onSort($event)" class="modern-select">
+          <option value="">Recomendados</option>
+          <option value="low">Precio: Bajo a Alto</option>
+          <option value="high">Precio: Alto a Bajo</option>
+          <option value="a-z">Nombre: A-Z</option>
+        </select>
+      </div>
+    </div>
+
+    @if (ps.productsResource.isLoading()) {
+    <div class="state-container">
+      <div class="spinner"></div>
+      <p>Buscando las mejores ofertas...</p>
+    </div>
+    } @if (ps.productsResource.error()) {
+    <div class="state-container error">
+      <p>⚠️ No pudimos cargar los productos.</p>
+      <button (click)="ps.productsResource.reload()">Reintentar</button>
+    </div>
+    }
+
+    <div class="product-grid">
+      @for (product of ps.displayProducts(); track product._id ; let i = $index) {
+        <!-- <app-product-one [product]="product" [index]="i"/> -->
+        <app-product-two [product]="product" [index]="i"/>
+      } @empty { @if (!ps.productsResource.isLoading()) {
+      <div class="empty-results">
+        <p>No encontramos productos con esos filtros.</p>
+
+        <div class="reset-section0">
+          <button class="btn-reset" (click)="resetFilters()">
+            <span class="icon">🗑️</span> Limpiar Filtros
+          </button>
+        </div>
+      </div>
+      } }
+    </div>
+  </main>
+</div>

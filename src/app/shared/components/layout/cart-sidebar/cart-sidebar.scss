@@ -1,0 +1,184 @@
+/* --- VARIABLES --- */
+  :host {
+    --cart-width: 420px; /* Ancho por defecto en PC */
+    --primary-color: #111;
+    --gray-light: #f3f4f6;
+    --gray-border: #e5e7eb;
+    --text-dark: #1f2937;
+    --text-muted: #6b7280;
+    --danger: #ef4444;
+  }
+
+  /* --- OVERLAY --- */
+  .overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    z-index: 2000;
+    opacity: 0; visibility: hidden;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    backdrop-filter: blur(4px);
+  }
+  .overlay.active { opacity: 1; visibility: visible; }
+
+  /* --- CART DRAWER --- */
+  .cart-drawer {
+    position: fixed; top: 0; 
+    /* Escondido a la derecha usando la variable */
+    right: calc(var(--cart-width) * -1); 
+    width: var(--cart-width); 
+    height: 100%;
+    background: #fff;
+    z-index: 2001;
+    display: flex; flex-direction: column;
+    // box-shadow: -10px 0 30px rgba(0,0,0,0.15);
+    transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+  .cart-drawer.active { right: 0 !important; }
+
+  /* --- HEADER --- */
+  .drawer-header {
+    padding: 15px 20px; /* Un poco menos padding vertical */
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid var(--gray-border);
+    flex-shrink: 0; /* Evita que se aplaste */
+  }
+  .drawer-header h3 { font-size: 1.2rem; font-weight: 800; margin: 0; }
+  
+  .btn-close {
+    background: var(--gray-light); border: none; 
+    width: 36px; height: 36px; border-radius: 50%; 
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 1.2rem; color: #555;
+  }
+
+  /* --- BODY --- */
+  .drawer-body { 
+    flex: 1; overflow-y: auto; padding: 20px; 
+    scrollbar-width: thin; 
+    -webkit-overflow-scrolling: touch; /* Scroll suave en iOS */
+  }
+
+  /* --- ITEMS --- */
+  .cart-item {
+    display: flex; gap: 12px; margin-bottom: 20px; 
+    padding-bottom: 20px; border-bottom: 1px solid var(--gray-border);
+  }
+  
+  .item-img {
+    width: 80px; height: 100px; flex-shrink: 0; /* Imagen un poco más chica */
+    background: var(--gray-light); border-radius: 8px; overflow: hidden;
+  }
+  .item-img img { width: 100%; height: 100%; object-fit: cover; }
+
+  .item-details { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+
+  .row-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+  .item-title { 
+    font-size: 0.9rem; font-weight: 600; line-height: 1.3; color: var(--text-dark);
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .item-variety{
+    font-size: 0.9rem; font-weight: 600; line-height: 1.3; color: var(--text-dark);
+  }
+
+  .btn-remove {
+    background: none; border: none; cursor: pointer; color: #9ca3af; padding: 4px;
+  }
+  .btn-remove:hover { color: var(--danger); }
+
+  .row-bottom { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 8px; }
+
+  /* --- CONTROLES CANTIDAD --- */
+  .qty-selector {
+    display: flex; align-items: center;
+    border: 1px solid var(--gray-border); border-radius: 6px;
+    height: 30px; /* Más compacto */
+  }
+  .qty-btn {
+    width: 30px; height: 100%; border: none; background: white;
+    cursor: pointer; font-size: 1rem; color: #555;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .qty-value {
+    width: 25px; text-align: center; font-size: 0.85rem; font-weight: 600;
+  }
+
+  .price-group { text-align: right; }
+  .final-price { font-size: 0.95rem; font-weight: 700; color: var(--text-dark); }
+  .old-price { font-size: 0.75rem; text-decoration: line-through; color: var(--text-muted); display: block;}
+
+  /* --- FOOTER --- */
+  .drawer-footer {
+    padding: 20px; background: white;
+    border-top: 1px solid var(--gray-border);
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
+    flex-shrink: 0; /* Evita que se aplaste */
+  }
+  
+  .summary-row { display: flex; justify-content: space-between; font-size: 1.1rem; font-weight: 800; margin-bottom: 5px; }
+  .shipping-note { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px; }
+
+  .btn-checkout {
+    width: 100%; padding: 15px; 
+    background: var(--primary-color); color: white;
+    font-size: 1rem; font-weight: 700; text-transform: uppercase;
+    border-radius: 8px; border: none;
+  }
+
+  /* Empty State */
+  .empty-state { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: #888; }
+  .empty-icon { font-size: 3rem; margin-bottom: 10px; opacity: 0.4; }
+  .btn-shop { padding: 10px 25px; border: 2px solid #333; background: transparent; font-weight: bold; border-radius: 30px; margin-top: 15px; }
+
+  /* =========================================
+     🔥 RESPONSIVE / MEDIA QUERIES 🔥
+     ========================================= */
+  
+  /* Tablets (iPad Portrait) y Móviles Grandes */
+  @media (max-width: 768px) {
+    :host {
+      --cart-width: 100%; /* Ocupa el 50-60% si prefieres, pero en mobile full */
+    }
+  }
+
+  /* Móviles (Smartphones) - Regla Específica */
+  @media (max-width: 600px) {
+    :host {
+      --cart-width: 100%; /* FULL WIDTH OBLIGATORIO */
+    }
+
+    .cart-drawer {
+      right: -100%; /* Se esconde completamente */
+      max-width: 100vw; /* Asegura que no desborde */
+    }
+    
+    .cart-drawer.active {
+      right: 0 !important;
+    }
+
+    /* Ajustes para dedos (Touch targets) */
+    .btn-close {
+      width: 40px; height: 40px; /* Más fácil de tocar */
+    }
+
+    .item-img {
+      width: 70px; height: 85px; /* Imagen más pequeña para dar espacio al texto */
+    }
+
+    .item-title {
+      font-size: 0.85rem; /* Texto un poco más pequeño */
+    }
+
+    .qty-selector {
+      height: 34px; /* Un poco más alto para el dedo */
+    }
+    .qty-btn {
+      width: 34px; /* Zona de toque más amplia */
+    }
+
+    /* Footer pegado abajo */
+    .drawer-footer {
+      padding: 15px;
+      padding-bottom: max(15px, env(safe-area-inset-bottom)); /* Soporte para iPhone X/11/12/13 barra inferior */
+    }
+  }

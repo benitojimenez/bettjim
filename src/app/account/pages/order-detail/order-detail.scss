@@ -1,0 +1,300 @@
+:host {
+  --primary: #111;
+  --text-main: #1f2937;
+  --text-muted: #6b7280;
+  --border: #e5e7eb;
+  --bg-page: #f9fafb;
+  --bg-card: #ffffff;
+  --radius: 12px;
+  --green: #10b981;
+
+  /* Variables para el tamaño del stepper */
+  --circle-size: 40px;
+  --line-thickness: 3px;
+}
+
+.detail-container {
+  display: flex; flex-direction: column; gap: 30px;
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* --- 1. HEADER --- */
+.detail-header {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  flex-wrap: wrap; gap: 20px;
+
+  .header-left {
+    .back-link {
+      display: flex; align-items: center; gap: 6px;
+      color: var(--text-muted); text-decoration: none; font-size: 0.9rem; margin-bottom: 10px;
+      transition: color 0.2s;
+      svg { width: 16px; height: 16px; }
+      &:hover { color: var(--primary); }
+    }
+    h1 { font-size: 1.8rem; font-weight: 800; margin: 0; line-height: 1.1; }
+    .order-date { color: var(--text-muted); font-size: 0.9rem; }
+  }
+
+  .header-actions {
+    display: flex; gap: 10px;
+    
+    button {
+      padding: 10px 18px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 0.9rem;
+      display: flex; align-items: center; gap: 8px; transition: 0.2s;
+      
+      &.btn-outline {
+        background: white; border: 1px solid var(--border); color: var(--text-main);
+        &:hover { background: #f3f4f6; }
+      }
+      &.btn-primary {
+        background: var(--primary); color: white; border: 1px solid var(--primary);
+        &:hover { background: #333; }
+      }
+      svg { width: 18px; height: 18px; }
+    }
+  }
+}
+
+/* --- 2. STEPPER DE PROGRESO (La Joya de la Corona) --- */
+/* --- STEPPER DE PROGRESO (Escritorio - Horizontal) --- */
+.progress-section {
+  background: white; border-radius: var(--radius); border: 1px solid var(--border);
+  padding: 30px 40px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  /* Eliminamos overflow: hidden para que la línea pueda salir del item si es necesario */
+}
+
+.stepper-wrapper {
+  display: flex; 
+  justify-content: space-between; 
+  align-items: flex-start; /* Alineamos arriba para que los círculos queden al mismo nivel */
+  position: relative;
+  margin-bottom: 30px; /* Espacio para el mensaje de estado */
+}
+
+.step-item {
+  display: flex; flex-direction: column; align-items: center;
+  position: relative; 
+  flex: 1; /* Cada paso ocupa el mismo espacio */
+  
+  /* El último paso no necesita extender una línea, pero debe ocupar su espacio */
+  &:last-child { 
+    flex: 1; 
+    .step-line { display: none; } /* Aseguramos que no haya línea en el último */
+  }
+
+  /* Línea Conectora (PC: Horizontal) */
+  .step-line {
+    position: absolute;
+    top: calc(var(--circle-size) / 2); /* Centrada verticalmente con el círculo */
+    left: 50%; /* Empieza en el centro del círculo actual */
+    width: 100%; /* Se extiende hasta el centro del siguiente círculo */
+    height: var(--line-thickness);
+    background: #e5e7eb;
+    z-index: 1; /* Detrás del círculo */
+    transform: translateY(-50%);
+    transition: background 0.4s ease;
+    
+    &.filled { background: var(--green); }
+  }
+
+  /* Círculo */
+  .step-circle {
+    width: var(--circle-size); height: var(--circle-size); border-radius: 50%;
+    background: white; /* Fondo blanco para tapar la línea que pasa por detrás */
+    color: #9ca3af;
+    border: 2px solid #e5e7eb; /* Borde por defecto */
+    display: flex; align-items: center; justify-content: center;
+    z-index: 2; /* Por delante de la línea */
+    position: relative;
+    transition: all 0.3s;
+    
+    svg { width: 20px; height: 20px; }
+  }
+
+  /* Etiqueta */
+  .step-label {
+    margin-top: 10px; font-size: 0.9rem; font-weight: 500; color: #9ca3af;
+    text-align: center;
+  }
+
+  /* ESTADO: COMPLETADO */
+  &.completed {
+    .step-line { background: var(--green); } /* La línea que sale de un paso completado es verde */
+    .step-circle { 
+      background: var(--green); 
+      color: white; 
+      border-color: var(--green); 
+    }
+    .step-label { color: var(--green); font-weight: 700; }
+  }
+  
+  /* ESTADO: ACTIVO (Paso actual, p.ej. "Enviado") */
+  &.active {
+    .step-circle { 
+      background: white; 
+      border: 2px solid var(--green); 
+      color: var(--green);
+    }
+    .step-label { color: var(--text-main); font-weight: 700; }
+    /* La línea que sale del paso activo NO debe estar llena aún */
+    .step-line { background: #e5e7eb; } 
+  }
+}
+
+/* Mensaje de Estado (Centrado) */
+.status-message {
+  text-align: center; /* <-- ESTO CENTRA EL TEXTO */
+  color: var(--text-main);
+  font-size: 1.1rem;
+  
+  p { margin: 0; }
+  strong { color: var(--text-main); font-weight: 700; }
+}
+
+/* =========================================
+   📱 SOLUCIÓN MÓVIL (Vertical Timeline)
+   ========================================= */
+@media (max-width: 768px) {
+  /* ... (Mantén todo el código de la media query móvil igual que antes) ... */
+  .progress-section { padding: 25px 20px; }
+
+  .stepper-wrapper {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    margin-bottom: 20px;
+  }
+
+  .step-item {
+    flex-direction: row;
+    align-items: flex-start;
+    width: 100%;
+    padding-bottom: 30px;
+    flex: initial;
+
+    &:last-child { padding-bottom: 0; }
+
+    .step-label {
+      margin-top: 8px;
+      margin-left: 15px;
+      text-align: left;
+      font-size: 0.95rem;
+    }
+
+    .step-circle {
+      width: 36px; height: 36px;
+      border-width: 2px; /* Mantener borde en móvil */
+      svg { width: 18px; height: 18px; }
+      /* En móvil, el círculo no necesita tapar la línea de la misma forma */
+      background: #f3f4f6; 
+      &.completed { background: var(--green); }
+      &.active { background: white; }
+    }
+
+    /* Línea Vertical Móvil */
+    .step-line {
+      top: auto; left: auto; transform: none; width: auto; 
+      
+      left: 17px; /* Centrado con el círculo de 36px (36/2 - 2/2) */
+      top: 36px;
+      width: 2px;
+      height: calc(100% - 2px); /* Ajuste fino para que conecte */
+      z-index: 1;
+    }
+  }
+  
+  /* El mensaje de estado también se ve bien centrado en móvil */
+  .status-message {
+      font-size: 1rem;
+  }
+}
+/* --- 3. CONTENIDO GRID --- */
+.content-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr; /* 66% - 33% */
+  gap: 25px;
+}
+
+.left-column { display: flex; flex-direction: column; gap: 25px; }
+.right-column { display: flex; flex-direction: column; gap: 25px; }
+
+/* Estilos de Tarjeta General */
+.card {
+  background: white; border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 25px;
+  h2, h3 { margin: 0 0 20px 0; font-size: 1.1rem; font-weight: 700; }
+}
+
+/* LISTA DE ITEMS */
+.item-row {
+  display: flex; gap: 15px; padding: 15px 0; border-bottom: 1px solid #f3f4f6;
+  &:last-child { border-bottom: none; padding-bottom: 0; }
+  
+  .item-img {
+    width: 70px; height: 70px; border-radius: 8px; background: #f9fafb; border: 1px solid var(--border);
+    overflow: hidden; flex-shrink: 0;
+    img { width: 100%; height: 100%; object-fit: cover; }
+  }
+  
+  .item-info {
+    flex: 1;
+    h3 { margin: 0 0 5px 0; font-size: 0.95rem; font-weight: 600; line-height: 1.3; }
+    .variant { font-size: 0.85rem; color: var(--text-muted); margin: 0; }
+    .qty { font-size: 0.85rem; color: var(--text-main); margin-top: 4px; font-weight: 500; }
+  }
+  
+  .item-price { font-weight: 700; font-size: 1rem; }
+}
+
+/* INFO ROW (Envío y Pago) */
+.info-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 25px;
+}
+.info-card {
+  p { margin: 0; font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; }
+  .strong { color: var(--text-main); font-weight: 700; margin-bottom: 4px; }
+  .phone { margin-top: 8px; }
+}
+
+.payment-box {
+  display: flex; align-items: center; gap: 10px;
+  .visa-icon { width: 40px; }
+  span { font-weight: 500; font-size: 0.9rem; }
+}
+
+/* RESUMEN (Summary) */
+.summary-row {
+  display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.95rem;
+  &.discount { color: var(--green); }
+  &.total { font-weight: 800; font-size: 1.2rem; margin-top: 15px; margin-bottom: 0; }
+}
+.divider { height: 1px; background: var(--border); margin: 15px 0; }
+
+/* TRACKING */
+.tracking-card {
+  background: #f3f4f6; border: none;
+  .track-number { font-family: monospace; font-size: 1.1rem; background: white; padding: 10px; border-radius: 6px; text-align: center; border: 1px solid var(--border); margin-bottom: 15px; }
+  .btn-track-full { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
+}
+
+/* =========================================
+   📱 RESPONSIVE
+   ========================================= */
+@media (max-width: 900px) {
+  .content-grid { grid-template-columns: 1fr; } /* Colapsar columnas */
+  .info-row { grid-template-columns: 1fr; } /* Info cards una bajo otra */
+}
+
+@media (max-width: 600px) {
+  .detail-header {
+    flex-direction: column; align-items: flex-start;
+    .header-actions { width: 100%; button { flex: 1; justify-content: center; } }
+  }
+  
+  
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

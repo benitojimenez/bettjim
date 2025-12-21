@@ -1,0 +1,218 @@
+<!-- <header class="main-header">
+
+  <div class="container">
+    
+    <div class="brand-wrapper">
+      <button class="btn-menu" (click)="layout.toggleSidebar()" aria-label="Menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+
+      <a routerLink="/" class="brand-logo">Bettjim<span class="dot">.com</span></a>
+
+      <nav class="mini-nav-desktop">
+        <a routerLink="/shop" class="nav-link fire-anim">🔥 Ofertas</a>
+        <a routerLink="/envivo" class="nav-link live-pulse">🔴 En Vivo</a>
+        <a routerLink="/navidad" class="nav-link xmas">🎄 Navidad</a>
+      </nav>
+    </div>
+
+    <div class="search-section">
+      <div class="search-box">
+        <input
+          #searchInput
+          type="text"
+          placeholder="Buscar marcas, productos..."
+          [value]="ps.searchTerm()"
+          (input)="onSearch(searchInput.value)"
+        />
+        <button class="btn-search" aria-label="Buscar">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="actions-wrapper">
+      <div class="user-menu hover-lift" [routerLink]="[auth.isAuthenticated() ? 'account/profile' : '/auth/login']">
+        <div class="icon-user">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </div>
+        <div class="user-text">
+          @if (auth.isAuthenticated()) {
+            <span class="small-text">Hola, {{ auth.getLastName()}}</span>
+            <span class="bold-text">Mi Cuenta</span>
+          } @else {
+            <span class="small-text">Bienvenido</span>
+            <span class="bold-text">Iniciar Sesión</span>
+          }
+        </div>
+      </div>
+
+      <div class="cart-btn hover-lift" (click)="layout.toggleCart()">
+        <div class="icon-group">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          </svg>
+          @if (cartService.cartItems().length > 0) {
+            <span class="badge pop-in">{{ cartService.cartItems().length }}</span>
+          }
+        </div>
+        <div class="cart-info">
+          <span class="label">Mi Carrito</span>
+          <span class="amount">{{ cartService.cartTotal() | currency : cartService.Currency.currency }}</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</header> -->
+
+<div class="top-bar">
+  <div class="ticker-wrapper">
+    @for (msg of announcements(); track $index) {
+    <p
+      class="ticker-msg"
+      [class.active]="$index === currentAnnouncementIndex()"
+      [class.exit]="$index === prevAnnouncementIndex()"
+    >
+      {{ msg }}
+    </p>
+    }
+  </div>
+</div>
+
+<header class="main-header" [class.hidden]="!isHeaderVisible()">
+  <div class="container">
+    <div class="brand-wrapper">
+      <button class="btn-menu" (click)="layout.toggleSidebar()">
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+      <a routerLink="/" class="brand-logo">Bettjim<span class="dot">.com</span></a>
+
+      <nav class="mini-nav-desktop">
+        <a routerLink="/shop" class="nav-link fire-anim">🔥 Ofertas</a>
+        <a routerLink="/envivo" class="nav-link live-pulse">🔴 En Vivo</a>
+      </nav>
+    </div>
+
+    <div class="search-section">
+      <div class="search-box" [class.active]="isSearchFocused">
+        <input
+          #searchInput
+          type="text"
+          placeholder="Buscar marcas, productos en Bettjim..."
+          [value]="ps.searchTerm()"
+          (input)="onSearch(searchInput.value)"
+          (focus)="isSearchFocused = true"
+          (blur)="closeSearchDelay()"
+        />
+        <button class="btn-search">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </button>
+      </div>
+
+      @if (isSearchFocused && ps.searchTerm().length > 0) {
+      <div class="search-dropdown fade-in">
+        <div class="dropdown-header">Sugerencias para "{{ ps.searchTerm() }}"</div>
+
+        <ul class="suggestions-list">
+          <li>
+            <span class="icon">🔍</span>
+            <span class="text"
+              >Perfume <strong>{{ ps.searchTerm() }}</strong> Floral</span
+            >
+          </li>
+          <li>
+            <span class="icon">💄</span>
+            <span class="text"
+              >Labial <strong>{{ ps.searchTerm() }}</strong> Matte</span
+            >
+          </li>
+        </ul>
+
+        <div class="dropdown-footer">Ver los 25 resultados</div>
+      </div>
+      }
+    </div>
+
+    <div class="actions-wrapper">
+      <div
+        class="user-menu hover-lift"
+        [routerLink]="auth.isAuthenticated() ? '/account' : '/auth/login'"
+      >
+        <div class="icon-user">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </div>
+        <div class="user-text">
+          <span class="small-text">Hola, {{ auth.getLastName() || 'Invitado' }}</span
+          ><span class="bold-text">Cuenta</span>
+        </div>
+      </div>
+
+      <div class="cart-btn hover-lift" (click)="layout.toggleCart()">
+        <div class="icon-group">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          </svg>
+          @if (cartService.cartItems().length > 0) {
+          <span class="badge pop-in">{{ cartService.cartItems().length }}</span> }
+        </div>
+        <div class="cart-info">
+          <span class="label">Total</span
+          ><span class="amount">{{ cartService.cartTotal() | currency: 'S/'}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>

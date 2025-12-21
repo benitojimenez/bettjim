@@ -1,0 +1,212 @@
+:host {
+  --primary: #111;
+  --text-main: #1f2937;
+  --text-muted: #6b7280;
+  --border: #e5e7eb;
+  --radius: 12px;
+  --card-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.overview-container {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  /* Animación de entrada suave */
+  animation: fadeUp 0.4s ease-out;
+}
+
+/* --- HEADER --- */
+.welcome-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  h1 { font-size: 1.8rem; font-weight: 800; margin: 0 0 5px 0; color: var(--text-main); }
+  .subtitle { color: var(--text-muted); margin: 0; }
+
+  .btn-shop-now {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 16px;
+    background: var(--primary); color: white;
+    text-decoration: none; font-weight: 600; font-size: 0.9rem;
+    border-radius: 30px; transition: 0.2s;
+    &:hover { background: #333; transform: translateX(3px); }
+    svg { width: 18px; height: 18px; }
+  }
+}
+
+/* --- METRICS GRID (Tarjetas Superiores) --- */
+.metrics-grid {
+  display: grid;
+  /* Grid adaptable: crea columnas de mín 240px */
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.metric-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  position: relative;
+  box-shadow: var(--card-shadow);
+  transition: 0.2s;
+  display: flex; flex-direction: column;
+
+  &:hover { transform: translateY(-3px); box-shadow: 0 5px 12px rgba(0,0,0,0.08); }
+
+  .card-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center; margin-bottom: 15px;
+    background: #f3f4f6; color: var(--text-main);
+    svg { width: 24px; height: 24px; }
+
+    &.points { background: #fff7ed; color: #d97706; }
+    &.wishlist { background: #fce7f3; color: #db2777; }
+  }
+  
+  .metric-value { font-size: 2.2rem; font-weight: 800; color: var(--text-main); line-height: 1; }
+  .metric-label { font-size: 0.9rem; color: var(--text-muted); margin: 5px 0 20px; font-weight: 500; }
+  
+  .card-link {
+    margin-top: auto; /* Empuja el link al final */
+    font-size: 0.85rem; font-weight: 600; color: var(--primary);
+    text-decoration: none;
+    &:hover { text-decoration: underline; }
+  }
+
+  /* ESTILO DESTACADO (Pedidos Activos) */
+  &.highlight {
+    background: var(--primary); border: none;
+    .card-icon { background: rgba(255,255,255,0.2); color: white; }
+    .metric-value, .metric-label { color: white; }
+    .card-link { color: rgba(255,255,255,0.8); &:hover { color: white; } }
+
+    /* Si hay pedidos, agregamos un indicador visual */
+    &.has-orders::after {
+      content: ''; position: absolute; top: 15px; right: 15px;
+      width: 10px; height: 10px; background: #ef4444; border-radius: 50%;
+      box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.3);
+    }
+  }
+}
+
+/* --- INFO GRID (Pedidos + Detalles) --- */
+.info-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr; /* Pedidos ocupa más espacio en PC */
+  gap: 25px;
+  align-items: start;
+}
+
+/* Tarjeta Genérica para secciones */
+.recent-orders-card, .summary-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--card-shadow);
+}
+
+.section-header, .sc-header {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
+  h2, h3 { font-size: 1.1rem; font-weight: 700; margin: 0; }
+  a { font-size: 0.9rem; color: var(--primary); font-weight: 600; text-decoration: none; }
+}
+
+/* Lista de Pedidos */
+.orders-list {
+  display: flex; flex-direction: column; gap: 15px;
+}
+
+.order-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 15px; border: 1px solid var(--border); border-radius: 8px;
+  transition: 0.2s;
+  &:hover { border-color: #d1d5db; background: #f9fafb; }
+  
+  .order-info {
+    display: flex; flex-direction: column; gap: 4px;
+    .order-id { font-weight: 700; font-size: 0.95rem; }
+    .order-date, .order-summary { font-size: 0.8rem; color: var(--text-muted); }
+  }
+
+  .order-status {
+    display: flex; flex-direction: column; align-items: flex-end; gap: 8px;
+    text-align: right;
+    .badge {
+      padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+    }
+    .order-total { font-weight: 700; }
+  }
+  
+  .btn-view-order {
+    color: var(--text-muted); margin-left: 15px;
+    &:hover { color: var(--primary); }
+    svg { width: 20px; height: 20px; }
+  }
+}
+
+/* Resumen de Cuenta (Derecha) */
+.account-details-summary {
+  display: flex; flex-direction: column; gap: 20px;
+}
+
+.summary-card .sc-content {
+  display: flex; align-items: flex-start; gap: 15px;
+  .sc-icon { width: 24px; height: 24px; color: var(--text-muted); margin-top: 2px; }
+  p { margin: 0; font-size: 0.9rem; color: var(--text-main); line-height: 1.4; }
+  .city-line, .expiry-line { color: var(--text-muted); font-size: 0.85rem; margin-top: 4px; }
+}
+
+/* Animación de entrada */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================
+   📱 RESPONSIVE MEDIA QUERIES
+   ========================================= */
+
+/* Tablet (< 1024px) */
+@media (max-width: 1024px) {
+  .info-grid {
+    grid-template-columns: 1fr; /* Pedidos y Detalles uno debajo del otro */
+  }
+  .account-details-summary {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Las tarjetas de detalle lado a lado */
+    gap: 20px;
+  }
+}
+
+/* Mobile (< 640px) */
+@media (max-width: 640px) {
+  .welcome-header {
+    flex-direction: column; gap: 15px;
+    .btn-shop-now { width: 100%; justify-content: center; }
+  }
+  
+  .metrics-grid {
+    grid-template-columns: 1fr; /* Tarjetas de métricas apiladas */
+  }
+
+  .account-details-summary {
+     grid-template-columns: 1fr; /* Tarjetas de detalle apiladas */
+  }
+
+  /* Ajuste de la lista de pedidos en móvil */
+  .order-item {
+    flex-wrap: wrap; gap: 15px;
+    .order-info { flex: 1 1 auto; } /* Ocupa el espacio disponible */
+    .order-status { 
+      flex-direction: row; /* Estado y precio en la misma línea */
+      align-items: center; 
+      justify-content: space-between;
+      width: 100%;
+      padding-top: 12px; border-top: 1px dashed var(--border);
+    }
+    .btn-view-order { display: none; } /* Ocultamos la flecha en móvil para ahorrar espacio */
+  }
+}

@@ -1,0 +1,84 @@
+<div class="legal-page">
+
+  <div class="legal-header">
+    <div class="header-content">
+      <h1>Términos y Condiciones</h1>
+      <p>Última actualización: <strong>12 de Diciembre, 2025</strong></p>
+      
+      <div class="search-bar">
+        <span class="icon">🔍</span>
+        <input type="text" placeholder="Buscar un tema (ej. devoluciones, pagos)...">
+      </div>
+    </div>
+  </div>
+
+  <div class="legal-container">
+    
+    <aside class="sidebar">
+      <nav>
+        @for (item of sections; track $index) {
+          <button 
+            [class.active]="activeSection() === item.id"
+            (click)="scrollTo(item.id)">
+            {{ item.title }}
+          </button>
+        }
+      </nav>
+    </aside>
+
+    <main class="content-area">
+      
+      <section id="intro" class="term-card">
+        <div class="card-icon">👋</div>
+        <h2>1. Introducción</h2>
+        <p>Bienvenido a <strong>Bettjim Collection</strong>. Al acceder a nuestro sitio web y realizar compras, aceptas estar vinculado por estos términos. Queremos asegurarnos de que tu experiencia sea segura y transparente.</p>
+        <div class="highlight-box">
+          <strong>Nota importante:</strong> Nos reservamos el derecho de modificar estos términos en cualquier momento. Te notificaremos sobre cambios significativos.
+        </div>
+      </section>
+
+      <section id="shipping" class="term-card">
+        <div class="card-icon">🚚</div>
+        <h2>2. Envíos y Entregas</h2>
+        <p>Realizamos envíos a todo el Perú. Los tiempos de entrega estimados son:</p>
+        <ul>
+          <li><strong>Lima Metropolitana:</strong> 24 a 48 horas hábiles.</li>
+          <li><strong>Provincias:</strong> 2 a 5 días hábiles vía Olva Courier o Shalom.</li>
+        </ul>
+        <p>El costo del envío se calcula en el checkout dependiendo de tu ubicación.</p>
+      </section>
+
+      <section id="payments" class="term-card">
+        <div class="card-icon">💳</div>
+        <h2>3. Métodos de Pago</h2>
+        <p>Aceptamos los siguientes métodos de pago procesados de forma segura:</p>
+        <div class="payment-icons">
+          <span>Visa</span>
+          <span>Mastercard</span>
+          <span>Yape</span>
+          <span>Plin</span>
+        </div>
+        <p>Toda la información financiera es encriptada mediante SSL de 256 bits.</p>
+      </section>
+
+      <section id="returns" class="term-card">
+        <div class="card-icon">↺</div>
+        <h2>4. Cambios y Devoluciones</h2>
+        <p>Queremos que ames tu compra. Si no estás satisfecho, tienes <strong>7 días calendario</strong> desde la recepción para solicitar un cambio.</p>
+        <p>El producto debe estar:</p>
+        <ul>
+          <li>Sin uso y en su empaque original.</li>
+          <li>Con todas las etiquetas adheridas.</li>
+        </ul>
+        <p>No aceptamos devoluciones en productos de liquidación (Sale).</p>
+      </section>
+
+      <section id="privacy" class="term-card">
+        <div class="card-icon">🔒</div>
+        <h2>5. Privacidad de Datos</h2>
+        <p>Tus datos personales (nombre, teléfono, dirección) son utilizados únicamente para procesar tus pedidos y mejorar tu experiencia. Nunca vendemos tu información a terceros.</p>
+      </section>
+
+    </main>
+  </div>
+</div>

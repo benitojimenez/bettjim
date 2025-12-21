@@ -1,0 +1,196 @@
+<section class="hero-xmas">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <span class="season-badge">🎄 EDICIÓN NAVIDAD 2025</span>
+    <h1>
+      Regala momentos que <br />
+      duren para siempre
+    </h1>
+    <p>Encuentra el regalo perfecto con hasta <strong>50% de descuento</strong>.</p>
+    <div class="hero-buttons">
+      <button class="btn-primary" routerLink="/shop">Ver Ofertas</button>
+      <button class="btn-outline" routerLink="/shop">Guía de Regalos</button>
+    </div>
+  </div>
+</section>
+
+<section class="features-bar">
+  <div class="container grid-features">
+    <div class="feature">
+      <span class="icon">🚀</span>
+      <div>
+        <h4>Envío Gratis</h4>
+        <p>En pedidos +S/150</p>
+      </div>
+    </div>
+    <div class="feature">
+      <span class="icon">🎁</span>
+      <div>
+        <h4>Envoltura</h4>
+        <p>Opción de regalo</p>
+      </div>
+    </div>
+    <div class="feature">
+      <span class="icon">🛡️</span>
+      <div>
+        <h4>Garantía</h4>
+        <p>Compra protegida</p>
+      </div>
+    </div>
+    <div class="feature">
+      <span class="icon">💳</span>
+      <div>
+        <h4>Pago Seguro</h4>
+        <p>Todas las tarjetas</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-container">
+  <h2 class="section-title">Categorías Navideñas 🎅</h2>
+  <div class="categories-grid">
+    @for (cat of categories; track $index) {
+    <div class="category-card" routerLink="/shop">
+      <img [src]="cat.img" [alt]="cat.name" loading="lazy" />
+      <div class="cat-overlay">
+        <h3>{{ cat.name }}</h3>
+      </div>
+    </div>
+    }
+  </div>
+</section>
+
+<section class="flash-sale-section">
+  <div class="flash-header">
+    <div class="flash-title">
+      <h2>⚡ Venta Flash</h2>
+      <span class="timer-badge">Termina en 04:59:22</span>
+    </div>
+    <a routerLink="/shop" class="view-all">Ver todo →</a>
+  </div>
+
+  <div class="products-scroll-snap">
+    @for (product of flashProducts; track $index) {
+    <div class="product-card">
+      <div class="card-image">
+        <img [src]="product.img" [alt]="product.title" />
+        <span class="badge discount">-{{ product.discount }}%</span>
+      </div>
+      <div class="card-info">
+        <h3>{{ product.title }}</h3>
+        <div class="price-row">
+          <span class="current">{{ product.price | currency : 'PEN' }}</span>
+          <span class="old">{{ product.price * 1.5 | currency : 'PEN' }}</span>
+        </div>
+        <button class="btn-add">Agregar</button>
+      </div>
+    </div>
+    }
+  </div>
+</section>
+
+<section class="section-container">
+  <h2 class="section-title">Los Más Pedidos ⭐</h2>
+  <div class="products-grid-std">
+    @for (product of topProducts; track $index) {
+    <div class="product-card">
+      <div class="card-image">
+        <img [src]="product.img" [alt]="product.title" loading="lazy" />
+        <span class="badge new">TOP</span>
+      </div>
+      <div class="card-info">
+        <h3>{{ product.title }}</h3>
+        <div class="price-row">
+          <span class="current">{{ product.price | currency : 'PEN' }}</span>
+        </div>
+        <button class="btn-add">Agregar</button>
+      </div>
+    </div>
+    }
+  </div>
+</section>
+<div class="shipping-deadline-banner">
+  <div class="shipping-content">
+    <span class="icon">🚚</span>
+    <p>¡No te quedes sin regalo! Compra antes del <strong>20 de Dic.</strong> para recibirlo antes de Navidad.</p>
+  </div>
+</div>
+
+<section class="section-container">
+  <h2 class="section-title">El Regalo Perfecto para tu Bolsillo 💰</h2>
+  
+  <div class="budget-grid">
+    <a routerLink="/shop" [queryParams]="{ maxPrice: 50 }" class="budget-card">
+      <div class="budget-icon">🎅</div>
+      <h3>Amigo Secreto</h3>
+      <p>Menos de S/ 50</p>
+    </a>
+
+    <a routerLink="/shop" [queryParams]="{ maxPrice: 100 }" class="budget-card highlight">
+      <div class="budget-icon">🎁</div>
+      <h3>Detalles Especiales</h3>
+      <p>Menos de S/ 100</p>
+    </a>
+
+    <a routerLink="/shop" [queryParams]="{ maxPrice: 200 }" class="budget-card">
+      <div class="budget-icon">⭐</div>
+      <h3>Impresiona</h3>
+      <p>Menos de S/ 200</p>
+    </a>
+
+    <a routerLink="/shop" [queryParams]="{ minPrice: 300 }" class="budget-card gold">
+      <div class="budget-icon">💎</div>
+      <h3>Lujo & Tech</h3>
+      <p>Más de S/ 300</p>
+    </a>
+  </div>
+</section>
+
+<section class="section-container">
+  <h2 class="section-title">Combos Navideños (Ahorra más) 🎄</h2>
+  <div class="bundles-grid">
+    
+    <div class="bundle-card">
+      <div class="bundle-images">
+        <img src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&w=300" alt="Reloj">
+        <span class="plus">+</span>
+        <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=300" alt="Audifonos">
+      </div>
+      <div class="bundle-info">
+        <h3>Pack Tech Lover</h3>
+        <p>Smartwatch + Audífonos Pro</p>
+        <div class="bundle-price">
+          <span class="price">S/ 299.00</span>
+          <span class="save-badge">Ahorras S/ 80</span>
+        </div>
+        <button class="btn-bundle">Comprar Pack</button>
+      </div>
+    </div>
+
+    <div class="bundle-card">
+      <div class="bundle-images">
+        <img src="https://images.unsplash.com/photo-1618331835717-801e976710b2?auto=format&fit=crop&w=300" alt="Polera">
+        <span class="plus">+</span>
+        <img src="https://images.unsplash.com/photo-1551028919-ac66e6a3962a?auto=format&fit=crop&w=300" alt="Gorra">
+      </div>
+      <div class="bundle-info">
+        <h3>Pack Urbano</h3>
+        <p>Polera Oversize + Gorra</p>
+        <div class="bundle-price">
+          <span class="price">S/ 120.00</span>
+          <span class="save-badge">Ahorras S/ 30</span>
+        </div>
+        <button class="btn-bundle">Comprar Pack</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+<section class="banner-gift">
+  <div class="banner-content">
+    <h2>¿No sabes qué regalar?</h2>
+    <p>Regala libertad de elección con nuestras Gift Cards.</p>
+    <button class="btn-white">Comprar Gift Card</button>
+  </div>
+</section>

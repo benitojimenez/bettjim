@@ -1,0 +1,52 @@
+// SCSS Variables (para cálculos en tiempo de compilación)
+$primary-color: #ee2626;
+$header-height: 70px;
+$radius-md: 8px;
+
+:root {
+  --primary: #ec241d;       /* Azul moderno (o tu color de marca) */
+  --primary-dark: #1e40af;
+  --text-main: #1f2937;     /* Gris muy oscuro, mejor que negro puro */
+  --text-light: #6b7280;    /* Gris suave para detalles */
+  --bg-body: #f3f4f6;       /* Fondo gris muy claro para resaltar tarjetas */
+  --bg-white: #ffffff;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --font-family: 'Inter', system-ui, sans-serif; /* Tipografía limpia */
+  --header-height: 70px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg-body);
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar moderno */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #b8b7b7;  border-radius: 4px; }
+::-webkit-scrollbar-thumb { background: #db1212; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #eb1c1c; }
+
+button { cursor: pointer; border: none; font-family: inherit; }
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+// Colores
+$blue: #3b82f6;
+$red: #ee2626;
+$black: #01060e;
+$white: #ffffff;
+$green: #10b981;
+$yellow: #f59e0b;
+$gray-light: #f5f5f5;
+$gray-dark: #6b7280;
+$fondo-color: #f9f9f9;
+// Tipografía
+$font-family: 'Inter', system-ui, sans-serif;
+$font-size-base: 16px;
+$font-size-lg: 18px;

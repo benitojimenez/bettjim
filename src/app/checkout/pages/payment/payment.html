@@ -1,0 +1,323 @@
+<div class="step-animation">
+  <div class="review-group">
+    <div class="review-row">
+      <div class="label-col">Contacto</div>
+      <div class="value-col">{{ reviewContact() }}</div>
+      <a routerLink="../information" class="btn-change">Cambiar</a>
+    </div>
+    <div class="divider"></div>
+
+    <div class="review-row">
+      <div class="label-col">Enviar a</div>
+      <div class="value-col">{{ reviewAddress() }}</div>
+      <a routerLink="../information" class="btn-change">Cambiar</a>
+    </div>
+    <div class="divider"></div>
+
+    <div class="review-row">
+      <div class="label-col">Método</div>
+      <div class="value-col">
+        @if (checkoutService.currentShippingCost() === null) {
+        <span class="hint">Calculado luego</span>
+        } @else if (checkoutService.currentShippingCost() === 0) {
+        <span class="free-badge">GRATIS</span>
+        } @else { S/ {{ checkoutService.currentShippingCost() | number : '1.2-2' }}
+        }
+      </div>
+      <a routerLink="../shipping" class="btn-change">Cambiar</a>
+    </div>
+  </div>
+  <div class="section-header mt-large">
+    <h2>Dirección de facturación</h2>
+  </div>
+
+  <div class="payment-accordion">
+    <div class="payment-option" [class.selected]="billingSameAsShipping()">
+      <div class="option-header" (click)="billingSameAsShipping.set(true)">
+        <div class="radio-wrapper">
+          <input type="radio" name="billing" [checked]="billingSameAsShipping()" />
+          <span class="option-label">Misma dirección de envío</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="payment-option" [class.selected]="!billingSameAsShipping()">
+      <div class="option-header" (click)="billingSameAsShipping.set(false)">
+        <div class="radio-wrapper">
+          <input type="radio" name="billing" [checked]="!billingSameAsShipping()" />
+          <span class="option-label">Usar una dirección diferente</span>
+        </div>
+      </div>
+
+      @if(!billingSameAsShipping()) {
+      <div class="option-body">
+        <p class="placeholder-text">Formulario de dirección de facturación...</p>
+      </div>
+      }
+    </div>
+  </div>
+  <div class="section-header mt-large">
+    <h2>Pago</h2>
+    <span class="secure-text">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+        />
+      </svg>
+      Todas las transacciones son seguras y están encriptadas.
+    </span>
+  </div>
+
+  <div class="payment-accordion">
+    <div class="payment-option" [class.selected]="selectedMethod() === 'card'">
+      <div class="option-header" (click)="selectedMethod.set('card')">
+        <div class="radio-wrapper">
+          <input type="radio" name="payment" [checked]="selectedMethod() === 'card'" />
+          <span class="option-label">Tarjeta de Crédito / Débito</span>
+        </div>
+        <div class="card-icons">
+          <img
+            src="https://cdn.shopify.com/shopifycloud/checkout_web/assets/0169695890db3db16bfe.svg"
+            alt="Visa"
+          />
+          <img
+            src="https://cdn.shopify.com/shopifycloud/checkout_web/assets/5e3b05b68f3d49b87e8e.svg"
+            alt="Mastercard"
+          />
+          <img
+            src="https://cdn.shopify.com/shopifycloud/checkout_web/assets/37fc65d0d7ac30bd3b06.svg"
+            alt="Amex"
+          />
+        </div>
+      </div>
+
+      @if(selectedMethod() === 'card') {
+      <div class="option-body">
+        <div class="checkout-container">
+          <form [formGroup]="cardForm" class="card-section">
+            <div class="card-row">
+              <div class="field-wrap card-number">
+                <div class="input-icon-wrap">
+                  <input
+                    type="text"
+                    formControlName="card_number"
+                    placeholder="Número de tarjeta"
+                    maxlength="16"
+                    [class.error]="
+                      cardForm.get('card_number')?.invalid && cardForm.get('card_number')?.touched
+                    "
+                  />
+                  <div class="icon">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 002 2z"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              <div class="field-wrap small">
+                <input
+                  type="text"
+                  formControlName="expiration_month"
+                  placeholder="MM"
+                  maxlength="2"
+                  class="center-text"
+                  [class.error]="
+                    cardForm.get('expiration_month')?.invalid && cardForm.get('expiration_month')?.touched
+                  "
+                />
+              </div>
+
+              <div class="field-wrap small">
+                <input
+                  type="text"
+                  formControlName="expiration_year"
+                  placeholder="AA"
+                  maxlength="4"
+                  class="center-text"
+                  [class.error]="
+                    cardForm.get('expiration_year')?.invalid && cardForm.get('expiration_year')?.touched
+                  "
+                />
+              </div>
+
+              <div class="field-wrap medium">
+                <div class="input-icon-wrap">
+                  <input
+                    type="text"
+                    formControlName="cvv"
+                    placeholder="CVV"
+                    maxlength="4"
+                    class="center-text"
+                    [class.error]="cardForm.get('cvv')?.invalid && cardForm.get('cvv')?.touched"
+                  />
+                  <div class="icon help" title="3 dígitos al reverso">?</div>
+                </div>
+              </div>
+            </div>
+          </form>
+
+          <form [formGroup]="form" class="antifraud-section compact-mode">
+            <div class="form-row">
+              <div class="input-group shrink">
+                <label>Tipo</label>
+                <div class="select-wrapper">
+                  <select formControlName="document_type">
+                    <option value="" disabled selected>Doc</option>
+                    <option value="DNI">DNI</option>
+                    <option value="CE">CE</option>
+                    <option value="PASSPORT">Pasaporte</option>
+                  </select>
+                  <span class="arrow">▼</span>
+                </div>
+              </div>
+
+              <div class="input-group grow">
+                <label>N° Documento</label>
+                <input type="tel" formControlName="document_number" placeholder="Ej: 75423122" />
+                @if (form.get('document_number')?.invalid && form.get('document_number')?.touched) {
+                <small class="error-msg">Inválido</small>
+                }
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="input-group full">
+                <label>Email</label>
+                <input type="email" formControlName="email" placeholder="correo@ejemplo.com" />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="input-group">
+                <label>Nombres</label>
+                <input type="text" formControlName="first_name" placeholder="Nombres" />
+              </div>
+              <div class="input-group">
+                <label>Apellidos</label>
+                <input type="text" formControlName="last_name" placeholder="Apellidos" />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="input-group full">
+                <label>Dirección</label>
+                <input type="text" formControlName="address" placeholder="Av. Principal 123" />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="input-group">
+                <label>Ciudad</label>
+                <input type="text" formControlName="address_city" placeholder="Lima" />
+              </div>
+              <div class="input-group">
+                <label>Celular</label>
+                <input type="tel" formControlName="phone_number" placeholder="999..." />
+              </div>
+            </div>
+
+            <input type="hidden" formControlName="country_code" />
+          </form>
+        </div>
+      </div>
+
+      }
+    </div>
+
+    <div class="payment-option" [class.selected]="selectedMethod() === 'yape'">
+      <div class="option-header" (click)="selectedMethod.set('yape')">
+        <div class="radio-wrapper">
+          <input type="radio" name="payment" [checked]="selectedMethod() === 'yape'" />
+          <span class="option-label">Yape</span>
+        </div>
+        <div class="qr-icons">
+          <span class="badge-yape">Yape</span>
+          <!-- <span class="badge-plin">Plin</span> -->
+        </div>
+      </div>
+
+      @if(selectedMethod() === 'yape') {
+      <div class="option-body center-content">
+        <form [formGroup]="YapeForm">
+          <div class="yape-pay">
+            <h3>Ingresa tu Celular Yape</h3>
+            <div class="input-group">
+              <input type="text" formControlName="phone" placeholder="123456789" maxlength="9" />
+            </div>
+          </div>
+          <label for="">Codigo de aprobación</label>
+          <app-codeimput [length]="6" inputType="numeric" (codeCompleted)="OTPChange($event)">
+          </app-codeimput>
+          <small>Encuéntralo en el Menú de Yape.</small>
+
+          <div class="formyape">
+            <div class="form-row">
+              <div class="form-group type-col">
+                <label for="docType">Tipo de documento</label>
+                <div class="input-wrapper">
+                  <select formControlName="type_document" id="docType">
+                    <option value="" disabled selected>Seleccionar</option>
+                    <option value="dni">DNI</option>
+                    <option value="pasaporte">Pasaporte</option>
+                    <option value="ce">C.E.</option>
+                  </select>
+                  <span class="arrow-icon">▼</span>
+                </div>
+              </div>
+
+              <div class="form-group number-col">
+                <label for="docNumber">Número de documento</label>
+                <div class="input-wrapper">
+                  <input
+                    type="text"
+                    id="docNumber"
+                    formControlName="document_number"
+                    placeholder="Ej: 72345678"
+                  />
+                </div>
+              </div>
+              <div class="form-group number-col">
+                <label for="docNumber">email</label>
+                <div class="input-wrapper">
+                  <input
+                    type="text"
+                    id="email"
+                    formControlName="email"
+                    placeholder="email"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <p class="qr-instruction">Disponible para Yaperos BCP y Yape con DNI.</p>
+      </div>
+      }
+    </div>
+  </div>
+
+  <div class="step-footer">
+    <button
+      class="btn-checkout-primary"
+      (click)="submitOrder()"
+      [disabled]="isProcessing() || (selectedMethod() === 'card' && cardForm.invalid)"
+    >
+      @if(isProcessing()) {
+      <span class="spinner-loader"></span> Procesando... } @else { Pagar ahora }
+    </button>
+
+    <a routerLink="../shipping" class="link-back" [class.disabled]="isProcessing()">
+      Volver a envíos
+    </a>
+  </div>
+</div>

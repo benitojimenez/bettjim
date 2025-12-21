@@ -1,0 +1,126 @@
+// /* --- PALETA & VARS --- */
+// $primary-gradient: linear-gradient(135deg, #FF3D77 0%, #FF85A1 100%);
+$primary-color: #FF3D77; // Rosa Hot Sale
+$bg-white: #FFFFFF;
+$text-main: #222222;
+// $text-muted: #999;
+// $accent-gold: #FFC107;
+// $accent-red: #E60023; // Rojo urgente
+// $success-green: #00B96B;
+
+$radius-md: 12px;
+// /* --- HERO PROMO --- */
+
+/* --- VARIABLES --- */
+$bg-primary: #FDFBF7; /* Un crema muy suave, más elegante que el blanco puro */
+$text-dark: #111;
+$primary-accent: #9c2c0d; /* Terracota (muy beauty) en vez de rojo chillón */
+$font-serif: 'Playfair Display', serif;
+$font-sans: 'Inter', sans-serif;
+
+:host {
+  display: block;
+  background-color: $bg-primary;
+  color: $text-dark;
+  font-family: $font-sans;
+}
+.hero-promo {
+  padding: 2rem 6.5rem; 
+  margin-bottom: 25px;
+  
+  .promo-card {
+    background: linear-gradient(135deg, $primary-color 0%, #FECFEF 100%);
+    border-radius: $radius-md; padding: 25px; position: relative;
+    height: 180px; display: flex; align-items: center; overflow: hidden;
+    box-shadow: 0 8px 20px rgba(255, 61, 119, 0.2);
+    
+    .text-content {
+      z-index: 2; width: 60%;
+      .tag-sale { background: $bg-white; color: $primary-color; padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 800; }
+      h2 { font-size: 1.6rem; margin: 8px 0; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.1); line-height: 1.1; }
+      p { font-size: 0.9rem; color: rgba(255,255,255,0.9); margin-bottom: 15px; }
+      .btn-shop { background: $text-main; color: white; border: none; padding: 10px 20px; border-radius: 20px; font-weight: 600; cursor: pointer; }
+    }
+    .promo-img { position: absolute; right: -20px; bottom: -20px; height: 125%; }
+  }
+}
+/* --- 1. HERO EDITORIAL --- */
+.hero-editorial {
+  height: 90vh; /* Casi pantalla completa */
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    img { width: 100%; height: 100%; object-fit: cover; }
+    .overlay-gradient {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.4), transparent);
+    }
+  }
+
+  .hero-content {
+    z-index: 2; color: white;
+    h1 {
+      font-family: $font-serif;
+      font-size: clamp(3rem, 8vw, 6rem); /* Responsive fluido */
+      line-height: 0.9;
+      letter-spacing: -2px;
+      margin-bottom: 20px;
+      i { font-weight: 400; font-family: $font-serif; }
+    }
+    p { font-size: 1.2rem; margin-bottom: 30px; font-weight: 300; }
+  }
+
+  /* Botones Glassmorphism */
+  .btn-glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 15px 35px;
+    border-radius: 50px; /* Pill shape */
+    margin: 0 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    transition: all 0.3s;
+    cursor: pointer;
+
+    &:hover { background: white; color: black; }
+    &.dark { background: rgba(0,0,0,0.3); &:hover { background: black; color: white;} }
+  }
+  
+  .scroll-down {
+    position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+    color: white; font-size: 0.8rem; display: flex; flex-direction: column; align-items: center; gap: 10px; opacity: 0.8;
+    .line { width: 1px; height: 40px; background: white; animation: scrollAnim 2s infinite; }
+  }
+}
+/* --- 2. MARQUEE --- */
+.marquee-strip {
+  background: $primary-color; color: white; padding: 12px 0; overflow: hidden;
+  .track {
+    display: flex; white-space: nowrap; animation: slideInfinite 20s linear infinite;
+    span { margin-right: 50px; font-weight: 700; font-size: 0.9rem; letter-spacing: 2px; }
+  }
+}
+
+
+@keyframes slideInfinite { to { transform: translateX(-50%); } }
+@keyframes scrollAnim { 0% { height: 40px; transform: translateY(0); opacity: 1; } 100% { height: 0; transform: translateY(40px); opacity: 0; } }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .hero-promo{
+   padding: 1.5rem 1rem; 
+  }
+  .sticky-title { position: relative; top: 0; margin-bottom: 30px; text-align: center; }
+  .hero-editorial h1 { font-size: 3rem; }
+
+}

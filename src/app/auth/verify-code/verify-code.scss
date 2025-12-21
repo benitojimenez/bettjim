@@ -1,0 +1,145 @@
+/* VARIABLES (Para consistencia) */
+:host {
+  --primary: #111;       /* Negro Premium */
+  --text-main: #1f2937;
+  --text-muted: #6b7280;
+  --bg-page: #f3f4f6;    /* Gris muy claro para el fondo de pantalla */
+  --bg-card: #ffffff;
+  --radius: 16px;        /* Bordes redondeados modernos */
+  --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+  --font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* 1. WRAPPER PRINCIPAL (Centrado Perfecto) */
+.verify-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  width: 100%;
+  background-color: var(--bg-page);
+  padding: 20px; /* Margen de seguridad para móviles */
+  font-family: var(--font-family);
+}
+
+/* 2. LA TARJETA */
+.verify-card {
+  background: var(--bg-card);
+  width: 100%;
+  max-width: 580px; /* Ancho ideal para lectura */
+  padding: 50px 40px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  text-align: center;
+  
+  /* Animación de entrada suave */
+  animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Tipografía del Header */
+h2 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--primary);
+  margin: 0 0 10px 0;
+  letter-spacing: -0.5px;
+}
+
+p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin: 0 0 40px 0; /* Espacio antes del input */
+  line-height: 1.5;
+}
+
+/* Ajuste para el componente hijo (app-codeimput) */
+app-codeimput {
+  display: block;
+  margin-bottom: 30px; /* Espacio entre los inputs y el botón */
+}
+
+/* 3. BOTÓN VERIFICAR */
+.btn-submit {
+  width: 100%;
+  padding: 16px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+
+  &:hover:not(:disabled) {
+    background: #333;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  /* Estado Deshabilitado (Cargando o Incompleto) */
+  &:disabled {
+    background: #e5e7eb;
+    color: #9ca3af;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+  }
+}
+
+/* 4. ENLACE REENVIAR */
+.resend {
+  margin-top: 30px;
+  margin-bottom: 0; /* Quitamos el margen por defecto del p */
+  font-size: 0.9rem;
+  
+  a {
+    color: var(--primary);
+    font-weight: 700;
+    text-decoration: none;
+    position: relative;
+    
+    /* Efecto de subrayado animado */
+    &::after {
+      content: '';
+      position: absolute; width: 0; height: 2px;
+      bottom: -2px; left: 0;
+      background-color: var(--primary);
+      transition: width 0.3s;
+    }
+
+    &:hover::after {
+      width: 100%;
+    }
+  }
+}
+
+/* 5. ANIMACIÓN DE ENTRADA */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 6. RESPONSIVE (Móvil) */
+@media (max-width: 500px) {
+  .verify-card {
+    padding: 30px 20px;
+    box-shadow: none; /* En móvil se ve más limpio plano o con sombra muy sutil */
+    background: transparent; /* Opcional: para que parezca nativo */
+    /* Si prefieres tarjeta blanca en móvil, quita background: transparent */
+  }
+  
+  h2 { font-size: 1.5rem; }
+}

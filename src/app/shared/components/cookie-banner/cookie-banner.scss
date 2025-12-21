@@ -1,0 +1,123 @@
+/* --- VARS --- */
+$primary: #FF2E63;       /* Tu color de marca */
+$text-dark: #1F2937;
+$text-muted: #6B7280;
+$radius: 16px;
+$shadow: 0 10px 40px rgba(0,0,0,0.12);
+
+/* CONTENEDOR FLOTANTE */
+.cookie-card {
+  position: fixed;
+  bottom: 30px;
+  left: 30px;
+  width: 100%;
+  max-width: 400px;
+  background: white;
+  padding: 24px;
+  border-radius: $radius;
+  box-shadow: $shadow;
+  z-index: 99999; /* Por encima de todo */
+  border: 1px solid rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  font-family: 'Inter', sans-serif;
+
+  /* Animación de entrada */
+  &.fade-in-up {
+    animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+}
+
+/* HEADER (ICONO + TEXTO) */
+.cookie-header {
+  display: flex;
+  gap: 15px;
+  
+  .icon-box {
+    font-size: 2rem;
+    flex-shrink: 0;
+    animation: wave 2s infinite; /* Pequeño movimiento para llamar la atención */
+  }
+
+  .text-content {
+    h3 {
+      margin: 0 0 5px;
+      font-size: 1rem;
+      font-weight: 700;
+      color: $text-dark;
+    }
+    p {
+      margin: 0;
+      font-size: 0.85rem;
+      color: $text-muted;
+      line-height: 1.5;
+      
+      a {
+        color: $primary;
+        font-weight: 600;
+        text-decoration: none;
+        &:hover { text-decoration: underline; }
+      }
+    }
+  }
+}
+
+/* BOTONES */
+.cookie-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end; /* Botones a la derecha */
+
+  button {
+    padding: 10px 20px;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+    border: none;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: $text-muted;
+    &:hover { background: #F3F4F6; color: $text-dark; }
+  }
+
+  .btn-primary {
+    background: $text-dark; /* Negro elegante o usa $primary */
+    color: white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    &:hover { background: $primary; transform: translateY(-2px); }
+  }
+}
+
+/* --- ANIMACIONES --- */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(50px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes wave {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-10deg); }
+  75% { transform: rotate(10deg); }
+}
+
+/* --- RESPONSIVE (MOBILE) --- */
+@media (max-width: 600px) {
+  .cookie-card {
+    left: 0;
+    bottom: 0;
+    max-width: 100%;
+    border-radius: 20px 20px 0 0; /* Solo bordes superiores curvos */
+    padding: 20px;
+    padding-bottom: max(20px, env(safe-area-inset-bottom)); /* Safe Area para iPhone */
+  }
+
+  .cookie-actions {
+    width: 100%;
+    button { flex: 1; } /* Botones ocupan todo el ancho */
+  }
+}

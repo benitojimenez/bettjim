@@ -1,0 +1,189 @@
+:host {
+  --primary: #111;
+  --text-main: #1f2937;
+  --text-muted: #6b7280;
+  --bg-page: #f9fafb;
+  --radius: 12px;
+}
+
+.coupons-container {
+  display: flex; flex-direction: column; gap: 40px;
+  animation: fadeUp 0.5s ease-out;
+}
+
+/* --- HEADER --- */
+.coupons-header {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  flex-wrap: wrap; gap: 20px;
+
+  .header-text {
+    h1 { font-size: 1.8rem; font-weight: 800; margin: 0 0 5px 0; color: var(--text-main); }
+    p { color: var(--text-muted); margin: 0; }
+  }
+
+  .redeem-box {
+    display: flex; gap: 10px; width: 100%; max-width: 400px;
+    
+    input {
+      flex: 1; padding: 12px 15px; border-radius: 8px; border: 1px solid #e5e7eb;
+      outline: none; transition: 0.2s;
+      &:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,0,0,0.05); }
+    }
+    
+    .btn-redeem {
+      padding: 0 20px; background: var(--primary); color: white; border: none;
+      border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s;
+      &:hover { background: #333; }
+    }
+  }
+}
+
+/* --- TICKET GRID --- */
+.tickets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); /* Adaptable */
+  gap: 25px;
+}
+
+/* --- DISEÑO DEL TICKET (La Magia) --- */
+.ticket-card {
+  display: flex;
+  height: 180px; /* Altura fija para uniformidad */
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  transition: transform 0.3s, box-shadow 0.3s;
+  background: white;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  }
+
+  /* Estado Usado (Opaco) */
+  &.used {
+    opacity: 0.6; filter: grayscale(1); cursor: not-allowed;
+    &:hover { transform: none; box-shadow: none; }
+  }
+}
+
+/* 1. PARTE IZQUIERDA (Visual) */
+.ticket-visual {
+  width: 35%;
+  position: relative;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  color: white; padding: 15px; text-align: center;
+  
+  .visual-content { z-index: 2; }
+  
+  .discount-value { 
+    display: block; font-size: 1.8rem; font-weight: 900; line-height: 1; 
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+  .discount-label { font-size: 1rem; font-weight: 700; letter-spacing: 2px; opacity: 0.9; }
+
+  /* Decoración de fondo */
+  .circles-deco {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.2) 20%, transparent 20%);
+    background-size: 20px 20px; z-index: 1; opacity: 0.3;
+  }
+}
+
+/* 2. ZONA DE CORTE (Muescas) */
+.ticket-rip {
+  width: 20px;
+  position: relative;
+  background: white;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  z-index: 10;
+  
+  /* Línea punteada */
+  .dashed-line {
+    width: 2px; height: 80%;
+    border-left: 2px dashed #e5e7eb;
+  }
+
+  /* Muescas Superior e Inferior */
+  .circle-top, .circle-bottom {
+    position: absolute; width: 24px; height: 24px;
+    background: var(--bg-page); /* Mismo color que el fondo de la página */
+    border-radius: 50%;
+    left: 50%; transform: translateX(-50%);
+  }
+  .circle-top { top: -14px; box-shadow: inset 0 -2px 2px rgba(0,0,0,0.05); }
+  .circle-bottom { bottom: -14px; box-shadow: inset 0 2px 2px rgba(0,0,0,0.05); }
+}
+
+/* 3. PARTE DERECHA (Info) */
+.ticket-info {
+  flex: 1; background: white;
+  padding: 20px;
+  display: flex; flex-direction: column; justify-content: space-between;
+
+  .info-top {
+    .badge-active, .badge-urgent, .badge-gray {
+      font-size: 0.7rem; font-weight: 700; text-transform: uppercase; padding: 3px 8px; border-radius: 4px;
+      margin-bottom: 8px; display: inline-block;
+    }
+    .badge-active { background: #dcfce7; color: #166534; }
+    .badge-urgent { background: #fee2e2; color: #b91c1c; animation: pulse 2s infinite; }
+    .badge-gray { background: #f3f4f6; color: #6b7280; }
+
+    .coupon-desc { font-size: 1.1rem; font-weight: 700; margin: 0 0 5px 0; color: var(--text-main); line-height: 1.2; }
+    .cond { font-size: 0.85rem; color: var(--text-muted); margin: 0; }
+    .expiry { font-size: 0.75rem; color: #9ca3af; margin-top: 4px; }
+  }
+
+  .info-action {
+    display: flex; justify-content: space-between; align-items: center; gap: 10px;
+    
+    .code-display {
+      font-family: monospace; font-size: 1rem; font-weight: 700; color: var(--text-main);
+      background: #f3f4f6; padding: 6px 10px; border-radius: 6px;
+      border: 1px dashed #d1d5db; cursor: pointer; display: flex; align-items: center; gap: 5px;
+      &:hover { border-color: var(--primary); background: white; }
+      svg { width: 14px; color: #9ca3af; }
+    }
+
+    .btn-copy {
+      padding: 8px 16px; border-radius: 6px; border: none;
+      font-weight: 600; font-size: 0.85rem; cursor: pointer;
+      background: var(--primary); color: white; transition: 0.2s;
+      
+      &.success { background: #10b981; pointer-events: none; }
+      &:disabled { background: #e5e7eb; color: #9ca3af; cursor: not-allowed; }
+      &:hover:not(:disabled) { transform: scale(1.05); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    }
+  }
+}
+
+/* ANIMACIONES */
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.6; }
+  100% { opacity: 1; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* RESPONSIVE MÓVIL */
+@media (max-width: 500px) {
+  .coupons-header { flex-direction: column; align-items: flex-start; .redeem-box { max-width: 100%; } }
+  
+  .ticket-card { height: auto; flex-direction: column; }
+  
+  .ticket-visual { width: 100%; height: 80px; flex-direction: row; gap: 10px; }
+  
+  .ticket-rip { 
+    width: 100%; height: 20px; flex-direction: row; 
+    .dashed-line { width: 80%; height: 2px; border-left: none; border-top: 2px dashed #e5e7eb; }
+    .circle-top { top: auto; left: -10px; bottom: auto; } /* Muesca Izquierda */
+    .circle-bottom { top: auto; right: -10px; left: auto; bottom: auto; } /* Muesca Derecha */
+  }
+
+  .ticket-info { padding-top: 5px; }
+}

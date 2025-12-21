@@ -1,0 +1,114 @@
+<div class="overview-container">
+
+  <header class="welcome-header">
+    <div>
+      <h1>Hola, {{ firstName() }} 👋</h1>
+      <p class="subtitle">Aquí tienes un resumen de tu cuenta hoy.</p>
+    </div>
+    <a routerLink="/" class="btn-shop-now">
+      Ir a la tienda
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+    </a>
+  </header>
+
+  <section class="metrics-grid">
+    
+    <div class="metric-card highlight" [class.has-orders]="metrics().activeOrders > 0">
+      <div class="card-icon">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
+      </div>
+      <div class="card-data">
+        <span class="metric-value">{{ metrics().activeOrders }}</span>
+        <h3 class="metric-label">Pedidos en curso</h3>
+      </div>
+      <a routerLink="/account/orders" class="card-link">Ver seguimiento →</a>
+    </div>
+
+    <div class="metric-card">
+      <div class="card-icon points">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+      </div>
+      <div class="card-data">
+        <span class="metric-value">{{ metrics().loyaltyPoints }}</span>
+        <h3 class="metric-label">Puntos Bettjim</h3>
+      </div>
+      <a routerLink="/account/coupons" class="card-link">Canjear →</a>
+    </div>
+
+    <div class="metric-card">
+      <div class="card-icon wishlist">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+      </div>
+      <div class="card-data">
+        <span class="metric-value">{{ metrics().wishlistCount }}</span>
+        <h3 class="metric-label">Favoritos guardados</h3>
+      </div>
+      <a routerLink="/account/wishlist" class="card-link">Ver lista →</a>
+    </div>
+  </section>
+
+  <div class="info-grid">
+    
+    <section class="recent-orders-card">
+      <div class="section-header">
+        <h2>Últimos Pedidos</h2>
+        <a routerLink="/account/orders">Ver todos</a>
+      </div>
+
+      <div class="orders-list">
+        @for (order of recentOrders(); track order.id) {
+          <div class="order-item">
+            <div class="order-info">
+              <span class="order-id">{{ order.id }}</span>
+              <span class="order-date">{{ order.date | date:'dd MMM, yyyy' }}</span>
+              <span class="order-summary">{{ order.itemsCount }} producto(s)</span>
+            </div>
+            <div class="order-status">
+               <span class="badge" [class]="getStatusClass(order.status)">
+                  {{ getStatusLabel(order.status) }}
+               </span>
+               <span class="order-total">{{ order.total | currency:'PEN' }}</span>
+            </div>
+             <a routerLink="/account/orders/{{order.id}}" class="btn-view-order">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+             </a>
+          </div>
+        } @empty {
+          <p class="no-data">No tienes pedidos recientes.</p>
+        }
+      </div>
+    </section>
+
+    <section class="account-details-summary">
+       <div class="summary-card">
+          <div class="sc-header">
+             <h3>Dirección Principal</h3>
+             <a routerLink="/account/addresses">Editar</a>
+          </div>
+          <div class="sc-content">
+             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" class="sc-icon"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+             <div>
+               <p class="address-line">Av. Larco 123, Dpto 401</p>
+               <p class="city-line">Miraflores, Lima</p>
+             </div>
+          </div>
+       </div>
+
+       <div class="summary-card">
+          <div class="sc-header">
+             <h3>Método de Pago</h3>
+             <a routerLink="/account/payment-methods">Gestionar</a>
+          </div>
+          <div class="sc-content">
+             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" class="sc-icon"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
+             <div>
+               <p class="card-line">Visa terminada en 4589</p>
+               <p class="expiry-line">Expira 12/28</p>
+             </div>
+          </div>
+       </div>
+    </section>
+
+  </div>
+
+</div>

@@ -1,0 +1,131 @@
+<div class="product-page">
+
+  <div class="product-top-grid">
+    
+    <div class="gallery-wrapper">
+      <div class="main-image-container">
+        <div class="floating-tags">
+          <span class="tag-gradient">🔥 Hot Sale</span>
+          <span class="tag-black" *ngIf="product().isNew">Nuevo</span>
+        </div>
+        
+        <img [src]="activeImage()" class="main-img" alt="Producto">
+      </div>
+
+      <div class="thumbs-grid">
+        @for(img of product().images; track $index) {
+          <div class="thumb" 
+               [class.active]="activeImage() === img"
+               (click)="setActiveImage(img)">
+            <img [src]="img">
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="info-wrapper">
+      <nav class="breadcrumbs">Inicio / Skincare / <strong>{{ product().title }}</strong></nav>
+      
+      <h1 class="product-title">{{ product().title }}</h1>
+      
+      <div class="rating-row">
+        <span class="stars">★★★★★</span>
+        <span class="count">4.9 (120 reseñas)</span>
+      </div>
+
+      <div class="live-view-bar">
+        <span class="pulse-dot"></span>
+        <span class="text"><strong>{{ viewers() }} personas</strong> están viendo esto ahora.</span>
+      </div>
+
+      <div class="price-block">
+        <div class="prices">
+          <span class="current">{{ product().price | currency:'PEN':'S/ ' }}</span>
+          <span class="old" *ngIf="product().oldPrice">{{ product().oldPrice | currency:'PEN':'S/ ' }}</span>
+        </div>
+        <span class="discount-badge" *ngIf="product().discount">AHORRAS {{ product().discount }}%</span>
+      </div>
+
+      <div class="variant-selector">
+        <label>Color: <strong>{{ selectedVariant() }}</strong></label>
+        <div class="colors-grid">
+          @for(color of colors; track $index) {
+            <button class="color-btn" 
+                    [style.background]="color.hex"
+                    [class.selected]="selectedVariant() === color.name"
+                    (click)="selectedVariant.set(color.name)">
+            </button>
+          }
+        </div>
+      </div>
+
+      <div #mainActions class="main-actions-block">
+        <div class="qty-selector">
+          <button (click)="updateQty(-1)">−</button>
+          <span>{{ quantity() }}</span>
+          <button (click)="updateQty(1)">+</button>
+        </div>
+        <button class="btn-add-cart-main">
+          Añadir al Carrito - {{ (product().price * quantity()) | currency:'PEN':'S/ ' }}
+        </button>
+      </div>
+
+      <div class="trust-box">
+        <div class="trust-item">
+          <span class="icon">🔒</span>
+          <span>Pago Seguro SSL</span>
+        </div>
+        <div class="trust-item">
+          <span class="icon">🚚</span>
+          <span>Envío Asegurado</span>
+        </div>
+        <div class="trust-item">
+          <span class="icon">✨</span>
+          <span>Garantía de Calidad</span>
+        </div>
+      </div>
+      
+      <p class="short-desc">
+        Transforma tu rutina con nuestra fórmula exclusiva. Envío gratis en pedidos mayores a S/ 150.
+      </p>
+
+    </div>
+  </div>
+
+  <div class="product-tabs-container">
+    <div class="tabs-header">
+      <button [class.active]="activeTab() === 'desc'" (click)="activeTab.set('desc')">Descripción</button>
+      <button [class.active]="activeTab() === 'specs'" (click)="activeTab.set('specs')">Especificaciones</button>
+      <button [class.active]="activeTab() === 'ship'" (click)="activeTab.set('ship')">Envíos</button>
+    </div>
+    <div class="tabs-content fade-up">
+      @if(activeTab() === 'desc') {
+        <div class="content-pane">
+          <h3>Detalles del Producto</h3>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+        </div>
+      }
+      </div>
+  </div>
+
+  <div class="smart-sticky-bar" [class.visible]="showStickyBar()">
+    <div class="bar-content">
+      <div class="mini-info">
+        <img [src]="activeImage()">
+        <div>
+          <span class="mini-title">{{ product().title }}</span>
+          <span class="mini-price">{{ product().price | currency:'PEN':'S/ ' }}</span>
+        </div>
+      </div>
+      <div class="sticky-actions">
+        <div class="qty-selector small">
+          <button (click)="updateQty(-1)">-</button>
+          <span>{{ quantity() }}</span>
+          <button (click)="updateQty(1)">+</button>
+        </div>
+        <button class="btn-sticky-add">Añadir</button>
+      </div>
+    </div>
+  </div>
+
+</div>

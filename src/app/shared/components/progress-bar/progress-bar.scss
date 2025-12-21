@@ -1,0 +1,59 @@
+.progress-container {
+    position: fixed; top: 0; left: 0; width: 100%; height: 3px; 
+    z-index: 99999; pointer-events: none;
+    opacity: 0; transition: opacity 0.3s ease;
+    
+    &.visible { opacity: 1; }
+}
+
+.progress-bar {
+    height: 100%;
+    position: relative;
+    width: 0%;
+    background: linear-gradient(90deg, #cf0da5, #FF3D77, #742284); /* Naranja -> Rosa -> Morado */
+    background-size: 200% 100%;
+    transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1); /* Curva de velocidad suave */
+    animation: gradientShift 2s infinite linear;
+}
+
+/* ✨ LA PUNTA DE ENERGÍA ✨ */
+.photon-tip {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translate(50%, -50%); /* Centrado en la punta final */
+    height: 100px; /* Grande pero invisible, solo se ve el centro */
+    width: 100px;
+    
+    /* Un brillo radial fuerte en la punta */
+    background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,61,119,0.4) 10%, transparent 40%);
+    
+    /* Mezcla de luz para que brille sobre el fondo oscuro/claro */
+    mix-blend-mode: screen; 
+    pointer-events: none;
+}
+
+/* Brillo interno corriendo (Shimmer) */
+.shimmer {
+    position: absolute; top: 0; left: 0; bottom: 0; width: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+    transform: translateX(-100%);
+    animation: shimmerMove 1.5s infinite;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes shimmerMove {
+    100% { transform: translateX(100%); }
+}
+/* --- BOTÓN DEBUG (Solo para probar) --- */
+    // .debug-btn {
+    //   position: fixed; bottom: 20px; right: 20px; z-index: 999999;
+    //   background: #333; color: white; border: none; padding: 10px 20px;
+    //   border-radius: 30px; cursor: pointer; font-weight: bold;
+    //   box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    //   &:hover { background: #000; }
+    // }

@@ -1,0 +1,38 @@
+:host { display: block; overflow: hidden; }
+
+.stories-section {
+    padding: 25px 0; background: #fff;
+}
+
+.header-flex {
+    padding: 0 5%; margin-bottom: 20px;
+    h3 { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin: 0; }
+}
+
+/* --- ANIMACIÓN MARQUEE --- */
+.marquee-container {
+    width: 100%; overflow: hidden;
+    /* Máscara de degradado para suavizar bordes */
+    mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+}
+
+.marquee-track {
+    display: flex; width: fit-content; gap: 30px;
+    animation: marquee 40s linear infinite;
+    padding-top: 5px;
+    /* Pausa elegante al hover */
+    &.pause-on-hover:hover { animation-play-state: paused; }
+}
+
+.track-group {
+    display: flex; gap: 30px; padding-left: 30px;
+}
+
+@keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); } /* Se mueve exactamente la mitad (un grupo) */
+}
+
+@media (max-width: 768px) {
+    .marquee-track { animation-duration: 25s; } /* Más rápido en móvil */
+}

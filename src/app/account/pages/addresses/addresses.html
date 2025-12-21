@@ -1,0 +1,56 @@
+<div class="addresses-container">
+
+  <header class="page-header">
+    <h1>Mis Direcciones</h1>
+    <p>Gestiona dónde recibes tus compras.</p>
+  </header>
+
+  <div class="address-grid">
+
+    <button class="add-new-card">
+      <div class="icon-plus">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+      </div>
+      <h3>Agregar Nueva Dirección</h3>
+    </button>
+
+    @for (addr of addresses(); track addr.id) {
+      <div class="address-card" [class.default]="addr.isDefault">
+        
+        <div class="card-header">
+          <div class="alias-group">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" class="icon-home"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+            <span class="alias">{{ addr.alias }}</span>
+          </div>
+          @if(addr.isDefault) {
+            <span class="badge-default">Predeterminada</span>
+          }
+        </div>
+
+        <div class="card-body">
+          <h3 class="receiver">{{ addr.receiver }}</h3>
+          <p class="street">{{ addr.street }}</p>
+          <p class="city">{{ addr.city }}</p>
+          <p class="phone">📞 {{ addr.phone }}</p>
+        </div>
+
+        <div class="card-footer">
+          <div class="actions">
+            <button class="btn-edit">Editar</button>
+            @if(!addr.isDefault) {
+              <button class="btn-delete" (click)="deleteAddress(addr.id)">Eliminar</button>
+            }
+          </div>
+          
+          @if(!addr.isDefault) {
+            <button class="btn-set-default" (click)="setDefault(addr.id)">
+              Usar por defecto
+            </button>
+          }
+        </div>
+
+      </div>
+    }
+
+  </div>
+</div>

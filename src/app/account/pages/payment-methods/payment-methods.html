@@ -1,0 +1,80 @@
+<div class="payments-container">
+
+  <header class="page-header">
+    <div class="header-text">
+      <h1>Métodos de Pago 💳</h1>
+      <p>Administra tus tarjetas para una compra más rápida.</p>
+    </div>
+  </header>
+
+  <div class="cards-grid">
+
+    <button class="add-card-btn">
+      <div class="icon-circle">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+      </div>
+      <span>Agregar Nueva Tarjeta</span>
+    </button>
+
+    @for (card of cards(); track card.id) {
+      <div class="credit-card-wrapper">
+        
+        <div class="visual-card" [style.background]="card.bgGradient">
+          
+          <div class="card-top">
+            <div class="chip">
+              <div class="chip-line"></div>
+              <div class="chip-line"></div>
+              <div class="chip-line"></div>
+              <div class="chip-line"></div>
+            </div>
+            
+            <div class="card-logo">
+              @if(card.type === 'visa') {
+                <svg class="logo-visa" viewBox="0 0 48 48"><path fill="#fff" d="M24,4C12.954,4,4,12.954,4,24s8.954,20,20,20s20-8.954,20-20S35.046,4,24,4z M33.324,30h-2.556l-1.602-7.536h-0.036c-0.288,1.062-1.242,3.654-2.826,7.536h-2.736l-4.338-11.232h2.718l2.592,7.344h0.036l2.556-7.344h2.646L33.324,30z M17.028,30h-2.43l-1.53-5.022c-0.27-0.864-0.558-1.422-0.846-1.746C11.934,22.908,11.376,22.71,10.62,22.62c-0.45-0.054-0.918-0.036-1.512,0.054l-0.108-0.522c1.782-0.648,3.834-1.296,5.166-1.296c0.882,0,1.548,0.216,1.962,0.702c0.414,0.468,0.504,1.188,0.558,1.62L17.028,30z"/></svg>
+              } @else if(card.type === 'mastercard') {
+                <svg class="logo-master" viewBox="0 0 24 24"><circle cx="7" cy="12" r="7" fill="#eb001b" fill-opacity=".8"/><circle cx="17" cy="12" r="7" fill="#f79e1b" fill-opacity=".8"/></svg>
+              }
+            </div>
+          </div>
+
+          <div class="card-number">
+            <span>••••</span> <span>••••</span> <span>••••</span> <span>{{ card.last4 }}</span>
+          </div>
+
+          <div class="card-bottom">
+            <div class="info-group">
+              <span class="label">Titular</span>
+              <span class="value">{{ card.holderName }}</span>
+            </div>
+            <div class="info-group right">
+              <span class="label">Expira</span>
+              <span class="value">{{ card.expiry }}</span>
+            </div>
+          </div>
+
+          @if(card.isDefault) {
+            <div class="default-badge-in">Principal</div>
+          }
+
+        </div>
+
+        <div class="card-actions">
+          @if(!card.isDefault) {
+            <button class="btn-text" (click)="setDefault(card.id)">Hacer principal</button>
+            <div class="divider-vertical"></div>
+          }
+          <button class="btn-text delete" (click)="deleteCard(card.id)">Eliminar</button>
+        </div>
+
+      </div>
+    }
+
+  </div>
+
+  <footer class="security-note">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+    <p>Tus datos están protegidos con encriptación SSL de 256-bits. No guardamos tu código CVV.</p>
+  </footer>
+
+</div>

@@ -1,0 +1,21 @@
+<section class="stories-section">
+  <div class="header-flex">
+    <h3>Top Categorías</h3>
+  </div>
+
+  <div class="marquee-container">
+    <div class="marquee-track pause-on-hover">
+      <div class="track-group">
+        @for (item of categories(); track $index; let idx = $index) {
+        <app-story-item [cat]="item" />
+        }
+      </div>
+
+      <div class="track-group" aria-hidden="true">
+        @for (item of categories(); track $index; let idx = $index) {
+        <app-story-item [cat]="item"  />
+        }
+      </div>
+    </div>
+  </div>
+</section>

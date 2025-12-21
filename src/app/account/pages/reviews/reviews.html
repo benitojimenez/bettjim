@@ -1,0 +1,106 @@
+<div class="reviews-container">
+
+  <header class="page-header">
+    <div class="header-content">
+      <h1>Mis Reseñas ⭐</h1>
+      <p>Tu opinión ayuda a otros a comprar mejor.</p>
+    </div>
+  </header>
+
+  <div class="tabs-wrapper">
+    @if (pendingList().length) {
+        <button [class.active]="activeTab() === 'pending'" (click)="activeTab.set('pending')">
+      Pendientes <span class="badge" >{{ pendingList().length }}</span>
+    </button>
+    }
+    
+    <button [class.active]="activeTab() === 'history'" (click)="activeTab.set('history')">
+      Historial
+    </button>
+  </div>
+
+  <div class="reviews-content">
+
+    @if(activeTab() === 'pending') {
+      <div class="pending-grid">
+        @for (item of pendingList(); track item.id) {
+          <div class="pending-card">
+            
+            <div class="product-info">
+              <img [src]="item.productImage" [alt]="item.productName">
+              <div class="details">
+                <h3>{{ item.productName }}</h3>
+                <span class="delivery-info">
+                  Entregado el {{ item.deliveredDate | date:'d MMM' }} • Pedido #{{ item.orderId }}
+                </span>
+              </div>
+            </div>
+
+            <div class="action-area">
+              <div class="stars-placeholder">
+                @for(star of [1,2,3,4,5]; track star) {
+                  <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                  </svg>
+                }
+              </div>
+              <button class="btn-rate">Calificar Ahora</button>
+            </div>
+
+          </div>
+        } @empty {
+          <div class="empty-state">
+            <div class="icon-check">✨</div>
+            <h3>¡Estás al día!</h3>
+            <p>No tienes productos pendientes por calificar.</p>
+          </div>
+        }
+      </div>
+    }
+
+    @if(activeTab() === 'history') {
+      <div class="history-grid">
+        @for (review of historyList(); track review.id) {
+          <div class="review-card">
+            
+            <div class="card-header">
+              <div class="prod-mini">
+                <img [src]="review.productImage" [alt]="review.productName">
+                <div class="prod-meta">
+                  <h4>{{ review.productName }}</h4>
+                  <span class="date">{{ review.date | date:'d MMMM, y' }}</span>
+                </div>
+              </div>
+              @if(review.status === 'published') {
+                <span class="status-badge success">Publicada</span>
+              } @else {
+                <span class="status-badge warning">En revisión</span>
+              }
+            </div>
+
+            <div class="card-rating">
+              @for (isFilled of getStars(review.rating); track $index) {
+                <svg [class.filled]="isFilled" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                </svg>
+              }
+            </div>
+
+            <p class="comment">"{{ review.comment }}"</p>
+            
+            <div class="card-footer">
+              <a [routerLink]="['/shop/product', review.slug]" class="link-product">Ver en tienda →</a>
+            </div>
+
+          </div>
+        } @empty {
+          <div class="empty-state">
+            <h3>Aún no has escrito reseñas</h3>
+            <p>Tus opiniones aparecerán aquí una vez que califiques tus compras.</p>
+          </div>
+        }
+      </div>
+    }
+
+  </div>
+</div>

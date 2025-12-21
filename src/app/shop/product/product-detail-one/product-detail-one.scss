@@ -1,0 +1,192 @@
+/* --- VARS --- */
+$primary-color: #FF2E63; /* Rosa vibrante */
+$bg-light: #F8F9FA;
+$text-dark: #1A1A1A;
+$border-radius: 16px;
+
+.product-page {
+  max-width: 1200px; margin: 0 auto; padding: 40px 20px; padding-bottom: 100px;
+  font-family: 'Inter', sans-serif;
+}
+
+/* --- GRID PRINCIPAL --- */
+.product-top-grid {
+  display: grid; grid-template-columns: 1.3fr 1fr; gap: 60px;
+  margin-bottom: 60px;
+
+  @media(max-width: 960px) { grid-template-columns: 1fr; gap: 40px; }
+}
+
+/* --- GALERÍA --- */
+.gallery-wrapper {
+  .main-image-container {
+    position: relative; background: $bg-light; border-radius: $border-radius;
+    overflow: hidden; margin-bottom: 15px;
+    display: flex; align-items: center; justify-content: center;
+    
+    /* 📱 MOBILE TWEAK: Reduce imagen 15% */
+    @media(max-width: 768px) {
+      background: white; /* En móvil a veces se ve mejor blanco */
+      padding: 20px 0;
+    }
+
+    .main-img {
+      width: 100%; height: auto; object-fit: cover; transition: transform 0.5s;
+      
+      /* 📱 APLICANDO REDUCCIÓN DEL 15% EN MÓVIL */
+      @media(max-width: 768px) {
+        width: 85%; 
+        margin: 0 auto;
+        display: block;
+      }
+    }
+    
+    .floating-tags {
+      position: absolute; top: 15px; left: 15px; display: flex; flex-direction: column; gap: 8px;
+      .tag-gradient { 
+        background: linear-gradient(45deg, #FF9966, $primary-color); color: white; 
+        padding: 6px 12px; border-radius: 6px; font-weight: 800; font-size: 0.75rem; text-transform: uppercase;
+        box-shadow: 0 4px 10px rgba($primary-color, 0.3);
+      }
+      .tag-black { background: $text-dark; color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; }
+    }
+  }
+
+  .thumbs-grid {
+    display: flex; gap: 10px;
+    .thumb {
+      width: 80px; height: 80px; border-radius: 10px; overflow: hidden; cursor: pointer; border: 2px solid transparent; opacity: 0.6; transition: 0.2s;
+      &.active, &:hover { opacity: 1; border-color: $text-dark; }
+      img { width: 100%; height: 100%; object-fit: cover; }
+    }
+    @media(max-width: 768px) { overflow-x: auto; padding-bottom: 5px; } /* Scroll en móvil */
+  }
+}
+
+/* --- INFO VENTA --- */
+.info-wrapper {
+  .breadcrumbs { font-size: 0.85rem; color: #888; margin-bottom: 10px; }
+  .product-title { font-size: 2.2rem; margin: 0 0 10px; line-height: 1.1; font-weight: 800; letter-spacing: -0.5px; }
+  
+  .rating-row { color: #FFC107; font-size: 0.9rem; margin-bottom: 20px; .count { color: #888; margin-left: 5px; } }
+
+  /* 👁️ LIVE VIEWERS STYLING */
+  .live-view-bar {
+    display: flex; align-items: center; gap: 10px;
+    background: #FFF0F3; border: 1px solid rgba($primary-color, 0.1);
+    color: #D63384; padding: 10px 15px; border-radius: 8px; margin-bottom: 25px;
+    font-size: 0.9rem;
+
+    .pulse-dot {
+      width: 8px; height: 8px; background: $primary-color; border-radius: 50%;
+      box-shadow: 0 0 0 rgba($primary-color, 0.4);
+      animation: pulse-red 2s infinite;
+    }
+    strong { font-weight: 800; }
+  }
+
+  /* PRECIOS */
+  .price-block {
+    display: flex; align-items: flex-end; gap: 15px; margin-bottom: 25px;
+    .current { font-size: 2rem; font-weight: 900; color: $text-dark; line-height: 1; }
+    .old { text-decoration: line-through; color: #999; font-size: 1.1rem; margin-bottom: 5px;}
+    .discount-badge { 
+      background: $text-dark; color: white; padding: 4px 8px; 
+      border-radius: 4px; font-weight: 700; font-size: 0.75rem; margin-bottom: 5px;
+    }
+  }
+
+  /* VARIANTES */
+  .variant-selector {
+    margin-bottom: 30px;
+    label { font-size: 0.9rem; margin-bottom: 8px; display: block; }
+    .colors-grid {
+      display: flex; gap: 10px;
+      .color-btn {
+        width: 32px; height: 32px; border-radius: 50%; border: 1px solid #DDD; cursor: pointer;
+        &.selected { border: 2px solid $text-dark; transform: scale(1.1); box-shadow: 0 0 0 2px white inset; }
+      }
+    }
+  }
+
+  /* 🛒 BOTÓN PRINCIPAL */
+  .main-actions-block {
+    display: flex; gap: 15px; margin-bottom: 20px;
+    
+    .qty-selector {
+      display: flex; align-items: center; border: 1px solid #DDD; border-radius: 50px;
+      button { background: none; border: none; padding: 0 15px; font-size: 1.2rem; cursor: pointer; }
+      span { min-width: 20px; text-align: center; font-weight: 600; }
+    }
+    
+    .btn-add-cart-main {
+      flex: 1; background: $primary-color; color: white; border: none; padding: 16px;
+      border-radius: 50px; font-size: 1rem; font-weight: 700; cursor: pointer;
+      box-shadow: 0 10px 20px rgba($primary-color, 0.25); transition: 0.3s;
+      
+      &:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba($primary-color, 0.35); }
+    }
+  }
+
+  /* 🛡️ TRUST BOX */
+  .trust-box {
+    display: flex; justify-content: space-between; gap: 10px;
+    background: #F4F6F8; padding: 15px; border-radius: 8px; margin-bottom: 20px;
+    
+    .trust-item {
+      display: flex; flex-direction: column; align-items: center; gap: 5px; text-align: center;
+      .icon { font-size: 1.2rem; }
+      span { font-size: 0.7rem; color: #555; font-weight: 600; }
+    }
+  }
+  
+  .short-desc { font-size: 0.9rem; color: #666; line-height: 1.6; }
+}
+
+/* --- TABS --- */
+.product-tabs-container {
+  margin-top: 40px; border-top: 1px solid #EEE; padding-top: 40px;
+  .tabs-header {
+    display: flex; justify-content: center; gap: 30px; margin-bottom: 30px; border-bottom: 1px solid #EEE;
+    button {
+      background: none; border: none; padding: 10px 0; font-size: 1rem; color: #999; cursor: pointer;
+      &.active { color: $text-dark; font-weight: 700; border-bottom: 2px solid $text-dark; }
+    }
+  }
+}
+
+/* --- ANIMACIONES --- */
+@keyframes pulse-red {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba($primary-color, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba($primary-color, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba($primary-color, 0); }
+}
+
+/* --- STICKY BAR (Igual que antes pero ajustado) --- */
+.smart-sticky-bar {
+  position: fixed; bottom: 0; left: 0; width: 100%; background: white; z-index: 1000;
+  box-shadow: 0 -5px 30px rgba(0,0,0,0.1); padding: 12px 20px;
+  transform: translateY(100%); transition: transform 0.3s ease;
+  &.visible { transform: translateY(0); }
+  
+  .bar-content {
+    max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;
+    
+    .mini-info {
+      display: flex; align-items: center; gap: 10px;
+      img { width: 40px; height: 40px; border-radius: 4px; object-fit: cover; }
+      .mini-title { font-weight: 700; font-size: 0.9rem; }
+      @media(max-width: 768px) { display: none; }
+    }
+    
+    .sticky-actions {
+      display: flex; gap: 10px;
+      @media(max-width: 768px) { width: 100%; }
+      .btn-sticky-add {
+        background: $text-dark; color: white; border: none; border-radius: 30px; padding: 10px 30px;
+        font-weight: 700; cursor: pointer;
+        @media(max-width: 768px) { width: 100%; }
+      }
+    }
+  }
+}

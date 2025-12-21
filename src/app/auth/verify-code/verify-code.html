@@ -1,0 +1,21 @@
+<app-breadcrumbs [items]="breadcrumbs()"/>
+<div class="verify-wrapper">
+  <div class="verify-card">
+    <h2>Verifica tu correo</h2>
+    <p>Hemos enviado un código de 6 dígitos a tu email.</p>
+
+    <app-codeimput 
+    [length]="8" 
+    inputType="alphanumeric"
+    (codeCompleted)="onCodeReady($event)"
+    > 
+
+    </app-codeimput>
+
+    <button class="btn-submit" [disabled]="isLoading() || !fullCode()" (click)="verifyCode()">
+      @if(isLoading()) { Verificando... } @else { Verificar }
+    </button>
+
+    <p class="resend">¿No recibiste el código? <a href="#">Reenviar</a></p>
+  </div>
+</div>

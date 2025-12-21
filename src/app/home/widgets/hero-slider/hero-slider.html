@@ -1,0 +1,47 @@
+<section class="hero-section">
+  
+  <swiper-container #heroSwiper init="false" class="hero-swiper">
+    @for (slide of slides; track slide.id) {
+      <swiper-slide>
+        
+        <div class="media-bg">
+          @if (slide.type === 'video') {
+            <video 
+              [poster]="slide.poster"
+              autoplay 
+              muted 
+              loop 
+              playsinline
+              class="bg-video ken-burns">
+              <source [src]="slide.src" type="video/mp4">
+            </video>
+          } @else {
+            <img [src]="slide.src" alt="Hero Bg" class="bg-img ken-burns">
+          }
+          
+          <div class="overlay"></div>
+        </div>
+
+        <div class="container content-wrapper">
+          <div class="content glass-card"> <span class="subtitle slide-in-top">{{ slide.subtitle }}</span>
+            <h1 class="title slide-in-left">{{ slide.title }}</h1>
+            <p class="desc fade-in">{{ slide.desc }}</p>
+            <a [href]="slide.link" class="btn-hero bounce-in">{{ slide.btnText }}</a>
+          </div>
+        </div>
+
+      </swiper-slide>
+    }
+  </swiper-container>
+
+  <div class="hero-controls">
+    <button class="hero-prev">❮</button>
+    <div class="hero-pagination"></div>
+    <button class="hero-next">❯</button>
+  </div>
+
+  <div class="autoplay-progress">
+    <div class="bar" [style.width.%]="progressWidth()"></div>
+  </div>
+
+</section>

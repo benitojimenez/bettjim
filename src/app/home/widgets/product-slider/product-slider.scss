@@ -1,0 +1,218 @@
+$brand-color: #FF2E63; /* Tu rosa */
+$gray-light: #f4f4f4;
+
+.slider-section {
+padding-top: 2rem;
+  position: relative;
+  // margin-bottom: 60px;
+  padding: 0 5%;
+  
+  /* UX: Al pasar el mouse, mostramos las flechas */
+  &:hover .swiper-nav-btns button {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 25px;
+  h2 { font-family: 'Playfair Display', serif; font-size: 2rem; margin: 0; color: #222; }
+}
+
+/* --- SWIPER LAYOUT --- */
+swiper-container {
+  width: 100%;
+  padding-bottom: 20px; /* Espacio para no cortar sombras */
+}
+
+swiper-slide {
+  height: auto; /* Para que todas las cards tengan misma altura */
+  display: flex; 
+  justify-content: center;
+}
+
+app-product-card {
+  width: 100%;
+  display: block;
+}
+
+/* --- CONTROLES DE NAVEGACIÓN (Flechas) --- */
+.swiper-nav-btns {
+  display: flex; gap: 10px;
+
+  button {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 1px solid #eee;
+    background: white;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    
+    /* Estado inicial: Ocultos y desplazados */
+    opacity: 0; 
+    
+    &.custom-prev { transform: translateX(10px); }
+    &.custom-next { transform: translateX(-10px); }
+
+    &:hover {
+      background: #111;
+      border-color: #111;
+      color: white;
+    }
+  }
+}
+
+/* --- PAGINACIÓN (Puntos) --- */
+.custom-pagination {
+  display: flex; justify-content: center; margin-top: 15px;
+  
+  /* Estilizando elementos internos de Swiper */
+  .swiper-pagination-bullet {
+    width: 8px; 
+    height: 8px;
+    background: #ccc;
+    opacity: 1;
+    margin: 0 6px;
+    border-radius: 50%;
+    transition: 0.3s;
+    
+    &-active {
+      background: $brand-color;
+      width: 24px; /* Se estira el activo */
+      border-radius: 4px;
+    }
+  }
+}
+
+/* --- SKELETON LOADING (Efecto Fantasma) --- */
+.skeleton-container {
+  display: flex; gap: 20px; overflow: hidden;
+  
+  .skeleton-card {
+    min-width: 280px; flex: 1;
+    
+    .shimmer {
+      background: #f6f7f8;
+      background-image: linear-gradient(to right, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);
+      background-repeat: no-repeat;
+      background-size: 1000px 100%;
+      animation: shimmer 1.5s infinite linear forwards;
+      border-radius: 12px;
+    }
+    
+    .s-img { height: 320px; margin-bottom: 15px; }
+    .s-text { height: 20px; width: 70%; margin-bottom: 10px; }
+    .s-price { height: 20px; width: 40%; }
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  /* En móvil siempre mostramos flechas o las ocultamos si prefieres solo touch */
+  .swiper-nav-btns { display: none; } 
+  
+  /* Ajuste de skeleton para móvil */
+  .skeleton-container .skeleton-card { min-width: 80%; }
+}
+
+/* --- 0. TOP BAR (Cinta Negra) --- */
+.top-bar {
+  background: #000;
+  color: white;
+  font-size: 0.75rem;
+  padding: 8px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 1001; /* Encima del header */
+
+  p { margin: 0; font-weight: 500; }
+  a { color: white; text-decoration: underline; }
+  
+  .top-links {
+    display: flex; gap: 15px;
+    a { text-decoration: none; opacity: 0.8; &:hover { opacity: 1; } }
+  }
+
+  @media(max-width: 600px) {
+    justify-content: center;
+    .top-links { display: none; } /* Ocultar links secundarios en móvil */
+  }
+}
+
+/* --- MAIN HEADER (Smart Behavior) --- */
+.main-header {
+  /* ... tus estilos previos ... */
+  position: sticky;
+  top: 0;
+  transition: transform 0.3s ease-in-out;
+  
+  /* CLASE PARA OCULTARLO AL BAJAR */
+  &.hidden {
+    transform: translateY(-100%);
+  }
+}
+
+/* --- SEARCH SECTION AVANZADO --- */
+.search-section {
+  position: relative; /* Vital para el dropdown absoluto */
+}
+
+/* Dropdown de Autocompletado */
+.search-dropdown {
+  position: absolute;
+  top: 100%; left: 0; right: 0;
+  background: white;
+  margin-top: 8px;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+  border: 1px solid #f0f0f0;
+  z-index: 10;
+  overflow: hidden;
+
+  .dropdown-header {
+    padding: 10px 16px;
+    font-size: 0.75rem; color: #888;
+    background: #f9f9f9;
+    font-weight: 600;
+  }
+
+  .suggestions-list {
+    list-style: none; padding: 0; margin: 0;
+    
+    li {
+      padding: 12px 16px;
+      display: flex; align-items: center; gap: 10px;
+      cursor: pointer;
+      transition: background 0.2s;
+      border-bottom: 1px solid #f5f5f5;
+
+      &:hover { background: #f0f7ff; }
+      
+      .icon { font-size: 1.1rem; }
+      .text { font-size: 0.9rem; color: #333; }
+      strong { color: var(--primary); }
+    }
+  }
+
+  .dropdown-footer {
+    padding: 10px; text-align: center;
+    color: var(--primary); font-size: 0.8rem; font-weight: 700;
+    cursor: pointer;
+    &:hover { text-decoration: underline; }
+  }
+}
+
+/* Animación Fade In */
+.fade-in {
+  animation: fadeIn 0.2s ease-out;
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }

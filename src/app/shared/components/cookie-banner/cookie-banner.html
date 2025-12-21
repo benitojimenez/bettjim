@@ -1,0 +1,21 @@
+@if (isVisible()) {
+  <div class="cookie-card fade-in-up">
+    
+    <div class="cookie-header">
+      <div class="icon-box">🍪</div>
+      <div class="text-content">
+        <h3>Tu privacidad nos importa</h3>
+        <p>
+          Usamos cookies para mejorar tu experiencia y analizar el tráfico. 
+          Al continuar, aceptas nuestra <a routerLink="/privacy">Política de Privacidad</a>.
+        </p>
+      </div>
+    </div>
+
+    <div class="cookie-actions">
+      <button class="btn-ghost" (click)="decline()">Rechazar</button>
+      <button class="btn-primary" (click)="accept()">Aceptar Todas</button>
+    </div>
+
+  </div>
+}

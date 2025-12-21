@@ -1,0 +1,679 @@
+:host {
+  display: block;
+  --primary: #1f2937;
+  --accent: #2563eb;
+  --border: #d1d5db;
+  --bg-accord: #f4f4f4; /* Fondo gris para el área desplegada */
+  --radius: 8px;
+    --text-muted: #71717a;
+  --accent: #2563eb;
+  --border-color: #e5e7eb; /* Gris claro */
+  --input-bg: #fff;
+  /* 🔒 BLOQUEO DE SELECCIÓN */
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none;    /* Firefox */
+  -ms-user-select: none;     /* IE10+/Edge */
+  user-select: none;         /* Standard */
+  
+  /* Evitar arrastrar imágenes */
+  img {
+    -webkit-user-drag: none;
+    user-drag: none;
+    pointer-events: none; /* Ni siquiera pueden hacer clic a las imágenes */
+  }
+}
+/* Excepción: Permitir escribir en los inputs (OBLIGATORIO) */
+input {
+  -webkit-user-select: text;
+  user-select: text;
+  /* Opcional: Evitar copiar/pegar en inputs sensibles si eres muy estricto */
+  /* pointer-events: auto; */ 
+}
+
+.step-animation {
+  animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mt-large { margin-top: 35px; }
+
+/* =========================================
+   1. PANEL DE REPASO
+   ========================================= */
+.review-group {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: white;
+  padding: 0 20px;
+}
+
+.review-row {
+  display: flex; padding: 16px 0; font-size: 0.95rem; line-height: 1.4;
+  
+  .label-col { color: #6b7280; width: 80px; flex-shrink: 0; }
+  .value-col { color: var(--primary); flex: 1; font-weight: 500; padding-right: 15px; }
+  .btn-change {
+    color: var(--accent); text-decoration: none; font-size: 0.85rem; font-weight: 500;
+    white-space: nowrap; &:hover { text-decoration: underline; }
+  }
+}
+
+.divider { height: 1px; background: #e5e7eb; width: 100%; }
+
+
+/* =========================================
+   2. ACORDEÓN DE PAGOS (El corazón del diseño)
+   ========================================= */
+.section-header {
+  display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 15px;
+  flex-wrap: wrap; gap: 10px;
+  
+  h2 { font-size: 1.15rem; font-weight: 600; color: var(--primary); margin: 0; }
+  
+  .secure-text {
+    font-size: 0.8rem; color: #6b7280; display: flex; align-items: center; gap: 5px;
+    svg { width: 14px; }
+  }
+}
+
+.payment-accordion {
+  border: 1px solid var(--border); border-radius: var(--radius);
+  background: white; overflow: hidden;
+}
+
+.payment-option {
+  border-bottom: 1px solid var(--border);
+  &:last-child { border-bottom: none; }
+
+  /* HEADER DE LA OPCIÓN (Siempre visible) */
+  .option-header {
+    padding: 18px 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+    transition: background 0.2s;
+
+    &:hover { background: #f9fafb; }
+
+    .radio-wrapper {
+      display: flex; align-items: center; gap: 12px;
+      input[type="radio"] { width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer; }
+      .option-label { font-weight: 600; color: var(--primary); font-size: 0.95rem; }
+    }
+
+    .card-icons {
+      display: flex; gap: 5px;
+      img { height: 24px; border: 1px solid #e5e7eb; border-radius: 4px; }
+    }
+    
+    .qr-icons {
+      display: flex; gap: 5px;
+      .badge-yape { background: #742284; color: white; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
+      .badge-plin { background: #00d3eb; color: #002f87; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
+    }
+  }
+
+  /* ESTADO SELECCIONADO */
+  &.selected {
+    .option-header { background: #f3fcfc; /* Un toque muy sutil de color o blanco */ }
+  }
+
+  /* BODY DESPLEGABLE (Fondo Gris) */
+  .option-body {
+    background: var(--bg-accord);
+    padding: 20px;
+    border-top: 1px solid var(--border);
+    animation: slideDown 0.3s ease-out;
+
+    &.center-content { text-align: center; }
+  }
+}
+
+/* --- ESTILOS QR --- */
+.qr-placeholder {
+  width: 100px; height: 100px; background: white; border: 1px dashed #d1d5db;
+  border-radius: 8px; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center;
+  color: #9ca3af; svg { width: 40px; }
+}
+.qr-instruction { font-size: 0.9rem; color: #6b7280; margin: 0; }
+
+.placeholder-text { font-size: 0.9rem; color: #6b7280; margin: 0; font-style: italic; }
+
+/* =========================================
+   FOOTER
+   ========================================= */
+.step-footer {
+  margin-top: 40px; display: flex; flex-direction: column-reverse; gap: 20px;
+  
+  @media(min-width: 640px) {
+    flex-direction: row; justify-content: space-between; align-items: center;
+  }
+
+
+
+ 
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Contenedor principal de la sección Yape */
+.yape-pay {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 10px;
+  margin-bottom: 20px;
+
+  h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1f2937; /* Gris oscuro / Negro suave */
+    margin: 0;
+  }
+
+  .input-group {
+    position: relative;
+    width: 100%;
+
+    input {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 1rem;
+      border: 1px solid #d1d5db; /* Gris borde */
+      border-radius: 8px;
+      background-color: #ffffff;
+      color: #1f2937;
+      outline: none;
+      transition: all 0.2s ease-in-out;
+
+      &::placeholder {
+        color: #9ca3af; /* Gris placeholder */
+      }
+
+      &:focus {
+        border-color: #2563eb; /* Azul focus */
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); /* Anillo azul suave */
+      }
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+  }
+}
+
+/* Label del "Código de aprobación" */
+label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 8px;
+}
+
+/* Espaciado para el componente de código */
+app-codeimput {
+  display: block;
+  margin-bottom: 16px;
+}
+
+/* Caja de instrucción inferior (Estilo Yape) */
+.qr-instruction {
+  font-size: 0.85rem;
+  color: #4b5563; /* Gris texto secundario */
+  margin: 0;
+  line-height: 1.5;
+  background-color: #f9fafb; /* Fondo gris muy claro */
+  padding: 12px 16px;
+  border-radius: 6px;
+  border-left: 4px solid #742284; /* Morado YAPE */
+  
+  /* Opcional: para que se vea más integrado */
+  display: flex;
+  align-items: center;
+}
+
+
+
+.formyape {
+  margin-bottom: 20px;
+  /* Espaciado si hay algo arriba */
+  margin-top: 15px; 
+}
+
+.form-row {
+  display: flex;
+  gap: 12px; /* Espacio entre el select y el input */
+  align-items: flex-end; /* Alinea al fondo */
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px; /* Espacio entre label e input */
+  
+  &.type-col {
+    flex: 1; /* Ocupa 1 parte del ancho (30% aprox) */
+    min-width: 100px;
+  }
+  
+  &.number-col {
+    flex: 2; /* Ocupa 2 partes del ancho (70% aprox) */
+  }
+
+  label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #374151; /* Gris oscuro */
+    margin: 0;
+  }
+}
+
+.input-wrapper {
+  position: relative;
+  width: 100%;
+
+  /* Estilos comunes para Input y Select */
+  input, select {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 0.95rem;
+    border: 1px solid #d1d5db; /* Gris borde suave */
+    border-radius: 8px;
+    background-color: white;
+    color: #1f2937;
+    outline: none;
+    transition: all 0.2s ease-in-out;
+    appearance: none; /* Quita estilo por defecto del navegador en select */
+
+    &::placeholder {
+      color: #9ca3af;
+    }
+
+    &:focus {
+      border-color: #2563eb; /* Azul focus */
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    
+    /* Estado inválido (si usas validaciones de Angular) */
+    // &.ng-invalid.ng-touched {
+    //   border-color: #ef4444;
+    //   background-color: #fef2f2;
+    // }
+  }
+
+  /* Ajuste específico para el select */
+  select {
+    padding-right: 30px; /* Espacio para la flecha */
+    cursor: pointer;
+  }
+
+  /* Flechita decorativa para el select */
+  .arrow-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.7rem;
+    color: #6b7280;
+    pointer-events: none; /* Para que el click pase al select */
+  }
+}
+
+/* Responsive: En celulares muy pequeños, que se pongan uno debajo del otro */
+@media (max-width: 350px) {
+  .form-row {
+    flex-direction: column;
+    gap: 15px;
+  }
+  .form-group.type-col, .form-group.number-col {
+    width: 100%;
+    flex: none;
+  }
+}
+
+/* VARIABLES */
+$primary-color: #FF2E63;
+$yape-color: #742284; /* Morado marca Yape (opcional, o usa $primary-color) */
+$border-color: #E0E0E0;
+$input-bg: #FAFAFA;
+$text-dark: #333;
+$text-muted: #888;
+$radius: 12px;
+$radius-sm: 8px;
+
+.checkout-container {
+  max-width: 600px;
+  margin: 0 auto;
+  font-family: 'Inter', sans-serif;
+}
+
+/* =========================================
+   1. ESTILOS DE LA TARJETA (SINGLE LINE)
+   ========================================= */
+.card-section {
+  background: white;
+  padding: 15px; // Padding reducido
+  border: 1px solid $border-color;
+  border-radius: $radius;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+  margin-bottom: 15px; // Espacio pequeño antes del siguiente form
+
+  .card-row {
+    display: flex;
+    gap: 8px; // Espacio entre inputs
+    align-items: center;
+
+    /* Responsividad: En pantallas muy chicas, quizás quieras que baje
+       pero dijiste "una sola línea", así que usamos flex-shrink */
+    
+    .field-wrap {
+      position: relative;
+      
+      &.card-number { flex: 2; min-width: 140px; } // El más ancho
+      &.medium { flex: 1; min-width: 60px; }       // CVV
+      &.small { flex: 0.8; min-width: 45px; }      // MM/AA
+      
+      /* Input General de Tarjeta */
+      input {
+        width: 100%;
+        padding: 12px 10px;
+        font-size: 0.9rem;
+        border: 1px solid $border-color;
+        border-radius: $radius-sm;
+        background: $input-bg;
+        outline: none;
+        transition: 0.2s;
+        color: $text-dark;
+        font-weight: 600;
+
+        &::placeholder { color: #BBB; font-weight: 400; font-size: 0.85rem;}
+        &:focus { 
+          background: white; 
+          border-color: $primary-color; 
+          box-shadow: 0 0 0 2px rgba($primary-color, 0.1);
+        }
+        &.error { border-color: red; background: #FFF0F0; }
+        &.center-text { text-align: center; padding-left: 5px; padding-right: 5px; }
+      }
+
+      /* Iconos dentro de inputs */
+      .input-icon-wrap {
+        position: relative;
+        input { padding-right: 30px; } // Espacio para el icono
+        .icon {
+          position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+          color: $text-muted;
+          pointer-events: none;
+          
+          svg { width: 18px; height: 18px; }
+          &.help {
+            width: 18px; height: 18px; border-radius: 50%; border: 1px solid #CCC;
+            font-size: 0.7rem; display: flex; align-items: center; justify-content: center;
+            cursor: help;
+          }
+        }
+      }
+    }
+  }
+}
+
+/* =========================================
+   2. ESTILOS ANTIFRAUDE (COMPACTO)
+   ========================================= */
+.antifraud-section {
+  background: white;
+  padding: 15px 20px; // Más compacto
+  border-radius: $radius;
+  border: 1px solid transparent; // Opcional, o sin borde para que parezca limpio
+
+  &.compact-mode {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; // Espacio vertical entre filas reducido (antes era mucho más)
+
+    .form-row {
+      display: flex;
+      gap: 10px; // Espacio horizontal entre inputs reducido
+      width: 100%;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 3px; // Espacio entre Label e Input minúsculo
+      flex: 1;
+
+      &.full { width: 100%; }
+      &.shrink { flex: 0 0 80px; } // Para el select de DOC corto
+      &.grow { flex: 1; }
+
+      label {
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: $text-muted;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-left: 2px;
+      }
+
+      input, select {
+        width: 100%;
+        padding: 8px 12px; // Padding vertical más bajo para compactar altura
+        font-size: 0.9rem;
+        border: 1px solid $border-color;
+        border-radius: $radius-sm;
+        background: $input-bg;
+        outline: none;
+        color: $text-dark;
+        height: 38px; // Altura fija compacta
+
+        &:focus { border-color: $text-dark; background: white; }
+      }
+
+      /* Flecha custom del select */
+      .select-wrapper {
+        position: relative;
+        select { appearance: none; cursor: pointer; }
+        .arrow {
+          position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+          font-size: 0.6rem; color: $text-muted; pointer-events: none;
+        }
+      }
+
+      .error-msg {
+        font-size: 0.65rem; color: red; margin-top: 1px;
+      }
+    }
+  }
+}
+
+/* Ajuste móvil */
+@media (max-width: 480px) {
+  .card-section .card-row {
+    flex-wrap: wrap; // En móviles muy pequeños, quizás deban bajar
+    .field-wrap.card-number { min-width: 100%; flex: 100%; } // El número baja a su propia línea si no cabe
+  }
+}
+
+//yape
+/* CONTENEDOR PRINCIPAL DEL FORMULARIO YAPE */
+form[formGroup="YapeForm"] {
+  background: white;
+  padding: 20px;
+  border: 1px solid $border-color;
+  border-radius: $radius;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+  font-family: 'Inter', sans-serif;
+  max-width: 600px;
+  margin: 0 auto;
+
+  /* --- 1. SECCIÓN CELULAR YAPE --- */
+  .yape-pay {
+    margin-bottom: 20px;
+    text-align: center;
+
+    h3 {
+      font-size: 1rem;
+      color: $text-dark;
+      margin: 0 0 10px;
+      font-weight: 600;
+    }
+
+    .input-group {
+      input {
+        width: 100%;
+        max-width: 300px; /* Limitamos ancho para que parezca celular */
+        margin: 0 auto;
+        display: block;
+        padding: 12px;
+        font-size: 1.1rem; /* Números grandes */
+        letter-spacing: 1px;
+        text-align: center;
+        border: 1px solid $border-color;
+        border-radius: $radius-sm;
+        background: $input-bg;
+        outline: none;
+        transition: 0.3s;
+        font-weight: 700;
+        color: $text-dark;
+
+        &::placeholder { color: #CCC; font-weight: 400; }
+        &:focus {
+          background: white;
+          border-color: $yape-color; /* O $primary-color */
+          box-shadow: 0 0 0 3px rgba($yape-color, 0.1);
+        }
+      }
+    }
+  }
+
+  /* --- 2. SECCIÓN CÓDIGO OTP --- */
+  label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: $text-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+
+  /* Ajuste para tu componente app-codeimput */
+  app-codeimput {
+    display: block;
+    margin-bottom: 5px;
+    /* Asegúrate que tu componente interno tenga justify-content: center */
+  }
+
+  small {
+    display: block;
+    text-align: center;
+    font-size: 0.75rem;
+    color: $text-muted;
+    margin-bottom: 25px;
+  }
+
+  /* --- 3. SECCIÓN DATOS (FORMYAPE) --- */
+  .formyape {
+    border-top: 1px dashed $border-color; /* Separador sutil */
+    padding-top: 20px;
+
+    .form-row {
+      display: flex;
+      flex-wrap: wrap; /* Permite que el email baje si es necesario */
+      gap: 12px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+
+      /* Columnas */
+      &.type-col { flex: 0 0 100px; } /* Ancho fijo para Tipo */
+      &.number-col { flex: 1; min-width: 140px; } /* El resto crece */
+      
+      /* Si quieres el email en toda la fila de abajo, descomenta esto: */
+      /* &:last-child { flex: 1 1 100%; } */
+
+      label {
+        text-align: left; /* Resetear alineación del label global */
+        margin-bottom: 0;
+        margin-left: 2px;
+      }
+
+      .input-wrapper {
+        position: relative;
+
+        input, select {
+          width: 100%;
+          padding: 10px 12px;
+          height: 42px; /* Altura uniforme */
+          border: 1px solid $border-color;
+          border-radius: $radius-sm;
+          background: $input-bg;
+          font-size: 0.9rem;
+          color: $text-dark;
+          outline: none;
+          appearance: none; /* Para limpiar el select nativo */
+          transition: 0.2s;
+
+          &:focus {
+            background: white;
+            border-color: $text-dark;
+          }
+          &::placeholder { color: #BBB; }
+        }
+
+        /* Flecha custom del select */
+        .arrow-icon {
+          position: absolute;
+          right: 10px;
+          top: 50%;
+          transform: translateY(-50%);
+          font-size: 0.65rem;
+          color: $text-muted;
+          pointer-events: none;
+        }
+      }
+    }
+  }
+
+  /* --- 4. TEXTO FINAL --- */
+  .qr-instruction {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 0.8rem;
+    color: $yape-color; /* Morado Yape para destacar */
+    font-weight: 500;
+    background: rgba($yape-color, 0.05);
+    padding: 10px;
+    border-radius: $radius-sm;
+  }
+}
+
+/* RESPONSIVE */
+@media (max-width: 480px) {
+  form[formGroup="YapeForm"] .formyape .form-row {
+    flex-direction: column; /* En móviles, uno debajo del otro */
+    
+    .form-group.type-col, 
+    .form-group.number-col {
+      width: 100%;
+      flex: auto;
+    }
+  }
+}

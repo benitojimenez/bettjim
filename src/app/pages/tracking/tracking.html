@@ -1,0 +1,125 @@
+<div class="tracking-page">
+
+  <div class="search-hero" [class.compact]="trackingData()">
+    <div class="hero-content">
+      <h1>Rastrea tu pedido</h1>
+      <p class="subtitle">Ingresa tu número de orden para ver el estado en tiempo real.</p>
+      
+      <form [formGroup]="trackForm" (ngSubmit)="searchOrder()" class="search-box">
+        <div class="input-group">
+          <span class="icon">#</span>
+          <input type="text" formControlName="orderId" placeholder="N° Orden (ej. BJM-1234)">
+        </div>
+        <div class="input-group">
+          <span class="icon">@</span>
+          <input type="email" formControlName="email" placeholder="Correo electrónico">
+        </div>
+        <button type="submit" [disabled]="trackForm.invalid || isLoading()">
+          @if(isLoading()) { <span class="loader"></span> }
+          @else { RASTREAR }
+        </button>
+      </form>
+    </div>
+  </div>
+
+  @if (trackingData(); as data) {
+    <div class="results-container fade-in-up">
+      
+      <div class="status-card">
+        <div class="card-header">
+          <div class="shipment-info">
+            <span class="label">Orden {{ data.id }}</span>
+            <h2 class="status-title">{{ data.currentStatus }}</h2>
+            <p class="delivery-date">
+              Llegada estimada: <strong>{{ data.estimatedDate }}</strong>
+            </p>
+          </div>
+          <div class="carrier-logo">
+            <img src="assets/icons/delivery-truck.svg" alt="Courier">
+          </div>
+        </div>
+
+        <div class="visual-progress">
+          <div class="progress-track">
+            <div class="progress-fill" [style.width]="data.progress + '%'"></div>
+          </div>
+          
+          <div class="milestones">
+            <div class="milestone completed">
+              <div class="dot">✓</div>
+              <span>Confirmado</span>
+            </div>
+            
+            <div class="milestone" [class.completed]="data.step >= 2" [class.active]="data.step === 2">
+              <div class="dot">{{ data.step > 2 ? '✓' : '📦' }}</div>
+              <span>Preparado</span>
+            </div>
+
+            <div class="milestone" [class.completed]="data.step >= 3" [class.active]="data.step === 3">
+              <div class="dot">{{ data.step > 3 ? '✓' : '🚚' }}</div>
+              <span>En Camino</span>
+            </div>
+
+            <div class="milestone" [class.completed]="data.step >= 4" [class.active]="data.step === 4">
+              <div class="dot">🏠</div>
+              <span>Entregado</span>
+            </div>
+          </div>
+        </div>
+
+        @if (data.step === 3) {
+          <div class="reassurance-box">
+            <span class="icon">✨</span>
+            <p>Tu paquete está en ruta con nuestro repartidor <strong>Carlos</strong>. ¡Llegará pronto!</p>
+          </div>
+        }
+      </div>
+
+      <div class="details-grid">
+        
+        <div class="history-panel">
+          <h3>Bitácora de Viaje</h3>
+          <div class="vertical-timeline">
+            @for (event of data.history; track $index) {
+              <div class="timeline-item" [class.latest]="$index === 0">
+                <div class="time-col">
+                  <span class="date">{{ event.date | date:'d MMM' }}</span>
+                  <span class="time">{{ event.date | date:'HH:mm' }}</span>
+                </div>
+                <div class="marker-col">
+                  <div class="line"></div>
+                  <div class="circle"></div>
+                </div>
+                <div class="info-col">
+                  <strong>{{ event.title }}</strong>
+                  <p>{{ event.location }}</p>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="package-panel">
+          <h3>Contenido del Paquete</h3>
+          <div class="items-list">
+            @for (item of data.items; track $index) {
+              <div class="item-row">
+                <img [src]="item.image" [alt]="item.name">
+                <div class="item-info">
+                  <strong>{{ item.name }}</strong>
+                  <span>Cant: {{ item.qty }} | {{ item.variant }}</span>
+                </div>
+              </div>
+            }
+          </div>
+          
+          <div class="help-section">
+            <p>¿Tienes algún problema?</p>
+            <button class="btn-outline">Contactar Soporte</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  }
+</div>

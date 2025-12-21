@@ -1,0 +1,85 @@
+<div class="step-animation">
+  <div class="review-panel">
+    <div class="review-row">
+      <div class="row-content">
+        <span class="label">Contacto</span>
+        <span class="value">{{ contactEmail() }}</span>
+      </div>
+      <a routerLink="../information" class="btn-edit">Cambiar</a>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="review-row">
+      <div class="row-content">
+        <span class="label">Enviar a</span>
+        <span class="value">{{ shippingAddressLine() }}</span>
+      </div>
+      <a routerLink="../information" class="btn-edit">Cambiar</a>
+    </div>
+  </div>
+
+  <!--  -->
+  <div class="free-shipping-bar mt-large">
+    @if (progress().isFree) {
+      <div class="message success">
+        <span class="icon">🎉</span> ¡Felicidades! Tienes <strong>envío estándar GRATIS</strong>.
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill success" style="width: 100%"></div>
+      </div>
+    } @else {
+      <div class="message">
+        Te faltan <strong>{{ progress().missingAmount | currency:'PEN' }}</strong> para envío gratis.
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" [style.width.%]="progress().percent"></div>
+      </div>
+    }
+  </div>
+
+  <section class="shipping-section mt-large">
+    <h2>Método de envío</h2>
+
+    <div class="options-container">
+      @for (method of methods(); track method.id) {
+
+      <label class="shipping-card" [class.selected]="selectedMethodId() === method.id">
+        <input
+          type="radio"
+          name="shipping"
+          [value]="method.id"
+          [ngModel]="selectedMethodId()"
+          (ngModelChange)="selectedMethodId.set($event)"
+        />
+
+        <div class="card-content">
+          <div class="radio-indicator"></div>
+
+          <div class="method-info">
+            <span class="name">{{ method.name }}</span>
+            <span class="eta">{{ method.eta }}</span>
+          </div>
+
+          <div class="price">
+            @if(method.price === 0) { Gratis } @else {
+            {{ method.price | currency : 'PEN' }}
+            }
+          </div>
+        </div>
+      </label>
+
+      }
+    </div>
+  </section>
+
+  <div class="step-footer">
+    <button 
+    class="btn-checkout-primary" 
+    (click)="submit()"
+    [disabled]="!selectedMethodId()">
+    Continuar a Pago
+  </button>
+    <a routerLink="../information" class="link-back">Volver a información</a>
+  </div>
+</div>

@@ -1,0 +1,121 @@
+<footer class="main-footer">
+  <!-- <div class="trust-strip">
+    <div class="container trust-grid">
+      <div class="trust-item">
+        <div class="icon">🚚</div>
+        <div class="info">
+          <h4>Envíos a todo el Perú</h4>
+          <p>Gratis desde S/199</p>
+        </div>
+      </div>
+      <div class="trust-item">
+        <div class="icon">🛡️</div>
+        <div class="info">
+          <h4>Compra 100% Segura</h4>
+          <p>Protección de datos SSL</p>
+        </div>
+      </div>
+      <div class="trust-item">
+        <div class="icon">↩️</div>
+        <div class="info">
+          <h4>Cambios Fáciles</h4>
+          <p>7 días de garantía</p>
+        </div>
+      </div>
+    </div>
+  </div> -->
+
+  <div class="newsletter-bar">
+    <div class="container newsletter-content">
+      <div class="news-text">
+        <h4>🚀 Únete al Club Bettjim</h4>
+        <p>Recibe ofertas secretas y lanzamientos antes que nadie.</p>
+      </div>
+      <div class="news-form">
+        <div class="input-wrapper">
+          <input type="email" placeholder="Tu correo electrónico">
+          <button class="btn-subscribe">Suscribirse</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container footer-grid">
+    
+    <div class="footer-col brand-col">
+      <h3 class="footer-logo">Bettjim<span class="dot">.</span></h3>
+      <p class="brand-desc">Redefiniendo el estilo y la calidad. Tu destino premium para compras online.</p>
+      
+      <div class="social-links">
+        <a href="#" class="social-btn facebook" aria-label="Facebook">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+        </a>
+        <a href="#" class="social-btn instagram" aria-label="Instagram">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+        </a>
+        <a href="#" class="social-btn tiktok" aria-label="TikTok">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-col links-col">
+      <details class="footer-accordion" open>
+        <summary>Explorar</summary>
+        <ul class="links-list">
+          <li><a routerLink="/shop">🔥 Ofertas Flash</a></li>
+          <li><a routerLink="/new">✨ Novedades</a></li>
+          <li><a routerLink="/envivo">🔴 Bettjim Live</a></li>
+        </ul>
+      </details>
+    </div>
+
+    <div class="footer-col links-col">
+      <details class="footer-accordion" open>
+        <summary>Ayuda</summary>
+        <ul class="links-list">
+          <li><a routerLink="/tracking">Rastrear Pedido</a></li>
+          <li><a routerLink="/returns">Cambios y Devoluciones</a></li>
+          <li><a routerLink="/faq">Preguntas Frecuentes</a></li>
+          <li><a href="https://wa.me/519999999">Chat WhatsApp</a></li>
+        </ul>
+      </details>
+    </div>
+
+    <div class="footer-col extra-col">
+      <a href="/reclamaciones" class="complaints-card">
+        <div class="icon">📖</div>
+        <div class="text">
+          <span class="label">Libro de</span>
+          <span class="title">Reclamaciones</span>
+        </div>
+      </a>
+
+      <div class="payment-methods">
+        <span class="pay-tag visa">Visa</span>
+        <span class="pay-tag master">Mastercard</span>
+        <span class="pay-tag yape">Yape</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    <div class="container bottom-flex">
+      <p>© 2025 Bettjim.com | Derechos Reservados</p>
+      <div class="legal-links">
+        <a routerLink="/privacy">Privacidad</a>
+        <span class="sep">•</span>
+        <a routerLink="/terms">Términos</a>
+      </div>
+    </div>
+  </div>
+
+   <button 
+    class="scroll-top-btn" 
+    [class.show]="showScrollBtn" 
+    (click)="scrollToTop()" 
+    aria-label="Volver arriba">
+    ↑
+  </button>
+</footer>

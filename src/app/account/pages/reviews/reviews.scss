@@ -1,0 +1,159 @@
+:host {
+  --primary: #111;
+  --text-main: #1f2937;
+  --text-muted: #6b7280;
+  --border: #e5e7eb;
+  --radius: 12px;
+  --star-gold: #fbbf24; /* Color estrella */
+}
+
+.reviews-container {
+  display: flex; flex-direction: column; gap: 30px;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.page-header {
+  h1 { font-size: 1.6rem; font-weight: 800; margin: 0 0 5px 0; color: var(--text-main); }
+  p { color: var(--text-muted); margin: 0; }
+}
+
+/* --- TABS --- */
+.tabs-wrapper {
+  display: flex; gap: 20px; border-bottom: 1px solid var(--border);
+  
+  button {
+    background: none; border: none; padding: 12px 5px;
+    font-size: 0.95rem; font-weight: 500; color: var(--text-muted);
+    cursor: pointer; position: relative; display: flex; align-items: center; gap: 8px;
+
+    .badge {
+      background: #ef4444; color: white; font-size: 0.7rem; padding: 2px 6px; border-radius: 10px; line-height: 1;
+    }
+
+    &::after {
+      content: ''; position: absolute; bottom: -1px; left: 0; width: 0; height: 2px;
+      background: var(--primary); transition: 0.3s;
+    }
+
+    &.active {
+      color: var(--primary); font-weight: 700;
+      &::after { width: 100%; }
+    }
+    
+    &:hover:not(.active) { color: var(--primary); }
+  }
+}
+
+/* --- PENDING REVIEWS (Horizontal Cards) --- */
+.pending-grid {
+  display: flex; flex-direction: column; gap: 15px;
+}
+
+.pending-card {
+  background: white; border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 20px; display: flex; justify-content: space-between; align-items: center;
+  transition: 0.2s;
+
+  &:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.05); border-color: #d1d5db; }
+
+  .product-info {
+    display: flex; gap: 15px; align-items: center;
+    img { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; border: 1px solid #f3f4f6; }
+    .details {
+      h3 { margin: 0 0 5px 0; font-size: 1rem; color: var(--text-main); font-weight: 600; }
+      .delivery-info { font-size: 0.8rem; color: var(--text-muted); }
+    }
+  }
+
+  .action-area {
+    display: flex; flex-direction: column; align-items: flex-end; gap: 8px;
+    
+    .stars-placeholder {
+      display: flex; gap: 2px;
+      svg { width: 18px; color: #e5e7eb; transition: 0.2s; }
+      /* Efecto visual sutil al hacer hover en la tarjeta */
+    }
+
+    .btn-rate {
+      background: var(--primary); color: white; border: none;
+      padding: 8px 16px; border-radius: 6px; font-weight: 600; font-size: 0.85rem;
+      cursor: pointer; transition: 0.2s;
+      &:hover { background: #333; transform: translateY(-2px); }
+    }
+  }
+}
+
+/* --- HISTORY REVIEWS (Grid Cards) --- */
+.history-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.review-card {
+  background: white; border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 25px; display: flex; flex-direction: column; height: 100%;
+
+  .card-header {
+    display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;
+    
+    .prod-mini {
+      display: flex; gap: 10px; align-items: center;
+      img { width: 40px; height: 40px; border-radius: 6px; object-fit: cover; }
+      .prod-meta {
+        h4 { margin: 0; font-size: 0.9rem; font-weight: 700; color: var(--text-main); }
+        .date { font-size: 0.75rem; color: var(--text-muted); }
+      }
+    }
+
+    .status-badge {
+      font-size: 0.7rem; font-weight: 700; padding: 3px 8px; border-radius: 4px; text-transform: uppercase;
+      &.success { background: #dcfce7; color: #166534; }
+      &.warning { background: #fef3c7; color: #92400e; }
+    }
+  }
+
+  .card-rating {
+    display: flex; gap: 2px; margin-bottom: 12px;
+    svg { width: 18px; color: #e5e7eb; &.filled { color: var(--star-gold); } }
+  }
+
+  .comment {
+    font-size: 0.95rem; line-height: 1.5; color: var(--text-main); font-style: italic;
+    margin: 0 0 20px 0; flex: 1; /* Empuja el footer abajo */
+  }
+
+  .card-footer {
+    border-top: 1px solid #f3f4f6; padding-top: 15px;
+    .link-product {
+      font-size: 0.85rem; font-weight: 600; color: var(--primary); text-decoration: none;
+      &:hover { text-decoration: underline; }
+    }
+  }
+}
+
+/* EMPTY STATE */
+.empty-state {
+  grid-column: 1/-1; text-align: center; padding: 50px;
+  background: #f9fafb; border-radius: var(--radius); border: 1px dashed var(--border);
+  
+  .icon-check { font-size: 2.5rem; margin-bottom: 10px; }
+  h3 { margin: 0 0 5px 0; }
+  p { margin: 0; color: var(--text-muted); }
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .pending-card {
+    flex-direction: column; align-items: flex-start; gap: 15px;
+    .product-info { width: 100%; }
+    .action-area { 
+      width: 100%; flex-direction: row; justify-content: space-between; align-items: center;
+      border-top: 1px solid #f3f4f6; padding-top: 15px;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}

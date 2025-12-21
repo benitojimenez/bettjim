@@ -1,0 +1,86 @@
+<div class="returns-container">
+
+  <header class="page-header">
+    <div class="header-text">
+      <h1>Devoluciones</h1>
+      <p>Gestiona tus reembolsos y cambios de productos.</p>
+    </div>
+    
+    <a routerLink="/account/orders" class="btn-new-return">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+      Nueva Devolución
+    </a>
+  </header>
+
+  <div class="tabs-container">
+    <button [class.active]="activeTab() === 'active'" (click)="activeTab.set('active')">
+      En Proceso
+    </button>
+    <button [class.active]="activeTab() === 'history'" (click)="activeTab.set('history')">
+      Historial
+    </button>
+  </div>
+
+  <div class="returns-list">
+    
+    @for (ret of filteredReturns(); track ret.id) {
+      <div class="return-card">
+        
+        <div class="card-header">
+          <div class="meta-info">
+             <span class="ret-id">{{ ret.id }}</span>
+             <span class="order-ref">Pedido asociado: {{ ret.orderId }}</span>
+             <span class="date">{{ ret.date | date:'d MMM y' }}</span>
+          </div>
+          <div class="status-badge" [ngClass]="getStatusClass(ret.status)">
+             {{ getStatusLabel(ret.status) }}
+          </div>
+        </div>
+
+        <div class="card-body">
+          <div class="items-preview">
+            @for (item of ret.items; track $index) {
+              <div class="item-row">
+                 <img [src]="item.image" [alt]="item.name">
+                 <div class="item-details">
+                    <p class="name">{{ item.name }}</p>
+                    <p class="qty">Cant: {{ item.qty }}</p>
+                 </div>
+              </div>
+            }
+          </div>
+          
+          <div class="refund-info">
+             <span class="label">Reembolso estimado</span>
+             <span class="amount">{{ ret.amount | currency:'PEN' }}</span>
+          </div>
+        </div>
+
+        <div class="card-footer">
+          @if(ret.status === 'shipping') {
+             <button class="btn-action primary">Descargar Etiqueta</button>
+             <button class="btn-action secondary">Instrucciones</button>
+          } 
+          @else if(ret.status === 'pending') {
+             <button class="btn-action secondary text-red">Cancelar Solicitud</button>
+          }
+          @else if(ret.status === 'refunded') {
+             <button class="btn-action secondary">Ver Comprobante</button>
+          }
+          
+          <button class="btn-link">Ver Detalles</button>
+        </div>
+
+      </div>
+    } @empty {
+      <div class="empty-state">
+        <div class="icon-box">
+           <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+        </div>
+        <h3>No tienes devoluciones {{ activeTab() === 'active' ? 'activas' : 'en el historial' }}</h3>
+        <p>Si necesitas devolver algo, ve a "Mis Pedidos" y selecciona el producto.</p>
+      </div>
+    }
+
+  </div>
+</div>

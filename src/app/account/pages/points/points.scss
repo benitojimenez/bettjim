@@ -1,0 +1,158 @@
+:host {
+  --primary: #111;
+  --text-main: #1f2937;
+  --text-muted: #6b7280;
+  --bg-page: #f9fafb;
+  --radius: 16px;
+  
+  /* Colores temáticos Puntos */
+  --gold-dark: #b45309;
+  --gold-light: #fbbf24;
+  --gold-bg: linear-gradient(135deg, #1f2937 0%, #000000 100%); /* Elegante oscuro */
+  /* Opcional: Si prefieres dorado brillante usa: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) */
+}
+
+.points-container {
+  display: flex; flex-direction: column; gap: 30px;
+  animation: fadeUp 0.5s ease-out;
+}
+
+.page-header {
+  h1 { font-size: 1.6rem; font-weight: 800; margin: 0 0 5px 0; color: var(--text-main); }
+  p { color: var(--text-muted); margin: 0; font-size: 0.95rem; }
+}
+
+/* --- 1. HERO CARD (WALLET) --- */
+.points-hero {
+  position: relative;
+  background: var(--gold-bg);
+  color: white;
+  border-radius: var(--radius);
+  padding: 30px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px -5px rgba(0,0,0,0.2);
+  display: flex; flex-direction: column; justify-content: space-between;
+  min-height: 200px;
+
+  /* Decoración de fondo */
+  .card-bg {
+    position: absolute; top: -50%; right: -20%;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(251, 191, 36, 0.2) 0%, transparent 70%);
+    border-radius: 50%; pointer-events: none;
+  }
+
+  .hero-content {
+    display: flex; justify-content: space-between; align-items: flex-start; z-index: 2;
+  }
+
+  .balance-section {
+    .label { font-size: 0.9rem; opacity: 0.8; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; }
+    .points-total { font-size: 3rem; font-weight: 800; margin: 5px 0 0 0; line-height: 1; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+    .pts-text { font-size: 1.2rem; font-weight: 600; opacity: 0.9; }
+    .money-equiv { font-size: 0.95rem; margin-top: 8px; opacity: 0.9; background: rgba(255,255,255,0.15); padding: 4px 10px; border-radius: 20px; display: inline-block; }
+  }
+
+  .tier-badge {
+    display: flex; flex-direction: column; align-items: center; gap: 5px;
+    background: rgba(255,255,255,0.1); backdrop-filter: blur(5px);
+    padding: 10px 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2);
+    
+    svg { width: 24px; color: #fbbf24; } /* Estrella Dorada */
+    span { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; }
+  }
+
+  .btn-redeem {
+    z-index: 2; margin-top: auto; align-self: flex-start;
+    display: flex; align-items: center; gap: 8px;
+    background: white; color: black;
+    padding: 10px 20px; border-radius: 30px;
+    text-decoration: none; font-weight: 700; font-size: 0.9rem;
+    transition: 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+
+    &:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.3); background: #fbbf24; }
+    svg { width: 18px; }
+  }
+}
+
+/* --- 2. PROGRESS BAR --- */
+.level-progress-card {
+  background: white; border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 25px; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+
+  .progress-header {
+    display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px;
+    h3 { margin: 0; font-size: 1rem; color: var(--text-main); font-weight: 500; }
+    strong { color: #d97706; font-weight: 800; font-size: 1.1rem; }
+    .points-left { font-size: 0.85rem; color: var(--text-muted); }
+  }
+
+  .progress-bar-bg {
+    width: 100%; height: 10px; background: #f3f4f6; border-radius: 10px; overflow: hidden; margin-bottom: 15px;
+    .progress-fill { height: 100%; background: linear-gradient(90deg, #f59e0b, #d97706); border-radius: 10px; transition: width 1s ease-out; }
+  }
+
+  .benefit-hint { margin: 0; font-size: 0.9rem; color: var(--text-muted); line-height: 1.4; }
+}
+
+/* --- 3. HISTORIAL --- */
+.history-section {
+  h2 { font-size: 1.3rem; font-weight: 800; color: var(--text-main); margin-bottom: 20px; }
+}
+
+.transactions-list {
+  display: flex; flex-direction: column; gap: 15px;
+}
+
+.trx-item {
+  display: flex; align-items: center; gap: 15px;
+  background: white; padding: 15px 20px; border-radius: 12px;
+  border: 1px solid var(--border); transition: 0.2s;
+
+  &:hover { border-color: #d1d5db; transform: translateX(3px); }
+
+  .trx-icon {
+    width: 45px; height: 45px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    
+    &.text-green { background: #dcfce7; color: #166534; } /* Ganado */
+    &.text-orange { background: #ffedd5; color: #c2410c; } /* Canjeado */
+    &.text-gray { background: #f3f4f6; color: #6b7280; } /* Expirado */
+    
+    svg { width: 22px; }
+  }
+
+  .trx-info {
+    flex: 1; display: flex; flex-direction: column; gap: 4px;
+    .description { font-weight: 600; color: var(--text-main); font-size: 0.95rem; }
+    .date { font-size: 0.8rem; color: var(--text-muted); }
+  }
+
+  .trx-amount {
+    font-weight: 800; font-size: 1rem; white-space: nowrap;
+    &.text-green { color: #166534; }
+    &.text-orange { color: #c2410c; }
+    &.text-gray { color: #9ca3af; text-decoration: line-through; }
+  }
+}
+
+.empty-history { text-align: center; color: var(--text-muted); padding: 20px; border: 1px dashed var(--border); border-radius: 12px; }
+
+/* ANIMACIONES */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* RESPONSIVE MÓVIL */
+@media (max-width: 600px) {
+  .points-hero {
+    padding: 25px;
+    .hero-content { flex-direction: column; gap: 20px; }
+    .tier-badge { align-self: flex-start; flex-direction: row; }
+    .balance-section { .points-total { font-size: 2.5rem; } }
+    .btn-redeem { width: 100%; justify-content: center; margin-top: 25px; }
+  }
+  
+  .trx-item { padding: 15px; }
+}

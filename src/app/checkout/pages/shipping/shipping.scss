@@ -1,0 +1,324 @@
+:host {
+  display: block;
+  --primary: #1f2937;
+  --accent: #2563eb;
+  --border: #d1d5db;
+  --bg-hover: #f9fafb;
+  --radius: 8px;
+}
+
+.step-animation {
+  animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+h2 {
+  font-size: 1.15rem; font-weight: 600; color: var(--primary);
+  margin-bottom: 20px; letter-spacing: -0.02em;
+}
+
+.mt-large { margin-top: 40px; }
+
+/* =========================================
+   1. PANEL DE REPASO (Review Box)
+   ========================================= */
+.review-panel {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: white;
+  overflow: hidden; /* Para que los hijos no rompan el borde */
+}
+
+.review-row {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding: 18px 20px;
+  font-size: 0.95rem;
+
+  .row-content {
+    display: flex; flex-direction: column; gap: 4px;
+    flex: 1; margin-right: 15px;
+    
+    /* En desktop, mostramos label y valor en línea */
+    @media (min-width: 600px) {
+      flex-direction: row; gap: 20px; align-items: center;
+    }
+
+    .label { color: #6b7280; white-space: nowrap; min-width: 70px; }
+    .value { color: var(--primary); font-weight: 500; line-height: 1.4; }
+  }
+
+  .btn-edit {
+    font-size: 0.85rem; color: var(--accent); text-decoration: none; font-weight: 500;
+    white-space: nowrap;
+    &:hover { text-decoration: underline; }
+  }
+}
+
+.divider {
+  height: 1px; background: var(--border); margin: 0 20px;
+}
+
+
+/* =========================================
+   2. OPCIONES DE ENVÍO (Stacked Radio)
+   ========================================= */
+.options-container {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: white;
+  overflow: hidden;
+  display: flex; flex-direction: column;
+}
+
+.shipping-card {
+  position: relative;
+  cursor: pointer;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.2s;
+  
+  &:last-child { border-bottom: none; }
+  
+  &:hover { background: var(--bg-hover); }
+
+  /* Input oculto */
+  input[type="radio"] {
+    position: absolute; opacity: 0; width: 0; height: 0;
+  }
+
+  /* Contenido Visual */
+  .card-content {
+    display: flex; align-items: center; gap: 15px;
+  }
+
+  /* Indicador Radio Personalizado */
+  .radio-indicator {
+    width: 18px; height: 18px;
+    border: 1px solid #9ca3af; border-radius: 50%;
+    position: relative; flex-shrink: 0;
+    background: white;
+    
+    &::after {
+      content: ''; position: absolute;
+      top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
+      width: 8px; height: 8px; background: white; border-radius: 50%;
+      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+  }
+
+  .method-info {
+    flex: 1; display: flex; flex-direction: column;
+    .name { font-weight: 600; color: var(--primary); font-size: 0.95rem; }
+    .eta { font-size: 0.85rem; color: #6b7280; margin-top: 2px; }
+  }
+
+  .price {
+    font-weight: 600; color: var(--primary); font-size: 0.95rem;
+  }
+
+  /* ESTADO SELECCIONADO */
+  &.selected {
+    /* Opcional: Borde azul alrededor de la opción */
+    // background: #eff6ff; 
+    
+    .radio-indicator {
+      border-color: var(--accent); background: var(--accent);
+      &::after { transform: translate(-50%, -50%) scale(1); }
+    }
+  }
+}
+
+
+/* =========================================
+   FOOTER ACCIONES
+   ========================================= */
+.step-footer {
+  margin-top: 40px;
+  display: flex; justify-content: space-between; align-items: center;
+
+  .btn-primary {
+    background: var(--primary); color: white; border: none;
+    padding: 18px 32px; border-radius: var(--radius);
+    font-weight: 600; font-size: 1rem; cursor: pointer;
+    transition: transform 0.1s, background 0.2s;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+
+    &:hover { background: #0f172a; transform: translateY(-1px); }
+    &:active { transform: translateY(0); }
+  }
+
+  .link-back {
+    display: flex; align-items: center; gap: 6px;
+    color: var(--accent); text-decoration: none; font-size: 0.9rem; font-weight: 500;
+    padding: 10px; border-radius: 4px;
+    &:hover { background: #eff6ff; }
+  }
+}
+
+/* RESPONSIVE */
+@media (max-width: 640px) {
+  .review-row {
+    flex-direction: row; align-items: flex-start;
+    .row-content { flex-direction: column; gap: 2px; align-items: flex-start; }
+    .label { font-size: 0.8rem; }
+  }
+
+  .step-footer {
+    flex-direction: column-reverse; gap: 20px;
+    .btn-primary { width: 100%; }
+    .link-back { width: 100%; justify-content: center; }
+  }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+/* 🔥 1. BANNER DE PUNTOS (Dorado/Premium) */
+.loyalty-banner {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  border: 1px solid #fcd34d;
+  border-radius: 12px;
+  padding: 15px 20px;
+  margin: 20px 0 30px; /* Separación */
+  display: flex; align-items: center; gap: 15px;
+  text-align: left;
+  animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.5s both;
+
+  .icon-star {
+    width: 40px; height: 40px; background: #fbbf24; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: white; svg { width: 24px; }
+    box-shadow: 0 4px 6px rgba(251, 191, 36, 0.4);
+  }
+
+  .loyalty-text {
+    strong { color: #92400e; font-size: 1rem; display: block; }
+    p { margin: 0; color: #b45309; font-size: 0.9rem; }
+  }
+}
+
+/* 🔥 2. REGISTRO RÁPIDO (Caja Azul/Gris) */
+.guest-account-prompt {
+  background: #f8fafc; border: 1px solid #e2e8f0;
+  border-radius: 12px; padding: 25px; margin: 30px 0;
+  display: flex; flex-direction: column; gap: 20px;
+  text-align: left;
+
+  @media(min-width: 600px) {
+    flex-direction: row; align-items: center; justify-content: space-between;
+  }
+
+  .prompt-info {
+    h3 { margin: 0 0 5px; font-size: 1rem; color: var(--primary); }
+    p { margin: 0; color: var(--text-muted); font-size: 0.9rem; }
+  }
+
+  .prompt-action {
+    display: flex; gap: 10px; flex: 1; max-width: 350px;
+    
+    input {
+      flex: 1; padding: 10px 14px; border-radius: 6px; border: 1px solid #cbd5e1;
+      font-size: 0.9rem; outline: none;
+      &:focus { border-color: var(--primary); }
+    }
+    
+    .btn-create {
+      background: var(--primary); color: white; border: none; padding: 0 20px;
+      border-radius: 6px; font-weight: 600; cursor: pointer; white-space: nowrap;
+      &:hover { opacity: 0.9; }
+    }
+  }
+}
+
+/* 🔥 3. CROSS SELLING GRID */
+.cross-sell-section {
+  text-align: left; margin: 40px 0;
+  
+  h3 { font-size: 1rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 15px; letter-spacing: 0.5px; }
+
+  .recommendations-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 15px;
+  }
+
+  .mini-product-card {
+    background: white; border: 1px solid #e5e7eb; border-radius: 8px;
+    padding: 10px; transition: 0.2s;
+    
+    &:hover { border-color: #9ca3af; transform: translateY(-3px); }
+
+    .img-wrap {
+      position: relative; height: 120px; background: #f9fafb; border-radius: 6px; margin-bottom: 10px;
+      img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; }
+      
+      .btn-quick-add {
+        position: absolute; bottom: 8px; right: 8px;
+        width: 28px; height: 28px; background: white; border-radius: 50%;
+        border: 1px solid #e5e7eb; cursor: pointer; display: flex; align-items: center; justify-content: center;
+        font-size: 1.2rem; line-height: 1; color: var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        transition: 0.2s;
+        &:hover { background: var(--primary); color: white; border-color: var(--primary); }
+      }
+    }
+
+    .info {
+      .name { display: block; font-size: 0.85rem; font-weight: 500; color: var(--primary); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .price { font-size: 0.85rem; font-weight: 700; color: var(--primary); }
+    }
+  }
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.8); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.mt-large { margin-top: 30px; }
+
+/* 🔥 BARRA DE PROGRESO */
+.free-shipping-bar {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+
+  .message {
+    font-size: 0.9rem; color: #374151; margin-bottom: 8px;
+    strong { color: #111; font-weight: 700; }
+    
+    &.success { color: #166534; strong { color: #166534; } }
+    .icon { margin-right: 5px; }
+  }
+
+  .progress-track {
+    width: 100%; height: 8px; background: #e5e7eb; border-radius: 10px; overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%; background: #2563eb; /* Azul corporativo */
+    border-radius: 10px; transition: width 0.5s ease-out;
+    
+    &.success { background: #16a34a; /* Verde éxito */ }
+  }
+}
+
+/* OPCIONES DE ENVÍO PRECIOS */
+.price-container {
+  display: flex; flex-direction: column; align-items: flex-end;
+
+  .final-price {
+    font-weight: 600; color: #1f2937;
+  }
+
+  .original-price {
+    font-size: 0.8rem; color: #9ca3af; text-decoration: line-through;
+    margin-bottom: 2px;
+  }
+
+  .free-badge {
+    font-weight: 700; color: #16a34a; /* Verde */
+    background: #dcfce7; padding: 2px 6px; border-radius: 4px;
+    font-size: 0.85rem;
+  }
+}

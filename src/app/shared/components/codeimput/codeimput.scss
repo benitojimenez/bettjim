@@ -1,0 +1,78 @@
+:host {
+    --box-size: 50px;     // Tamaño de cada caja
+    --gap: 10px;          // Espacio entre cajas
+    --border-color: #e5e7eb;
+    --focus-color: #111;  // Color primario de tu marca
+    --error-color: #ef4444;
+    --bg-box: #f9fafb;
+    display: block;
+}
+
+.code-container {
+    display: flex;
+    gap: var(--gap);
+    justify-content: center; /* Centrado horizontal */
+    margin-bottom: 15px;
+}
+
+.code-box {
+    width: var(--box-size);
+    height: var(--box-size);
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    background-color: #ffffff;
+    color: #1f2937;
+    outline: none; /* Quitamos el outline por defecto del navegador */
+    transition: all 0.2s ease-in-out;
+
+    /* Quitar spinners en inputs numéricos en algunos navegadores */
+    -moz-appearance: textfield;
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Estado Focus */
+    &:focus {
+        border-color: var(--focus-color);
+        box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.05); // Sombra suave estilo moderno
+        background-color: #fff;
+        transform: translateY(-2px); // Pequeña elevación
+    }
+
+    /* Estado Error (puedes activarlo añadiendo clase .error desde el TS) */
+    &.error {
+        border-color: var(--error-color);
+        color: var(--error-color);
+        animation: shake 0.3s ease-in-out;
+    }
+}
+
+.error-text {
+    color: var(--error-color);
+    text-align: center;
+    font-size: 0.9rem;
+    margin-top: 10px;
+}
+
+/* Animación de vibración para error */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* Responsivo para móviles muy pequeños */
+@media (max-width: 400px) {
+    :host {
+        --box-size: 40px;
+        --gap: 6px;
+    }
+    .code-box {
+        font-size: 1.2rem;
+    }
+}

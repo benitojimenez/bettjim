@@ -1,0 +1,236 @@
+:host {
+  display: block;
+  position: relative;
+}
+
+.hero-section {
+  position: relative;
+  width: 100%;
+  height: 600px; /* Altura en PC */
+  
+  /* En pantallas grandes (FHD), hacerlo más alto */
+  @media (min-width: 1400px) { height: 750px; }
+  /* En móviles, un poco más bajo */
+  @media (max-width: 768px) { height: 500px; }
+}
+
+.hero-swiper {
+  width: 100%;
+  height: 100%;
+}
+
+swiper-slide {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* --- IMAGEN Y OVERLAY --- */
+.slide-bg {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  
+  /* Animación suave de zoom al fondo (Efecto Ken Burns) */
+  animation: zoomSlow 20s infinite alternate;
+}
+
+@keyframes zoomSlow {
+  from { transform: scale(1); }
+  to { transform: scale(1.1); }
+}
+
+.overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(to right, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 60%, transparent 100%);
+  /* En móvil oscurecemos todo */
+  @media (max-width: 768px) {
+    background: rgba(0,0,0,0.5); 
+  }
+}
+
+/* --- CONTENIDO --- */
+.content-wrapper {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  display: flex; align-items: center; /* Centrado vertical */
+  padding: 0 5%;
+  z-index: 10;
+}
+
+.content {
+  max-width: 600px;
+  color: white;
+  
+  .subtitle {
+    display: block;
+    font-size: 0.9rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: #FF2E63; /* Tu color de marca */
+    opacity: 0; animation: slideInTop 1s forwards 0.3s;
+  }
+
+  .title {
+    font-family: 'Playfair Display', serif; /* Fuente elegante */
+    font-size: 3.5rem;
+    line-height: 1.1;
+    margin: 0 0 20px;
+    font-weight: 700;
+    text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    opacity: 0; animation: slideInLeft 1s forwards 0.5s;
+    
+    @media (max-width: 768px) { font-size: 2.5rem; }
+  }
+
+  .desc {
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+    line-height: 1.6;
+    opacity: 0.9;
+    max-width: 90%;
+    opacity: 0; animation: fadeIn 1s forwards 0.8s;
+  }
+
+  .btn-hero {
+    display: inline-block;
+    padding: 15px 40px;
+    background: white;
+    color: black;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-decoration: none;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    border: 2px solid white;
+    opacity: 0; animation: bounceIn 1s forwards 1s;
+
+    &:hover {
+      background: transparent;
+      color: white;
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+  }
+}
+
+/* --- CONTROLES Y PAGINACIÓN --- */
+.hero-controls {
+  position: absolute;
+  bottom: 30px;
+  right: 5%; /* A la derecha */
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+
+  button {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white;
+    width: 50px; height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2rem;
+    backdrop-filter: blur(5px);
+    transition: 0.3s;
+    
+    &:hover { background: white; color: black; }
+  }
+  
+  @media (max-width: 768px) {
+    display: none; /* Ocultamos flechas en móvil para limpiar la vista */
+  }
+}
+
+.hero-pagination {
+  display: flex; gap: 10px;
+  
+  .swiper-pagination-bullet {
+    width: 10px; height: 10px;
+    background: rgba(255,255,255,0.5);
+    border-radius: 50%;
+    opacity: 1;
+    margin: 0 !important;
+    transition: 0.3s;
+    
+    &-active {
+      background: #FF2E63;
+      transform: scale(1.3);
+    }
+  }
+}
+
+/* --- ANIMACIONES CSS (Keyframes) --- */
+@keyframes slideInTop { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes slideInLeft { from { transform: translateX(-50px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes bounceIn { 
+  0% { transform: scale(0.8); opacity: 0; } 
+  70% { transform: scale(1.05); opacity: 1; } 
+  100% { transform: scale(1); opacity: 1; } 
+}
+
+/* ... Estilos base anteriores ... */
+
+/* 1. MEDIA BACKGROUNDS (VIDEO & IMG) */
+.media-bg {
+  width: 100%; height: 100%; position: relative; overflow: hidden;
+}
+
+.bg-video, .bg-img {
+  width: 100%; height: 100%;
+  object-fit: cover; /* Clave para que el video no se deforme */
+  position: absolute; top: 0; left: 0;
+}
+
+/* Efecto Ken Burns (Zoom Lento) */
+.ken-burns {
+  animation: zoomSlow 20s infinite alternate;
+}
+
+/* 2. GLASS CARD (EFECTO VIDRIO PARA EL TEXTO) */
+.content.glass-card {
+  background: rgba(255, 255, 255, 0.1); /* Blanco muy transparente */
+  backdrop-filter: blur(10px); /* Desenfoque del fondo */
+  -webkit-backdrop-filter: blur(10px);
+  padding: 40px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2); /* Borde sutil */
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  
+  /* Ajuste para móvil: quitamos el vidrio para ganar espacio */
+  @media (max-width: 768px) {
+    background: transparent;
+    backdrop-filter: none;
+    padding: 0;
+    border: none;
+    box-shadow: none;
+  }
+}
+
+/* 3. BARRA DE PROGRESO (LINEA INFERIOR) */
+.autoplay-progress {
+  position: absolute;
+  bottom: 0; left: 0; width: 100%; height: 4px;
+  background: rgba(255,255,255,0.2);
+  z-index: 30;
+
+  .bar {
+    height: 100%;
+    background: #FF2E63; /* Tu color de marca */
+    transition: width 0.1s linear; /* Movimiento fluido */
+    box-shadow: 0 0 10px rgba(255, 46, 99, 0.8); /* Resplandor */
+  }
+}
+
+/* Ajustes adicionales */
+.hero-controls {
+  bottom: 50px; /* Subimos un poco los controles para que no toquen la barra */
+}

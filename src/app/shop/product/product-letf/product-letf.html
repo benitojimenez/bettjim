@@ -1,0 +1,232 @@
+<app-breadcrumbs [items]="breadcrumbs()"></app-breadcrumbs>
+<div class="detail-container">
+  @if (ps.singleProductResource.isLoading()) {
+  <div class="skeleton-wrapper">
+    <div class="sk-gallery"></div>
+    <div class="sk-info">
+      <div class="sk-line title"></div>
+      <div class="sk-line price"></div>
+      <div class="sk-block desc"></div>
+    </div>
+  </div>
+
+  } @else if (ps.cleanProductSlug(); as prod) {
+  <div class="product-grid-layout">
+    <div class="gallery-wrapper">
+      <div class="main-stage">
+        <img [src]="URL_IMG() + activeImage()" [alt]="prod.title" class="hero-img" />
+
+        <div class="badges-overlay">
+          @if (prod.discount) {
+          <span class="badge discount">-{{ prod.discount }}%</span>
+          }
+          <span class="badge new">PREMIUM</span>
+        </div>
+      </div>
+
+      <div class="thumbnails-track">
+        @for (img of prod.images; track $index) {
+        <div
+          class="thumb-item"
+          [class.active]="activeImage() === img.src"
+          (click)="changeImage(img.src)"
+          (mouseenter)="changeImage(img.src)"
+        >
+          <img [src]="URL_IMG() + img.src" [alt]="prod.title" />
+        </div>
+        }
+      </div>
+    </div>
+
+    <div class="info-wrapper">
+      <div class="header-info">
+        <span class="brand-label">BETTJIM COLLECTION</span>
+        <h1 class="title">{{ prod.title }}</h1>
+
+        <div class="rating-summary">
+          <span class="stars">★★★★★</span>
+          <span class="count">4.8 ({{ reviews.length }} reseñas)</span>
+        </div>
+
+        <div class="price-box">
+          <span class="current">{{
+            prod.price | appDiscount : prod | currency : ps.Currency.currency
+          }}</span>
+          @if(prod.discount) {
+          <span class="original">{{ prod.price | currency : ps.Currency.currency }}</span>
+          }
+        </div>
+      </div>
+
+      @if (prod.discount) {
+      <div class="flash-offer-box">
+        <div class="offer-header">
+          <span class="icon">⚡</span>
+          <span>OFERTA TERMINA EN:</span>
+        </div>
+        <div class="timer-display">{{ timeLeft() }}</div>
+      </div>
+      }
+
+      <div class="live-viewers">
+        <span class="pulse-dot"></span>
+        <strong>{{ viewers() }} personas</strong> están viendo este producto.
+      </div>
+      <hr class="divider" />
+      @if (prod.type_inventory===2) {
+      <div class="variants-section">
+        <div class="variant-group">
+          <span class="label">
+          @if (!this.color() && indexVariant() === 0) { Seleciones Color: <strong></strong> }
+          @else { Color seleccionado{{ this.color() ? ': ' + this.color() : ''
+          }} }</span>
+          <div class="color-options">
+            @for (item of prod.variants; track $index) {
+              <button 
+              class="color-btn active" 
+              [style.background-color]="item.color_code"
+              [class.active]="item.color == this.color()"
+              (click)="ChangeVariants(item, prod,$index)"
+              ></button>
+            }            
+          </div>
+        </div>
+      </div>
+      <hr class="divider" />
+
+      <div class="variants-section">
+        <div class="variant-group">
+          <span class="label">Selecione Talla: <strong>{{size()}}</strong></span>
+          <div class="size-options">
+            @for (item of sizes(); track $index) {
+              <button 
+              class="size-btn active" 
+              (click)="Size(item,$index)"
+            [class]="{'active': $index === indexSize()}">{{item |titlecase}}</button>
+            } 
+          </div>
+        </div>
+      </div>
+      }
+      <div class="inventory-status">
+        @if (prod.type_inventory===1) {
+           <div class="status-text">
+          ¡Date prisa! Solo quedan <strong>{{ stockLeft() }} unidades</strong>.
+          </div>
+        }
+        @if (sizes().length ) {
+           <div class="status-text">
+          ¡Date prisa! Solo quedan <strong>{{ stockLeft() }} unidades</strong>.
+          </div>
+        }
+        <!-- <div class="progress-bar">
+          <div class="fill" style="width: 35%"></div>
+        </div> -->
+      </div>
+
+      <div class="purchase-actions-wrapper">
+        <div class="action-buttons-row">
+          <div class="qty-control">
+            <button (click)="updateQuantity(-1)" [disabled]="quantity() <= 1">−</button>
+            <span>{{ quantity() }}</span>
+            <button (click)="updateQuantity(1)" [disabled]="isMaxStockReached()">+</button>
+          </div>
+
+          <button class="btn-add-cart" (click)="addToCart()" [disabled]=" isMaxStockReached()">AGREGAR</button>
+
+          <button class="btn-buy-now" (click)="buyNow()" [disabled]=" isMaxStockReached()">COMPRAR AHORA</button>
+        </div>
+      </div>
+
+      <div class="trust-logistics-box">
+        <div class="logistics-row">
+          <div class="icon-box">🚚</div>
+          <div class="text-box">
+            <strong>Llega el {{ deliveryDate() }}</strong>
+            <p>Si pides en las próximas 4 horas.</p>
+          </div>
+        </div>
+
+        <div class="trust-grid">
+          <div class="trust-item">
+            <span class="icon">🔒</span>
+            <span>Pago Seguro</span>
+          </div>
+          <div class="trust-item">
+            <span class="icon">↺</span>
+            <span>Devolución Gratis</span>
+          </div>
+          <div class="trust-item">
+            <span class="icon">🛡️</span>
+            <span>Garantía 12 Meses</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tabs-container">
+        <div class="tabs-header">
+          <button [class.active]="activeTab() === 'desc'" (click)="setTab('desc')">
+            Descripción
+          </button>
+          <button [class.active]="activeTab() === 'reviews'" (click)="setTab('reviews')">
+            Reseñas ({{ reviews.length }})
+          </button>
+          <button [class.active]="activeTab() === 'shipping'" (click)="setTab('shipping')">
+            Envíos
+          </button>
+        </div>
+
+        <div class="tabs-content">
+          @if (activeTab() === 'desc') {
+          <div class="content-text fade-in">
+            <div [innerHTML]="prod.description"></div>
+          </div>
+          } @if (activeTab() === 'reviews') {
+          <div class="reviews-list fade-in">
+            @for (review of reviews; track $index) {
+            <div class="review-card">
+              <div class="rev-header">
+                <strong>{{ review.user }}</strong>
+                <span class="rev-stars">★★★★★</span>
+              </div>
+              <p>{{ review.text }}</p>
+              <small class="rev-date">{{ review.date | date : 'shortDate' }}</small>
+            </div>
+            }
+          </div>
+          } @if (activeTab() === 'shipping') {
+          <div class="content-text fade-in">
+            <p>Envíos a todo el Perú vía Olva Courier o Shalom. Lima Metropolitana: 24-48 horas.</p>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+  @if (top10Products().length > 0) {
+  <section class="related-section">
+    <h3>Completa tu estilo</h3>
+    <!-- <div class="related-grid">
+        @for (prodRel of top10Products(); track $index) {
+        <div class="mini-product-card">
+          <div class="mini-img-box">
+            <a [routerLink]="['/product', prodRel.slug]" style="cursor: pointer">
+                  <img 
+                    [src]="prodRel.images[0] ? (URL_IMG() + prodRel.images[0].src) : 'assets/placeholder.jpg'" 
+                    [alt]="prodRel.title"
+                    loading="lazy"
+                  >
+                </a>
+          </div>
+          
+          <div class="mini-info">
+            <h4>{{ prodRel.title }}</h4>
+            <span class="mini-price">{{ prodRel.price | currency : ps.Currency.currency }}</span>
+            <button class="btn-mini-add" [routerLink]="['/product/', prodRel.slug]" >Ver</button>
+          </div>
+        </div>
+        }
+      </div> -->
+  </section>
+  } }
+</div>

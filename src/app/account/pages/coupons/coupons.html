@@ -1,0 +1,77 @@
+<div class="coupons-container">
+
+  <header class="coupons-header">
+    <div class="header-text">
+      <h1>Mis Cupones 🎟️</h1>
+      <p>Tus recompensas exclusivas están aquí.</p>
+    </div>
+
+    <div class="redeem-box">
+      <input type="text" placeholder="Ingresa un código promocional">
+      <button class="btn-redeem">Canjear</button>
+    </div>
+  </header>
+
+  <div class="tickets-grid">
+    
+    @for (coupon of coupons(); track coupon.id) {
+      <div class="ticket-card" 
+           [class.used]="coupon.status === 'used'"
+           [class.expiring]="coupon.status === 'expiring'">
+        
+        <div class="ticket-visual" [style.background]="coupon.bgGradient">
+          <div class="visual-content">
+            <span class="discount-value">{{ coupon.discount }}</span>
+            <span class="discount-label">OFF</span>
+          </div>
+          <div class="circles-deco"></div>
+        </div>
+
+        <div class="ticket-rip">
+          <div class="circle-top"></div>
+          <div class="dashed-line"></div>
+          <div class="circle-bottom"></div>
+        </div>
+
+        <div class="ticket-info">
+          <div class="info-top">
+            @if(coupon.status === 'expiring') {
+              <span class="badge-urgent">🔥 Expira pronto</span>
+            } @else if(coupon.status === 'used') {
+              <span class="badge-gray">Usado</span>
+            } @else {
+              <span class="badge-active">Activo</span>
+            }
+
+            <h3 class="coupon-desc">{{ coupon.description }}</h3>
+            
+            @if(coupon.minPurchase) {
+              <p class="cond">Compra mínima: S/ {{ coupon.minPurchase }}</p>
+            }
+            <p class="expiry">Válido hasta: {{ coupon.expiryDate | date:'d MMM y' }}</p>
+          </div>
+
+          <div class="info-action">
+            <div class="code-display" (click)="copyCode(coupon)">
+              {{ coupon.code }}
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+            </div>
+            
+            <button class="btn-copy" 
+                    [class.success]="copiedId() === coupon.id"
+                    (click)="copyCode(coupon)"
+                    [disabled]="coupon.status === 'used'">
+              @if(copiedId() === coupon.id) {
+                ¡Copiado! 🎉
+              } @else {
+                Copiar
+              }
+            </button>
+          </div>
+        </div>
+
+      </div>
+    }
+
+  </div>
+</div>

@@ -1,0 +1,20 @@
+<div class="code-container">
+  @for (digit of digitsArray; track $index) {
+    <input
+      #inputEl
+      type="text"
+      [attr.inputmode]="inputType() === 'numeric' ? 'numeric' : 'text'"
+      maxlength="1"
+      class="code-box"
+      [(ngModel)]="digitsArray[$index]"
+      (input)="onInput($event, $index)"
+      (keydown.backspace)="onBackspace($event, $index)"
+      (paste)="onPaste($event)"
+      autocomplete="one-time-code"
+    />
+  }
+</div>
+
+@if(hasError()){
+  <p class="error-text">El código es incorrecto</p>
+}

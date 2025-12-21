@@ -1,0 +1,13 @@
+<div class="story-item-wrapper zoom-effect">
+  <div class="story-ring">
+    <div class="inner-img">
+      <img [src]="cat().img" [alt]="cat().name" loading="lazy" />
+    </div>
+
+    @if (cat().isNew) {
+    <div class="live-badge">NEW</div>
+    }
+  </div>
+
+  <span class="story-name">{{ cat().name }}</span>
+</div>

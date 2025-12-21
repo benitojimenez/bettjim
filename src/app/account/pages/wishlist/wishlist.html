@@ -1,0 +1,75 @@
+<div class="wishlist-container">
+
+  <header class="page-header">
+    <div class="header-text">
+      <h1>Lista de Deseos ❤️</h1>
+      <p>Guarda ahora, decide después. No pierdas de vista lo que te gusta.</p>
+    </div>
+    <span class="count-badge">{{ products().length }} artículos</span>
+  </header>
+
+  <div class="products-grid">
+    
+    @for (product of products(); track product.id) {
+      <div class="product-card">
+        
+        <div class="card-image">
+          <img [src]="product.image" [alt]="product.name">
+          
+          <button class="btn-remove" (click)="removeFromWishlist(product.id)" title="Eliminar de la lista">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+          </button>
+
+          <div class="badges">
+            @if(product.oldPrice) {
+              <span class="badge sale">Oferta</span>
+            }
+            @if(product.stockStatus === 'low_stock') {
+              <span class="badge low-stock">¡Quedan pocos!</span>
+            }
+          </div>
+
+          <a [routerLink]="['/shop/product', product.slug]" class="img-link"></a>
+        </div>
+
+        <div class="card-info">
+          <span class="category">{{ product.category }}</span>
+          <h3 class="product-title">
+            <a [routerLink]="['/shop/product', product.slug]">{{ product.name }}</a>
+          </h3>
+          
+          <div class="price-box">
+            <span class="current-price">{{ product.price | currency:'PEN' }}</span>
+            @if(product.oldPrice) {
+              <span class="old-price">{{ product.oldPrice | currency:'PEN' }}</span>
+            }
+          </div>
+        </div>
+
+        <div class="card-actions">
+          @if(product.stockStatus === 'out_of_stock') {
+            <button class="btn-cart disabled" disabled>
+              Sin Stock
+            </button>
+          } @else {
+            <button class="btn-cart" (click)="addToCart(product)">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
+              Añadir al Carrito
+            </button>
+          }
+        </div>
+
+      </div>
+    } @empty {
+      <div class="empty-state">
+        <div class="icon-heart-broken">
+           <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+        </div>
+        <h3>Tu lista está vacía</h3>
+        <p>Explora nuestro catálogo y guarda tus favoritos aquí.</p>
+        <a routerLink="/shop" class="btn-shop">Ir a la Tienda</a>
+      </div>
+    }
+
+  </div>
+</div>

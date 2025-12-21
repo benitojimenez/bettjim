@@ -1,0 +1,82 @@
+@if (isOpen()) {
+<div class="overlay fade-in">
+  <div class="modal-container bounce-in">
+    <button class="btn-close" (click)="close()">✕</button>
+
+    @if (!prizeWon()) {
+    <div class="wheel-stage">
+      <div class="header-text">
+        <h2>¡PRUEBA TU SUERTE!</h2>
+        @if (feedbackMessage()) {
+        <p class="feedback-error shake-animation">{{ feedbackMessage() }}</p>
+        } @else {
+        <p>Tienes 1 giro gratis disponible</p>
+        }
+      </div>
+      <div class="winners-ticker">
+        <div class="ticker-content">
+          @for (item of winners; track $index) {
+          <span>{{ item.user }}({{ item.city }}) {{ item.win }}</span>
+          }
+        </div>
+      </div>
+      <div class="wheel-wrapper">
+        <div class="pointer">▼</div>
+
+        <div class="wheel" [style.transform]="rotationStyle()">
+          @for (item of PRIZES_CONFIG; track $index) {
+          <div
+            class="segment"
+            [style.transform]="getSegmentRotation($index)"
+            [class.dark-text]="$index % 2 !== 0"
+          >
+            <span [innerHTML]="item.text"></span>
+          </div>
+          }
+
+          <!-- <div class="segment seg-1">
+            <span>ENVÍO<br />GRATIS</span>
+          </div>
+          <div class="segment seg-2">
+            <span>10%<br />OFF</span>
+          </div>
+          <div class="segment seg-3">
+            <span>S/. 50<br />BONO</span>
+          </div>
+          <div class="segment seg-4"><span>SORPRESA</span></div>
+          <div class="segment seg-5">
+            <span>20%<br />OFF</span>
+          </div>
+          <div class="segment seg-6">
+            <span>INTENTA<br />OTRA VEZ</span>
+          </div> -->
+        </div>
+
+        <button class="spin-btn" (click)="spin()" [disabled]="isSpinning()">GIRAR</button>
+      </div>
+    </div>
+    } @else {
+    <div class="prize-stage fade-in-up">
+      <div class="confetti-bg">🎉</div>
+      <h2>¡FELICIDADES!</h2>
+      <div class="prize-box">
+        <span class="huge-text">{{ prizeWon() }}</span>
+      </div>
+      <p>Para desbloquear tu premio, ingresa tu correo:</p>
+
+      <div class="input-group">
+        <input type="email" placeholder="tu@correo.com" #emailInput />
+        <button class="btn-claim" (click)="claimPrize(emailInput.value)">RECLAMAR PREMIO</button>
+      </div>
+
+      <p class="timer">La oferta expira en 10:00 min</p>
+    </div>
+    }
+  </div>
+</div>
+} @if (!isOpen() && !hasPlayed()) {
+<div class="floating-trigger bounce" (click)="isOpen.set(true)">
+  <span class="emoji">🎁</span>
+  <span class="tag">¡GIRA!</span>
+</div>
+}

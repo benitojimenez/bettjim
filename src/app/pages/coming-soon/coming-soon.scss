@@ -1,0 +1,307 @@
+// 1. Fuentes Importadas
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@500&display=swap');
+
+// 2. Variables (Paleta Dark Mode Premium)
+$bg-color: #050505;
+$text-white: #ffffff;
+$text-muted: #94a3b8;
+$accent-primary: #6366f1; // Indigo
+$accent-secondary: #a855f7; // Purple
+$glass-border: rgba(255, 255, 255, 0.08);
+
+// Reset básico
+:host {
+  display: block;
+  width: 100%;
+  height: 100vh;
+  font-family: 'Inter', sans-serif;
+}
+
+.coming-soon-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: $bg-color;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: $text-white;
+
+  // --- FONDOS ---
+  
+  // La "Nebulosa"
+  .nebula-glow {
+    position: absolute;
+    top: -30%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80vw;
+    height: 60vw;
+    background: radial-gradient(circle, rgba($accent-primary, 0.15) 0%, transparent 60%);
+    filter: blur(100px);
+    z-index: 0;
+    animation: breathe 8s infinite alternate ease-in-out;
+  }
+
+  // La Cuadrícula Tech
+  .tech-grid {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background-image: 
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    mask-image: radial-gradient(circle at center, black 30%, transparent 90%);
+  }
+
+  // --- CONTENIDO ---
+  .hero-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 0 20px;
+    max-width: 900px;
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid $glass-border;
+      border-radius: 100px;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 30px;
+      backdrop-filter: blur(10px);
+
+      .status-dot {
+        width: 6px;
+        height: 6px;
+        background: #22c55e;
+        border-radius: 50%;
+        box-shadow: 0 0 8px #22c55e;
+      }
+    }
+
+    .headline {
+      font-size: clamp(3rem, 6vw, 5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 24px;
+      letter-spacing: -2px;
+
+      .gradient-text {
+        background: linear-gradient(135deg, #fff 30%, $accent-primary 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: $text-muted;
+      line-height: 1.6;
+      margin-bottom: 60px;
+    }
+
+    // --- TIMER GRID (Con Spotlight) ---
+    .timer-grid {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 20px;
+      margin-bottom: 60px;
+
+      .time-unit {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+
+        .glass-card {
+          position: relative; // Necesario para el spotlight absoluto
+          width: 90px;
+          height: 110px;
+          background: rgba(255, 255, 255, 0.02);
+          border: 1px solid $glass-border;
+          border-radius: 20px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden; // Contiene el brillo
+          transition: transform 0.3s ease;
+
+          .value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 3rem;
+            font-weight: 500;
+            z-index: 2; // Encima del brillo
+            position: relative;
+          }
+
+          // EL EFECTO DE LUZ (SPOTLIGHT)
+          .spotlight {
+            position: absolute;
+            pointer-events: none;
+            inset: 0;
+            opacity: 0;
+            z-index: 1;
+            transition: opacity 0.5s;
+            // Usa las variables inyectadas por TS
+            background: radial-gradient(
+              500px circle at var(--mouse-x) var(--mouse-y),
+              rgba(99, 102, 241, 0.15),
+              transparent 40%
+            );
+          }
+
+          &:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255,255,255,0.2);
+            
+            .spotlight { opacity: 1; }
+          }
+        }
+
+        .label {
+          font-size: 0.75rem;
+          text-transform: uppercase;
+          letter-spacing: 2px;
+          color: $text-muted;
+        }
+      }
+
+      .separator {
+        font-size: 3rem;
+        font-family: 'JetBrains Mono';
+        color: rgba(255,255,255,0.1);
+        margin-top: 20px;
+        
+        @media (max-width: 768px) { display: none; }
+      }
+    }
+
+    // --- INPUT NOTIFY ---
+    .notify-box {
+      max-width: 450px;
+      margin: 0 auto;
+
+      .input-pill {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid $glass-border;
+        border-radius: 100px;
+        padding: 6px;
+        display: flex;
+        transition: all 0.3s;
+        box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+
+        &:focus-within {
+          border-color: $accent-primary;
+          box-shadow: 0 0 0 4px rgba($accent-primary, 0.15);
+        }
+
+        input {
+          flex: 1;
+          background: transparent;
+          border: none;
+          color: white;
+          padding: 0 24px;
+          outline: none;
+          font-size: 1rem;
+        }
+
+        button {
+          background: white;
+          color: black;
+          border: none;
+          padding: 14px 28px;
+          border-radius: 100px;
+          font-weight: 700;
+          cursor: pointer;
+          transition: transform 0.2s;
+
+          &:hover { transform: scale(1.05); }
+          &:active { transform: scale(0.95); }
+        }
+      }
+
+      .micro-copy {
+        margin-top: 16px;
+        font-size: 0.85rem;
+        color: darken($text-muted, 10%);
+      }
+    }
+  }
+
+  // --- INFINITE MARQUEE ---
+  .marquee-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 24px 0;
+    background: rgba(0,0,0,0.2);
+    border-top: 1px solid rgba(255,255,255,0.05);
+    backdrop-filter: blur(5px);
+    mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      gap: 4rem;
+      animation: scroll 30s linear infinite;
+
+      .marquee-content {
+        display: flex;
+        gap: 4rem;
+
+        span {
+          font-size: 1.2rem;
+          font-weight: 700;
+          color: rgba(255,255,255,0.4);
+          letter-spacing: 2px;
+          
+          &.dot { color: $accent-primary; }
+        }
+      }
+    }
+  }
+}
+
+// KEYFRAMES
+@keyframes breathe {
+  0% { opacity: 0.4; transform: translateX(-50%) scale(0.9); }
+  100% { opacity: 0.8; transform: translateX(-50%) scale(1.1); }
+}
+
+@keyframes scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+// RESPONSIVE
+@media (max-width: 600px) {
+  .hero-content .timer-grid {
+    gap: 10px;
+    flex-wrap: wrap; // En móviles se ponen en 2 filas si es necesario
+
+    .glass-card {
+      width: 70px;
+      height: 80px;
+      .value { font-size: 2rem; }
+    }
+  }
+
+  .input-pill {
+    flex-direction: column;
+    border-radius: 20px !important;
+    
+    input { padding: 15px !important; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1) !important; }
+    button { width: 100%; justify-content: center; }
+  }
+}

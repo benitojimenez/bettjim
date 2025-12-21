@@ -1,0 +1,47 @@
+<header class="mobile-header-bar">
+  <button class="mobile-summary-trigger" (click)="toggleSummary()">
+    <span class="trigger-label">
+      {{ mobileSummaryOpen() ? 'Ocultar' : 'Mostrar' }} resumen
+      <svg [class.rotated]="mobileSummaryOpen()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg>
+    </span>
+    <span class="trigger-total">S/ 240.00</span>
+  </button>
+
+  <div class="mobile-summary-panel" [class.open]="mobileSummaryOpen()">
+    <div class="panel-content">
+      <app-order-summary></app-order-summary>
+    </div>
+  </div>
+</header>
+
+<div class="split-viewport">
+
+  <main class="left-pane">
+    <div class="pane-content">
+    
+
+        <router-outlet></router-outlet>
+     
+    </div>
+  </main>
+
+
+  <aside class="right-pane">
+    <div class="pane-content sticky-content">
+      
+      <app-order-summary></app-order-summary>
+      
+      <div class="trust-badge">
+        <div class="icon-lock">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="text">
+          <p class="title">Compra 100% Segura</p>
+          <p class="subtitle">Encriptación de grado bancario.</p>
+        </div>
+      </div>
+
+    </div>
+  </aside>
+
+</div>

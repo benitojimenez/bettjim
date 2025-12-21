@@ -1,0 +1,199 @@
+/* --- VARS --- */
+$primary: #FF2E63;
+$dark: #1F2937;
+$light-gray: #F3F4F6;
+$success: #10B981;
+$blue: #3B82F6;
+$radius: 16px;
+
+.tracking-page {
+  min-height: 80vh;
+  background: #FAFAFA;
+  font-family: 'Inter', sans-serif;
+  padding-bottom: 60px;
+}
+
+/* --- 1. SEARCH HERO (Dinámico) --- */
+.search-hero {
+  background: $dark;
+  color: white;
+  padding: 80px 20px;
+  text-align: center;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Cuando hay resultados, se hace más pequeño */
+  &.compact {
+    padding: 30px 20px;
+    background: white;
+    color: $dark;
+    border-bottom: 1px solid #EEE;
+    
+    .hero-content { max-width: 1000px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    h1 { font-size: 1.2rem; margin: 0; }
+    .subtitle { display: none; }
+    .search-box { 
+      margin: 0; flex-direction: row; width: auto; 
+      input { background: $light-gray; border: 1px solid #ddd; color: $dark; }
+      button { padding: 10px 20px; }
+    }
+  }
+
+  .hero-content { max-width: 600px; margin: 0 auto; transition: 0.5s; }
+  
+  h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 10px; letter-spacing: -1px; }
+  .subtitle { color: rgba(255,255,255,0.7); margin-bottom: 30px; font-size: 1.1rem; }
+
+  .search-box {
+    display: flex; gap: 10px; background: white; padding: 10px; border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    
+    @media(max-width: 600px) { flex-direction: column; }
+
+    .input-group {
+      flex: 1; position: relative; display: flex; align-items: center;
+      .icon { position: absolute; left: 15px; color: #999; font-weight: bold; }
+      input {
+        width: 100%; padding: 15px 15px 15px 40px; border: 1px solid transparent; background: #F9FAFB;
+        border-radius: 8px; font-size: 1rem; outline: none; transition: 0.3s;
+        &:focus { background: white; border-color: $primary; }
+      }
+    }
+
+    button {
+      background: $primary; color: white; border: none; padding: 0 30px; border-radius: 8px;
+      font-weight: 700; cursor: pointer; transition: 0.2s; min-height: 50px;
+      &:hover { background: darken($primary, 5%); }
+      &:disabled { background: #ccc; cursor: not-allowed; }
+    }
+  }
+}
+
+/* --- 2. STATUS CARD (El Progreso) --- */
+.results-container {
+  max-width: 1000px; margin: -40px auto 0; padding: 0 20px; position: relative; z-index: 10;
+  
+  /* Ajuste si el hero está compacto, quitamos el margen negativo */
+  .search-hero.compact + & { margin-top: 30px; }
+}
+
+.status-card {
+  background: white; border-radius: $radius; padding: 40px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.08); margin-bottom: 30px;
+
+  .card-header {
+    display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px;
+    .label { background: #EFF6FF; color: $blue; padding: 5px 12px; border-radius: 20px; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; }
+    .status-title { font-size: 2.2rem; margin: 10px 0; font-weight: 800; color: $dark; }
+    .delivery-date { font-size: 1.1rem; color: #666; strong { color: $success; } }
+    .carrier-logo img { width: 60px; opacity: 0.8; }
+  }
+
+  /* TRACKER VISUAL */
+  .visual-progress {
+    position: relative; margin-bottom: 30px;
+    
+    .progress-track {
+      height: 6px; background: #E5E7EB; border-radius: 10px; margin-bottom: 20px; position: relative; top: 20px; z-index: 0;
+      .progress-fill { height: 100%; background: linear-gradient(90deg, $success, $primary); border-radius: 10px; transition: width 1s ease; }
+    }
+
+    .milestones {
+      display: flex; justify-content: space-between; position: relative; z-index: 1;
+      
+      .milestone {
+        display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; width: 80px;
+        
+        .dot {
+          width: 45px; height: 45px; background: white; border: 3px solid #E5E7EB; border-radius: 50%;
+          display: flex; align-items: center; justify-content: center; font-size: 1.2rem; transition: 0.3s;
+          box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        span { font-size: 0.85rem; font-weight: 600; color: #999; }
+
+        &.completed {
+          .dot { background: $success; border-color: $success; color: white; }
+          span { color: $dark; }
+        }
+        &.active {
+          .dot { border-color: $primary; color: $primary; transform: scale(1.2); animation: pulse 2s infinite; }
+          span { color: $primary; font-weight: 800; }
+        }
+      }
+    }
+  }
+
+  .reassurance-box {
+    background: #FFF0F3; border-radius: 12px; padding: 15px; display: flex; align-items: center; gap: 15px;
+    .icon { font-size: 1.5rem; }
+    p { margin: 0; font-size: 0.95rem; color: $primary; }
+  }
+}
+
+/* --- 3. DETAILS GRID --- */
+.details-grid {
+  display: grid; grid-template-columns: 1.5fr 1fr; gap: 30px;
+  @media(max-width: 800px) { grid-template-columns: 1fr; }
+}
+
+.history-panel, .package-panel {
+  background: white; border-radius: $radius; padding: 30px; border: 1px solid #EEE;
+  h3 { margin: 0 0 25px; font-size: 1.2rem; }
+}
+
+/* BITÁCORA VERTICAL */
+.vertical-timeline {
+  display: flex; flex-direction: column;
+  
+  .timeline-item {
+    display: flex; gap: 20px; padding-bottom: 30px; position: relative;
+    &:last-child { padding-bottom: 0; .marker-col .line { display: none; } }
+
+    .time-col {
+      display: flex; flex-direction: column; text-align: right; min-width: 60px;
+      .date { font-weight: 700; font-size: 0.9rem; }
+      .time { color: #999; font-size: 0.8rem; }
+    }
+
+    .marker-col {
+      display: flex; flex-direction: column; align-items: center; position: relative;
+      .circle { width: 12px; height: 12px; background: #ddd; border-radius: 50%; z-index: 1; }
+      .line { width: 2px; background: #EEE; flex: 1; position: absolute; top: 12px; bottom: -30px; }
+    }
+
+    &.latest {
+      .marker-col .circle { background: $primary; box-shadow: 0 0 0 4px rgba($primary, 0.2); }
+      .info-col strong { color: $primary; }
+    }
+
+    .info-col {
+      strong { display: block; margin-bottom: 4px; font-size: 0.95rem; }
+      p { margin: 0; font-size: 0.85rem; color: #666; }
+    }
+  }
+}
+
+/* LISTA DE ITEMS */
+.items-list {
+  display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px;
+  .item-row {
+    display: flex; gap: 15px; align-items: center;
+    img { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; border: 1px solid #eee; }
+    .item-info {
+      display: flex; flex-direction: column; font-size: 0.9rem;
+      span { color: #999; font-size: 0.8rem; }
+    }
+  }
+}
+
+.btn-outline {
+  width: 100%; border: 1px solid #ddd; background: white; padding: 10px; border-radius: 8px;
+  font-weight: 600; cursor: pointer; color: #666;
+  &:hover { border-color: $dark; color: $dark; }
+}
+
+/* ANIMACIONES */
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba($primary, 0.4); } 70% { box-shadow: 0 0 0 8px rgba($primary, 0); } 100% { box-shadow: 0 0 0 0 rgba($primary, 0); } }
+.fade-in-up { animation: fadeInUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; opacity: 0; transform: translateY(20px); }
+@keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+.loader { width: 20px; height: 20px; border: 2px solid white; border-bottom-color: transparent; border-radius: 50%; display: inline-block; animation: rotation 1s linear infinite; }
+@keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }

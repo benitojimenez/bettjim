@@ -1,0 +1,141 @@
+:host {
+  --left-bg: #ffffff;
+  --right-bg: #fafafa;
+  --border-color: #e6e6e6;
+  --primary: #000;
+  --accent: #2563eb;
+  --text-main: #333;
+  --text-muted: #737373;
+}
+
+/* ===========================
+   HEADER MÓVIL
+   =========================== */
+.mobile-header-bar {
+  display: none; /* Oculto en PC */
+  background: white; border-bottom: 1px solid var(--border-color);
+  position: relative; z-index: 10;
+
+  .logo-area {
+    padding: 16px 20px;
+    .logo { font-size: 1.4rem; font-weight: 800; color: var(--primary); text-decoration: none; }
+  }
+
+  .mobile-summary-trigger {
+    width: 100%; display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 20px; background: #fafafa; border: none; border-top: 1px solid var(--border-color);
+    cursor: pointer;
+    
+    .trigger-label { 
+      display: flex; align-items: center; gap: 8px; color: var(--accent); font-size: 0.9rem; font-weight: 500;
+      svg { width: 14px; transition: transform 0.2s; &.rotated { transform: rotate(180deg); } }
+    }
+    .trigger-total { font-weight: 700; font-size: 1.1rem; color: var(--text-main); }
+  }
+
+  .mobile-summary-panel {
+    background: #fafafa; border-bottom: 1px solid var(--border-color);
+    max-height: 0; overflow: hidden; transition: max-height 0.4s ease;
+    &.open { max-height: 100vh; }
+    .panel-content { padding: 25px 20px; }
+  }
+}
+
+/* ===========================
+   SPLIT VIEWPORT (Desktop)
+   =========================== */
+.split-viewport {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* --- COLUMNA IZQUIERDA (Formularios) --- */
+.left-pane {
+  flex: 1; /* ~60% */
+  background: var(--left-bg);
+  display: flex; justify-content: flex-end; /* Alinea contenido a la derecha */
+  border-right: 1px solid var(--border-color);
+  padding-top: 60px;
+  padding-bottom: 40px; /* Espacio inferior mínimo */
+}
+
+.pane-content {
+  width: 100%; max-width: 700px; 
+  padding: 0 5%;
+  margin-right: 40px;
+}
+
+/* Header & Breadcrumbs */
+.desktop-header {
+  margin-bottom: 30px;
+  .logo { font-size: 1.8rem; font-weight: 900; color: var(--primary); text-decoration: none; letter-spacing: -1px; }
+}
+
+/* Área del formulario */
+.form-area {
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* --- COLUMNA DERECHA (Resumen) --- */
+.right-pane {
+  width: 42%; /* ~40% */
+  background: var(--right-bg);
+  padding-top: 60px;
+  display: flex; justify-content: flex-start;
+  box-shadow: inset 4px 0 10px rgba(0,0,0,0.01);
+}
+
+.right-pane .pane-content {
+  margin-left: 40px; margin-right: 0;
+  max-width: 450px;
+  
+  &.sticky-content {
+    position: sticky; top: 60px;
+    height: fit-content;
+  }
+}
+
+/* Trust Badge */
+.trust-badge {
+  margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(0,0,0,0.05);
+  display: flex; align-items: center; gap: 12px; opacity: 0.8;
+  
+  .icon-lock {
+    width: 32px; height: 32px; background: #e0f2fe; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; color: #0284c7;
+    svg { width: 16px; }
+  }
+  
+  .text {
+    .title { font-weight: 600; font-size: 0.85rem; margin: 0; color: var(--text-main); }
+    .subtitle { font-size: 0.75rem; color: var(--text-muted); margin: 0; }
+  }
+}
+
+/* ANIMACIONES */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===========================
+   RESPONSIVE MÓVIL
+   =========================== */
+@media (max-width: 1000px) {
+  
+  .split-viewport { flex-direction: column; }
+  
+  .mobile-header-bar { display: block; }
+  
+  .left-pane {
+    border-right: none; padding-top: 30px; justify-content: center;
+    .pane-content { margin-right: 0; padding: 0 20px; }
+    
+    .desktop-header { display: none; }
+  }
+
+  .right-pane { display: none; }
+  
+ 
+}

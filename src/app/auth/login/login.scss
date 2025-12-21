@@ -1,0 +1,205 @@
+/* Variables Locales */
+.login-wrapper {
+  display: flex;
+  min-height: 85vh;
+  width: 100%;
+  font-family: var(--font-family);
+  /* AGREGA ESTO: Asegura que ambos lados se estiren al mismo alto */
+  align-items: stretch;
+}
+
+/* =========================================
+   IZQUIERDA: FORMULARIO
+   ========================================= */
+.form-section {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  background: white;
+}
+
+.form-container {
+  width: 100%;
+  max-width: 420px; /* Ancho máximo para que no se estire */
+}
+
+/* Header */
+.auth-header {
+  margin-bottom: 30px;
+  text-align: center; /* En móvil se ve bien centrado */
+  
+  .brand-logo {
+    font-size: 1.8rem;
+    font-weight: 900;
+    letter-spacing: -1px;
+    margin-bottom: 15px;
+    display: block;
+  }
+  
+  h2 { font-size: 1.5rem; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
+  p { color: var(--text-light); font-size: 0.95rem; }
+}
+
+/* Social Buttons */
+.social-login {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 25px;
+
+  .btn-social {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    padding: 10px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--text-main);
+    transition: 0.2s;
+    
+    &:hover { background: #f9fafb; border-color: #d1d5db; }
+  }
+}
+
+/* Divider */
+.divider {
+  display: flex; align-items: center; text-align: center; margin-bottom: 25px;
+  &::before, &::after { content: ''; flex: 1; border-bottom: 1px solid var(--border); }
+  span { padding: 0 10px; color: var(--text-light); font-size: 0.85rem; }
+}
+
+/* Inputs */
+.input-group {
+  margin-bottom: 20px;
+  
+  label {
+    display: block; margin-bottom: 6px; font-weight: 500; font-size: 0.9rem; color: var(--text-main);
+  }
+
+  input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg-input);
+    font-size: 0.95rem;
+    transition: 0.2s;
+    outline: none;
+    
+    &:focus {
+      background: white;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(0,0,0,0.05);
+    }
+    
+    &.error { border-color: var(--error); background: #fef2f2; }
+  }
+
+  .error-msg { font-size: 0.8rem; color: var(--error); margin-top: 5px; display: block; }
+}
+
+/* Password Eye */
+.password-wrapper {
+  position: relative;
+  input { padding-right: 40px; } /* Espacio para el ojo */
+  
+  .btn-eye {
+    position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+    background: none; border: none; cursor: pointer; color: #9ca3af;
+    display: flex; align-items: center;
+    &:hover { color: var(--primary); }
+    svg { width: 20px; height: 20px; }
+  }
+}
+
+/* Actions (Remember / Forgot) */
+.form-actions {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;
+  font-size: 0.9rem;
+  
+  .remember-me {
+    display: flex; align-items: center; gap: 6px; cursor: pointer;
+    input { width: 16px; height: 16px; accent-color: var(--primary); cursor: pointer; }
+    label { cursor: pointer; color: var(--text-light); }
+  }
+  
+  .link-forgot {
+    color: var(--primary); font-weight: 600; text-decoration: none;
+    &:hover { text-decoration: underline; }
+  }
+}
+
+/* Submit Button */
+.btn-submit {
+  width: 100%;
+  padding: 14px;
+  background: var(--primary);
+  color: white;
+  border: none; border-radius: 8px;
+  font-size: 1rem; font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  
+  &:hover { background: #333; transform: translateY(-1px); }
+  &:disabled { opacity: 0.7; cursor: not-allowed; }
+  
+  .spinner {
+    width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite;
+  }
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Footer */
+.auth-footer {
+  margin-top: 30px; text-align: center; font-size: 0.9rem; color: var(--text-light);
+  a { color: var(--primary); font-weight: 700; text-decoration: none; &:hover { text-decoration: underline; } }
+}
+
+/* =========================================
+   DERECHA: IMAGEN (BRANDING)
+   ========================================= */
+.image-section {
+  flex: 1;
+  background: #f3f4f6;
+  position: relative;
+  overflow: hidden;
+  display: none; /* Oculto por defecto en móvil */
+
+  img {
+    width: 100%; height: 100%; object-fit: cover;
+  }
+  
+  .image-overlay {
+    position: absolute; bottom: 0; left: 0; width: 100%;
+    padding: 60px 40px;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    color: white;
+    
+    blockquote {
+      font-size: 1.5rem; font-weight: 300; line-height: 1.4; border-left: 4px solid white; padding-left: 20px;
+      cite { display: block; margin-top: 15px; font-size: 1rem; font-weight: 600; font-style: normal; opacity: 0.9; }
+    }
+  }
+}
+
+/* =========================================
+   MEDIA QUERIES (RESPONSIVE)
+   ========================================= */
+
+/* PC y Tablet Grande: Mostramos Split Screen */
+@media (min-width: 900px) {
+  .image-section { display: block; }
+  .auth-header { text-align: left; } /* En PC alineamos a la izquierda */
+}
+
+/* Móvil: Full Form */
+@media (max-width: 500px) {
+  .form-section { padding: 20px; }
+  .social-login { grid-template-columns: 1fr; /* Botones sociales uno debajo del otro */ }
+}

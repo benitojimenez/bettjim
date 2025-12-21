@@ -1,0 +1,138 @@
+:host {
+  --primary: #111;
+  --text-main: #1f2937;
+  --text-muted: #6b7280;
+  --border: #e5e7eb;
+  --bg-page: #f9fafb;
+  --bg-card: #ffffff;
+  --radius: 12px;
+  --green: #10b981;
+}
+
+.addresses-container {
+  display: flex; flex-direction: column; gap: 30px;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.page-header {
+  h1 { font-size: 1.6rem; font-weight: 800; margin: 0 0 5px 0; color: var(--text-main); }
+  p { color: var(--text-muted); margin: 0; font-size: 0.95rem; }
+}
+
+/* --- GRID SYSTEM --- */
+.address-grid {
+  display: grid;
+  /* Crea columnas automáticas de mínimo 300px */
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+/* --- 1. TARJETA "AGREGAR NUEVA" --- */
+.add-new-card {
+  background: transparent;
+  border: 2px dashed #d1d5db; /* Borde discontinuo */
+  border-radius: var(--radius);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-height: 220px; /* Altura igual a las otras */
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--text-muted);
+
+  .icon-plus {
+    width: 50px; height: 50px; border-radius: 50%; background: #f3f4f6;
+    display: flex; align-items: center; justify-content: center; margin-bottom: 15px;
+    transition: 0.2s;
+    svg { width: 24px; height: 24px; color: var(--text-main); }
+  }
+
+  h3 { font-size: 1rem; font-weight: 600; margin: 0; }
+
+  &:hover {
+    border-color: var(--primary); color: var(--primary); background: #fafafa;
+    .icon-plus { background: var(--primary); svg { color: white; } }
+  }
+}
+
+/* --- 2. TARJETA DE DIRECCIÓN --- */
+.address-card {
+  background: white; border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 25px;
+  display: flex; flex-direction: column; justify-content: space-between;
+  min-height: 220px;
+  transition: 0.2s;
+  position: relative; overflow: hidden;
+
+  &:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+
+  /* Estilo especial si es Default */
+  &.default {
+    border-color: var(--primary);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    &::before {
+      content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+      background: var(--primary);
+    }
+  }
+
+  /* Header */
+  .card-header {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;
+    
+    .alias-group {
+      display: flex; align-items: center; gap: 8px;
+      .icon-home { width: 18px; color: var(--text-muted); }
+      .alias { font-weight: 600; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); }
+    }
+
+    .badge-default {
+      background: var(--primary); color: white; font-size: 0.7rem; font-weight: 700;
+      padding: 4px 8px; border-radius: 4px; text-transform: uppercase;
+    }
+  }
+
+  /* Body */
+  .card-body {
+    flex: 1; /* Ocupa el espacio disponible */
+    margin-bottom: 20px;
+
+    .receiver { font-size: 1.1rem; font-weight: 800; color: var(--text-main); margin: 0 0 8px 0; }
+    .street { font-size: 0.95rem; color: var(--text-main); line-height: 1.4; margin: 0 0 4px 0; }
+    .city { font-size: 0.9rem; color: var(--text-muted); margin: 0 0 10px 0; }
+    .phone { font-size: 0.9rem; color: var(--text-muted); font-weight: 500; }
+  }
+
+  /* Footer */
+  .card-footer {
+    border-top: 1px solid #f3f4f6; padding-top: 15px;
+    display: flex; justify-content: space-between; align-items: center;
+
+    .actions {
+      display: flex; gap: 12px;
+      button {
+        background: none; border: none; font-size: 0.85rem; font-weight: 600; cursor: pointer; padding: 0;
+        transition: 0.2s;
+      }
+      .btn-edit { color: var(--text-main); &:hover { text-decoration: underline; } }
+      .btn-delete { color: #ef4444; &:hover { color: #b91c1c; } }
+    }
+
+    .btn-set-default {
+      background: none; border: none; font-size: 0.85rem; color: var(--primary); font-weight: 600; cursor: pointer;
+      &:hover { text-decoration: underline; }
+    }
+  }
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .address-grid {
+    grid-template-columns: 1fr; /* Una sola columna en móvil */
+  }
+  
+  .add-new-card { min-height: 100px; flex-direction: row; gap: 15px; } /* Más compacto en móvil */
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

@@ -1,0 +1,467 @@
+/* --- VARIABLES & CONFIG --- */
+:host {
+  // --primary: #111;  
+  --red: #e63535;         /* Rojo Urgencia */
+  --accent: #2563eb;         /* Azul Acción */
+  --danger: #b91c1c;         /* Rojo Urgencia */
+  --success: #15803d;        /* Verde Éxito */
+  --bg-gray: #f3f4f6;
+  --border-light: #e5e7eb;
+  --radius: 8px;
+  --font-main: 'Inter', system-ui, sans-serif;
+  
+  /* Altura del Sticky Footer en móvil */
+  --footer-height: 70px; 
+}
+$color-black:#111;
+$color-red:#e63535;
+
+.detail-container {
+  max-width: 1400px; margin: 0 auto; padding: 20px 20px 80px;
+  font-family: var(--font-main); color: $color-black;
+}
+
+/* --- LAYOUT GRID (PC) --- */
+.product-grid-layout {
+  display: grid;
+  grid-template-columns: 0.7fr 1fr; /* Galería 55% - Info 45% */
+  gap: 50px;
+  margin-bottom: 60px;
+  align-items: start;
+}
+
+/* =========================================
+   GALERÍA (IZQUIERDA)
+   ========================================= */
+.gallery-wrapper {
+  position: sticky; top: 100px; z-index: 10;
+}
+
+.main-stage {
+  position: relative;
+  border-radius: 12px; overflow: hidden;
+  background: var(--bg-gray);
+  aspect-ratio: 4/5; cursor: zoom-in;
+  margin-bottom: 15px;
+
+  .hero-img { width: 100%; 
+    height: 100%; 
+    // object-fit: cover; 
+    transition: transform 0.3s; }
+  &:hover .hero-img { transform: scale(1.03); }
+}
+
+.badges-overlay {
+  position: absolute; top: 15px; left: 15px; display: flex; flex-direction: column; gap: 6px;
+  .badge {
+    padding: 6px 12px; border-radius: 4px; color: white; font-size: 0.75rem; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    &.discount { background: var(--danger); box-shadow: 0 4px 10px rgba(185, 28, 28, 0.3); }
+    &.new { background: $color-black; }
+  }
+}
+
+.thumbnails-track {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto; 
+  padding-bottom: 5px; /* Espacio para scrollbar sutil */
+  scroll-behavior: smooth;
+  
+  /* Ocultar scrollbar pero permitir scroll */
+  &::-webkit-scrollbar { height: 4px; }
+  &::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+
+  // Estilos opcionales para la barra de desplazamiento (Scrollbar)
+  // Oculta la barra de desplazamiento en navegadores basados en WebKit (Chrome, Safari)
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .thumb-item {
+    width: 70px; 
+    height: 70px; 
+    flex-shrink: 0; 
+    border-radius: 8px; 
+    overflow: hidden;
+    cursor: pointer; 
+    opacity: 0.5; 
+    border: 2px solid transparent; 
+    transition: all 0.2s;
+    background: #fff;
+    
+    img { width: 100%; height: 100%; object-fit: cover; }
+    
+    &:hover { opacity: 0.8; }
+    
+    &.active { 
+      opacity: 1; 
+      border-color: $color-black; 
+      transform: translateY(-2px);
+    }
+  }
+}
+
+/* =========================================
+   INFO & MARKETING (DERECHA)
+   ========================================= */
+.header-info {
+  margin-bottom: 20px;
+  .brand-label { font-size: 0.75rem; font-weight: 700; color: #6b7280; letter-spacing: 1px; text-transform: uppercase; }
+  
+  .title { 
+    font-size: 2.2rem; margin: 8px 0 12px; line-height: 1.1; 
+    letter-spacing: -1px; font-weight: 800; 
+  }
+  
+  .rating-summary {
+    display: flex; gap: 8px; align-items: center; font-size: 0.9rem; margin-bottom: 15px;
+    .stars { color: #f59e0b; }
+    .count { color: #6b7280; text-decoration: underline; cursor: pointer; }
+  }
+
+  .price-box {
+    display: flex; gap: 15px; align-items: flex-end;
+    .current { font-size: 1.8rem; font-weight: 800; color: $color-black; }
+    .original { font-size: 1.1rem; color: #9ca3af; text-decoration: line-through; margin-bottom: 5px; }
+  }
+}
+
+/* --- ELEMENTOS DE MARKETING --- */
+.flash-offer-box {
+  background: #fef2f2; border: 1px solid #fecaca; color: var(--danger);
+  padding: 10px 15px; border-radius: 8px; margin-bottom: 15px;
+  display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 0.9rem;
+  .icon { margin-right: 5px; }
+  .timer-display { font-family: monospace; font-size: 1.1rem; }
+}
+
+.live-viewers {
+  display: flex; align-items: center; gap: 10px; font-size: 0.85rem; color: #4b5563; margin-bottom: 20px;
+  .pulse-dot {
+    width: 8px; height: 8px; background: var(--danger); border-radius: 50%;
+    box-shadow: 0 0 0 rgba(220, 38, 38, 0.4); animation: pulse 2s infinite;
+  }
+}
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); }
+  70% { box-shadow: 0 0 0 6px rgba(220, 38, 38, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+}
+
+.divider { border: 0; border-top: 1px solid var(--border-light); margin: 25px 0; }
+
+/* --- VARIANTES & STOCK --- */
+.variants-section { margin-bottom: 25px; }
+.label { display: block; margin-bottom: 8px; font-size: 0.9rem; }
+.color-options {
+  display: flex; gap: 10px;
+  .color-btn {
+    width: 32px; 
+    height: 32px; 
+    border-radius: 50%;
+    box-shadow: #000;
+    cursor: pointer; transition: 0.2s ;
+    &:hover { transform: scale(1.1); }
+    &.active { border-color: $color-black; box-shadow: 0 0 0 2px white inset; }
+  }
+}
+
+.size-options {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  .size-btn {
+    padding: 6px 14px; 
+    border: 1px solid #ccc; 
+    background: white;
+    border-radius: 4px; 
+    font-size: 0.8rem; 
+    cursor: pointer; 
+    transition: 0.2s;
+  &:hover { 
+    transform: scale(1.1);}
+  &.active { 
+    background: #5b086b9c;    
+    color: white; 
+    border-color:  var(--danger); }
+  }
+}
+
+.inventory-status {
+  margin-bottom: 20px;
+  .status-text { font-size: 0.85rem; color: var(--danger); margin-bottom: 6px; }
+  .progress-bar {
+    width: 100%; height: 6px; background: #e5e7eb; border-radius: 3px; overflow: hidden;
+    .fill { height: 100%; background: var(--danger); border-radius: 3px; }
+  }
+}
+
+/* --- ACCIONES DE COMPRA (BOTONES) --- */
+.purchase-actions-wrapper { margin-bottom: 35px; }
+
+.action-buttons-row {
+  display: flex; gap: 12px; flex-wrap: wrap;
+
+  .qty-control {
+    display: flex; align-items: center; border: 1px solid var(--border-light); border-radius: 8px; height: 50px;
+    button { width: 40px; height: 100%; background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #555; }
+    span { width: 30px; text-align: center; font-weight: bold; }
+  }
+
+  .btn-add-cart {
+    flex: 1; 
+    min-width: 140px; 
+    height: 50px;
+    background: var(--primary); 
+    color: white; 
+    border: none; 
+    border-radius: 8px;
+    font-weight: 700; 
+    font-size: 0.95rem; 
+    cursor: pointer; 
+    transition: 0.2s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+   /* --- Aplicación de la animación --- */
+    animation: sk-pulseCart 1.5s infinite ease-in-out; /* Nombre, duración, repetición, curva */
+    &:hover { background: #333; }
+    /* 1. Definición del Estilo Deshabilitado */
+    &:disabled {
+      // A. Cambiar el color (gris para indicar inactividad)
+      background-color: #ccc;
+      
+      // B. Quitar el efecto de hover y la animación si está activa
+      // Esto es importante para que el usuario no espere una interacción
+      opacity: 0.7; // Reducir la opacidad
+      cursor: not-allowed; // Cambiar el cursor a 'no permitido'
+      box-shadow: none; // Quitar sombras
+      transform: none; // Asegurarse de que no haya transformaciones activas
+      animation: none; // Detener cualquier animación de 'pulso'
+
+      // C. Importante: Limpiar el hover si el botón está deshabilitado
+      &:hover {
+        background-color: #ccc; // Mantener el color base deshabilitado
+        cursor: not-allowed;
+        transform: none;
+      }
+    }
+  }
+
+  .btn-buy-now {
+    flex: 1; 
+    min-width: 140px; 
+    height: 50px;
+    background: $color-black; 
+    color: white; 
+    border: none; 
+    border-radius: 8px;
+    font-weight: 700; 
+    font-size: 0.95rem; 
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: 0.2s;
+    &:hover { background: #ac1515; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
+    &:disabled {
+      // A. Cambiar el color (gris para indicar inactividad)
+      background-color: #ccc;
+      
+      // B. Quitar el efecto de hover y la animación si está activa
+      // Esto es importante para que el usuario no espere una interacción
+      opacity: 0.7; // Reducir la opacidad
+      cursor: not-allowed; // Cambiar el cursor a 'no permitido'
+      box-shadow: none; // Quitar sombras
+      transform: none; // Asegurarse de que no haya transformaciones activas
+      animation: none; // Detener cualquier animación de 'pulso'
+
+      // C. Importante: Limpiar el hover si el botón está deshabilitado
+      &:hover {
+        background-color: #ccc; // Mantener el color base deshabilitado
+        cursor: not-allowed;
+        transform: none;
+      }
+    }
+  }
+  
+}
+
+/* --- TRUST BOX (GRIS) --- */
+.trust-logistics-box {
+  background: #f9fafb; border: 1px solid var(--border-light); border-radius: 12px; padding: 20px; margin-bottom: 40px;
+
+  .logistics-row {
+    display: flex; gap: 15px; align-items: flex-start; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px dashed #d1d5db;
+    .icon-box { font-size: 1.4rem; }
+    strong { color: var(--success); display: block; margin-bottom: 2px; }
+    p { margin: 0; font-size: 0.85rem; color: #6b7280; }
+  }
+
+  .trust-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+    .trust-item {
+      display: flex; flex-direction: column; align-items: center; text-align: center; gap: 5px;
+      font-size: 0.7rem; color: #4b5563;
+      .icon { font-size: 1.2rem; }
+    }
+  }
+}
+
+/* --- PESTAÑAS --- */
+.tabs-container {
+  .tabs-header {
+    display: flex; gap: 25px; border-bottom: 1px solid var(--border-light); margin-bottom: 20px;
+    /* Ajuste para scroll horizontal en móvil */
+    overflow-x: auto; white-space: nowrap; padding-bottom: 5px;
+
+    /* Ocultar barra de scroll pero permitir scroll */
+    &::-webkit-scrollbar { height: 0; }
+    
+    button {
+      background: none; border: none; padding-bottom: 10px; font-size: 1rem; color: #9ca3af;
+      cursor: pointer; border-bottom: 2px solid transparent; font-weight: 500; transition: 0.2s;
+      flex-shrink: 0; /* Evita que los botones se aplasten */
+      &.active { color: $color-black; border-color: $color-black; font-weight: 700; }
+    }
+  }
+  .content-text { line-height: 1.7; color: #374151; font-size: 0.95rem; }
+  .feature-list { padding-left: 20px; margin-top: 10px; li { margin-bottom: 5px; } }
+}
+
+.review-card {
+  background: white; border: 1px solid var(--border-light); padding: 15px; margin-bottom: 10px; border-radius: 8px;
+  .rev-header { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 0.9rem; }
+  .rev-stars { color: #f59e0b; }
+  p { margin: 0 0 5px; font-size: 0.9rem; color: #4b5563; }
+  .rev-date { font-size: 0.75rem; color: #9ca3af; }
+}
+
+/* --- RELACIONADOS & SKELETON --- */
+.related-section {
+  h3 { font-size: 1.5rem; font-weight: 800; margin-bottom: 25px; }
+  .related-grid { 
+    display: grid; 
+    /* Desktop: Automático según tamaño */
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+    gap: 20px; 
+  }
+  
+  .mini-product-card {
+    background: white; border: 1px solid var(--border-light); border-radius: 8px; padding: 10px; transition: 0.3s;
+    &:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+    .mini-img-box { height: 200px; background: var(--bg-gray); margin-bottom: 10px; border-radius: 6px; img { width: 100%; height: 100%; object-fit: cover; } }
+    h4 { font-size: 0.9rem; margin: 0 0 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mini-price { font-weight: 700; font-size: 1rem; color: $color-black; display: block; margin-bottom: 10px; }
+    .btn-mini-add { width: 100%; padding: 6px; background: white; border: 1px solid $color-black; font-weight: 600; cursor: pointer; transition: 0.2s; &:hover { background: $color-black; color: white; } }
+  }
+}
+
+/* Skeleton */
+.skeleton-wrapper {
+  display: grid; grid-template-columns: 1.3fr 1fr; gap: 50px;
+  .sk-gallery { background: #eee; aspect-ratio: 4/5; border-radius: 12px; animation: sk-pulse 1.5s infinite; }
+  .sk-info { display: flex; flex-direction: column; gap: 20px; .sk-line { height: 25px; background: #eee; border-radius: 4px; animation: sk-pulse 1.5s infinite; } .title { width: 70%; height: 50px; } .desc { height: 100px; } }
+}
+@keyframes sk-pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
+/* Definición de la animación (ya la tienes) */
+@keyframes sk-pulseCart { 
+  0% { opacity: 1; transform: scale(1); } /* Añadido scale para un efecto más notorio */
+  50% { opacity: 1; transform: scale(1.05); } /* Ligeramente más grande */
+  100% { opacity: 1; transform: scale(1); }
+}
+/* =========================================
+   📱 RESPONSIVE & MOBILE OPTIMIZATIONS
+   ========================================= */
+
+@media (max-width: 900px) {
+  
+  /* 1. LAYOUT PRINCIPAL */
+  .detail-container { 
+    padding: 15px 15px 100px; /* Menos padding lateral, más padding bottom para el footer */
+  }
+
+  .product-grid-layout {
+    grid-template-columns: 1fr; /* Una sola columna */
+    gap: 25px;
+    margin-bottom: 30px;
+  }
+
+  /* 2. GALERÍA MÓVIL */
+  .gallery-wrapper { 
+    position: static; 
+  }
+  
+  .main-stage {
+    // margin-bottom: 10px;
+    // /* En móvil puedes querer que sea cuadrada para que se vea más imagen */
+    // aspect-ratio: 1/1; 
+  }
+
+  .thumbnails-track {
+    gap: 8px;
+    
+    .thumb-item {
+      width: 60px;
+      height: 60px;
+      flex-shrink: 0; /* Evita que se aplasten */
+     
+    }
+  }
+
+  /* 3. TIPOGRAFÍA & INFO */
+  .header-info {
+    margin-bottom: 15px;
+    .title { font-size: 1.6rem; } /* Título más pequeño en móvil */
+    .price-box .current { font-size: 1.5rem; }
+  }
+
+  /* 4. BOTONES STICKY (PEGADOS ABAJO) */
+  .action-buttons-row {
+    position: fixed; 
+    bottom: 0; left: 0; right: 0; 
+    z-index: 999;
+    background: white; 
+    padding: 12px 15px; 
+    /* Soporte para iPhone X/11/12+ (SafeArea) */
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+    
+    margin: 0;
+    box-shadow: 0 -4px 15px rgba(0,0,0,0.08);
+    gap: 10px;
+    
+    // .qty-control { display: none; } /* Ocultamos selector cantidad */
+    .btn-buy-now{ display: none;}
+    .btn-add-cart{ 
+      height: 48px; 
+      font-size: 0.85rem; /* Texto un poco más pequeño para que quepan */
+      border-radius: 6px;
+    }
+  }
+
+  /* 5. RELACIONADOS (2 COLUMNAS EN MÓVIL) */
+  .related-section {
+    .related-grid {
+      /* Forzamos 2 columnas en móvil para ver más productos */
+      grid-template-columns: repeat(1, 1fr); 
+      gap: 10px;
+      
+    }
+    
+    .mini-product-card {
+      // .mini-img-box { height: 160px; } /* Imagen un poco más baja */
+      h4 { font-size: 0.8rem; }
+    }
+  }
+
+  /* 6. TRUST BOX AJUSTADO */
+  .trust-logistics-box {
+    padding: 15px;
+    .trust-grid {
+      /* Si es muy angosto, quizás prefieras 2 columnas o scroll */
+      gap: 5px;
+    }
+  }
+  
+  /* 7. SKELETON MÓVIL */
+  .skeleton-wrapper {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}

@@ -1,0 +1,62 @@
+<div class="overlay" [class.active]="layout.sidebarOpen()" (click)="layout.closeSidebar()"></div>
+
+<aside class="sidebar" [class.active]="layout.sidebarOpen()">
+  <div class="sidebar-header">
+    <div class="user-info">
+      <div class="avatar">👤</div>
+      <div>
+        <p>Hola, {{auth.getLastName()}}</p>
+        <strong>Mi Cuenta</strong>
+      </div>
+    </div>
+    <button class="btn-close" (click)="layout.closeSidebar()">✕</button>
+  </div>
+
+  <div class="sidebar-content">
+    <h3 class="section-title">Departamentos</h3>
+
+    <ul class="menu-level-1">
+      @for (cat of categories.cleanCategories(); track $index) {
+      <li class="menu-item">
+        <div class="menu-row" (click)="toggle(cat, categories.cleanCategories())">
+          <span>{{ cat.title }}</span>
+          @if(cat.lis_title) {
+          <span class="arrow" [class.rotated]="cat.expanded">▼</span>
+          }
+        </div>
+
+        @if (cat.expanded && cat.lis_title) {
+        <ul class="menu-level-2 dropdown-anim">
+          @for (sub of cat.lis_title; track $index) {
+          <li class="sub-item">
+            <div class="menu-row sub" (click)="toggle(sub, cat.lis_title)">
+              <span>{{ sub.title }}</span>
+              @if(sub.subcategories) {
+              <span class="arrow" [class.rotated]="sub.expanded">▼</span>
+              }
+            </div>
+
+            @if (sub.expanded && sub.subcategories) {
+            <ul class="menu-level-3 dropdown-anim">
+              @for (item of sub.subcategories; track item.title) {
+              <li class="last-item">
+                <a
+                  (click)="layout.closeSidebar()"
+                  [routerLink]="['/shop']"
+                  [queryParams]="{ cat: cat.title, sub: sub.title }"
+                >
+                  {{ item.title }}
+                </a>
+              </li>
+              }
+            </ul>
+            }
+          </li>
+          }
+        </ul>
+        }
+      </li>
+      }
+    </ul>
+  </div>
+</aside>

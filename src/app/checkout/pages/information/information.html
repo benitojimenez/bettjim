@@ -1,0 +1,135 @@
+<div class="step-animation">
+  <section class="section-group">
+    <div class="header-row">
+      <h2>Contacto</h2>
+      @if(!auth.isAuthenticated()) {
+      <span class="login-prompt">
+        ¿Ya tienes cuenta? <a routerLink="/auth/login">Iniciar sesión</a>
+      </span>
+      }
+    </div>
+
+    <form [formGroup]="form">
+      <div class="form-floating">
+        <input type="email" id="email" formControlName="email" placeholder="Email" />
+        <label for="email">Correo electrónico</label>
+        @if(form.get('email')?.invalid && form.get('email')?.touched) {
+        <span class="error-text">Ingresa un correo válido</span>
+        }
+      </div>
+
+      <div class="checkbox-wrapper">
+        <input type="checkbox" id="newsletter" formControlName="newsletter" />
+        <label for="newsletter">Enviarme novedades y ofertas por correo</label>
+      </div>
+    </form>
+  </section>
+
+  <section class="section-group mt-large">
+    <h2>Dirección de envío</h2>
+
+    @if(auth.isAuthenticated() && savedAddresses().length > 0) {
+    <div class="address-selector">
+      @for(addr of savedAddresses(); track addr.id) {
+      <div
+        class="address-card"
+        [class.selected]="selectedAddressId() === addr.id"
+        (click)="selectAddress(addr.id)"
+      >
+        <div class="radio-circle"></div>
+        <div class="addr-info">
+          <span class="alias">{{ addr.alias }}</span>
+          <span class="detail">{{ addr.line1 }}, {{ addr.city }}</span>
+        </div>
+      </div>
+      }
+
+      <div
+        class="address-card new-addr"
+        [class.selected]="selectedAddressId() === 'new'"
+        (click)="selectAddress('new')"
+      >
+        <div class="radio-circle"></div>
+        <span class="alias">Usar una nueva dirección</span>
+      </div>
+    </div>
+    }
+
+    <form
+      [formGroup]="form"
+      class="address-form"
+      [class.faded]="selectedAddressId() !== 'new' && isLoggedIn()"
+    >
+      <div class="form-floating">
+        <select disabled>
+          <option selected>Perú</option>
+        </select>
+        <label>País / Región</label>
+      </div>
+
+      <div class="form-row">
+        <div class="form-floating">
+          <input type="text" id="name" formControlName="firstName" placeholder="Nombre" />
+          <label for="name">Nombre</label>
+        </div>
+        <div class="form-floating">
+          <input type="text" id="lastname" formControlName="lastName" placeholder="Apellido" />
+          <label for="lastname">Apellidos</label>
+        </div>
+      </div>
+
+      <div class="form-floating">
+        <input type="text" id="addr" formControlName="address" placeholder="Dirección" />
+        <label for="addr">Dirección (Av, Calle, Jr)</label>
+      </div>
+
+      <div class="form-floating">
+        <input type="text" id="apt" formControlName="apartment" placeholder="Dpto" />
+        <label for="apt">Casa, apartamento, etc. (opcional)</label>
+      </div>
+
+      <div class="form-row three-col">
+        <div class="form-floating">
+          <input type="text" id="city" formControlName="city" placeholder="Ciudad" />
+          <label for="city">Ciudad</label>
+        </div>
+        <div class="form-floating">
+          <select formControlName="department" id="dept">
+            <option value="" disabled selected hidden></option>
+            <option value="lima">Lima</option>
+            <option value="arequipa">Arequipa</option>
+            <option value="cusco">Cusco</option>
+          </select>
+          <label for="dept">Departamento</label>
+        </div>
+        <div class="form-floating">
+          <input type="text" id="zip" formControlName="postalCode" placeholder="Postal" />
+          <label for="zip">Código Postal</label>
+        </div>
+      </div>
+
+      <div class="form-floating with-icon">
+        <input type="tel" id="phone" formControlName="phone" placeholder="Celular" />
+        <label for="phone">Teléfono (para novedades del pedido)</label>
+
+        <div class="field-icon" title="Usado para coordinar la entrega">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+        </div>
+      </div>
+    </form>
+  </section>
+
+  <div class="step-footer">
+    <button class="btn-checkout-primary" (click)="submit()" [disabled]="form.invalid">
+      Continuar a Envíos
+    </button>
+    <a routerLink="/cart" class="link-back">Volver al carrito</a>
+  </div>
+</div>

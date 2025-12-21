@@ -1,0 +1,232 @@
+/* --- VARIABLES PREMIUM --- */
+:host {
+  --bg-footer: #0f172a;      /* Slate 900 */
+  --bg-darker: #020617;      /* Slate 950 */
+  --text-main: #f8fafc;      /* Slate 50 */
+  --text-muted: #94a3b8;     /* Slate 400 */
+  --primary: #FF2E63;        /* Tu Rojo/Rosa de marca */
+  --border: rgba(255, 255, 255, 0.08);
+  --glass: rgba(255, 255, 255, 0.03);
+  --gradient-text: linear-gradient(45deg, #FF2E63, #FF9966);
+}
+
+.main-footer {
+  background-color: var(--bg-footer);
+  color: var(--text-muted);
+  font-family: 'Inter', system-ui, sans-serif;
+  border-top: 1px solid var(--border);
+}
+
+.container {
+  max-width: 1400px; margin: 0 auto; padding: 0 24px;
+}
+
+/* =========================================
+   1. NEWSLETTER BAR (NUEVO)
+   ========================================= */
+.newsletter-bar {
+  border-bottom: 1px solid var(--border);
+  padding: 40px 0;
+  
+  .newsletter-content {
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;
+  }
+
+  .news-text {
+    h4 { color: var(--text-main); font-size: 1.2rem; margin: 0 0 5px; font-weight: 700; }
+    p { margin: 0; font-size: 0.9rem; }
+  }
+
+  .input-wrapper {
+    display: flex; gap: 10px;
+    
+    input {
+      background: var(--glass); border: 1px solid var(--border);
+      color: white; padding: 12px 20px; border-radius: 50px;
+      width: 280px; transition: 0.3s;
+      
+      &:focus { border-color: var(--primary); outline: none; background: rgba(255,255,255,0.08); }
+    }
+
+    .btn-subscribe {
+      background: var(--primary); color: white; border: none;
+      padding: 0 25px; border-radius: 50px; font-weight: 600; cursor: pointer;
+      transition: transform 0.2s;
+      &:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(255, 46, 99, 0.4); }
+    }
+  }
+}
+
+/* =========================================
+   2. MAIN GRID
+   ========================================= */
+.footer-grid {
+  padding: 60px 24px;
+  display: grid; 
+  gap: 40px;
+  /* Mobile First: 1 columna */
+  grid-template-columns: 1fr; 
+}
+
+/* --- COLUMNA MARCA --- */
+.brand-col {
+  max-width: 350px;
+  .footer-logo {
+    font-size: 1.8rem; color: white; margin: 0 0 15px; font-weight: 800;
+    .dot { color: var(--primary); }
+  }
+  .brand-desc { line-height: 1.6; margin-bottom: 25px; }
+}
+
+/* SOCIAL ICONS */
+.social-links {
+  display: flex; gap: 12px;
+  .social-btn {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--glass); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-main); transition: 0.3s;
+    
+    &:hover {
+      background: white; color: var(--bg-footer);
+      transform: translateY(-3px);
+      &.facebook { color: #1877F2; }
+      &.instagram { color: #E1306C; }
+      &.tiktok { color: #000; }
+    }
+  }
+}
+
+/* --- ACORDEONES (Links) --- */
+details.footer-accordion {
+  border-bottom: 1px solid var(--border);
+  
+  summary {
+    list-style: none; padding: 15px 0;
+    font-weight: 600; color: var(--text-main); text-transform: uppercase; letter-spacing: 1px;
+    font-size: 0.85rem; cursor: pointer; position: relative;
+    &::-webkit-details-marker { display: none; }
+    
+    /* Flecha CSS pura */
+    &::after {
+      content: '+'; float: right; font-size: 1.2rem; font-weight: 400; transition: 0.3s;
+    }
+  }
+
+  &[open] summary::after { content: '-'; transform: rotate(180deg); color: var(--primary); }
+
+  .links-list {
+    list-style: none; padding: 0 0 20px; margin: 0;
+    li { margin-bottom: 8px; }
+    a {
+      color: var(--text-muted); text-decoration: none; font-size: 0.95rem; transition: 0.2s;
+      &:hover { color: var(--primary); padding-left: 5px; }
+    }
+  }
+}
+
+/* --- EXTRAS & BOOK --- */
+.complaints-card {
+  display: flex; align-items: center; gap: 15px;
+  background: var(--glass);
+  border: 1px solid var(--border);
+  padding: 15px 20px; border-radius: 12px;
+  text-decoration: none; margin-bottom: 25px;
+  transition: 0.3s;
+
+  .icon { font-size: 1.5rem; }
+  .text { display: flex; flex-direction: column; line-height: 1.2; }
+  .label { font-size: 0.7rem; text-transform: uppercase; color: var(--text-muted); }
+  .title { font-size: 1rem; font-weight: 700; color: white; }
+
+  &:hover {
+    border-color: var(--primary);
+    background: rgba(255, 46, 99, 0.05);
+    transform: translateY(-2px);
+  }
+}
+
+.payment-methods {
+  display: flex; gap: 10px; flex-wrap: wrap;
+  .pay-tag {
+    font-size: 0.75rem; color: #ccc; border: 1px solid var(--border);
+    padding: 6px 12px; border-radius: 6px; font-weight: 600;
+    &.yape { color: #a855f7; border-color: rgba(168, 85, 247, 0.3); }
+  }
+}
+
+/* =========================================
+   3. BOTTOM BAR
+   ========================================= */
+.footer-bottom {
+  background: var(--bg-darker);
+  padding: 20px 0; font-size: 0.85rem;
+  border-top: 1px solid var(--border);
+
+  .bottom-flex {
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 15px;
+  }
+  
+  .legal-links {
+    a { color: var(--text-muted); text-decoration: none; &:hover { color: white; } }
+    .sep { margin: 0 10px; color: #444; }
+  }
+}
+
+/* =========================================
+   💻 DESKTOP VERSION (Media Queries)
+   ========================================= */
+@media (min-width: 900px) {
+  /* Newsletter */
+  .newsletter-content { justify-content: space-between; }
+  
+  /* Grid de 4 Columnas */
+  .footer-grid {
+    grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
+    align-items: start;
+    border-bottom: none;
+  }
+
+  /* Desactivar estilo Acordeón en PC */
+  details.footer-accordion {
+    border: none;
+    summary { 
+      pointer-events: none; padding-bottom: 20px; font-size: 0.9rem; 
+      &::after { display: none; } /* Quitar flecha */
+    }
+  }
+}
+/* =========================================
+   3. SCROLL TO TOP BTN (FLOTANTE)
+   ========================================= */
+.scroll-top-btn {
+  position: fixed;
+  bottom: 30px; right: 30px;
+  width: 50px; height: 50px;
+  background: var(--primary);
+  color: white; border: none; border-radius: 50%;
+  font-size: 1.5rem; cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  z-index: 99;
+  
+  /* Animación de entrada */
+  opacity: 0; transform: translateY(20px); pointer-events: none;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  &.show {
+    opacity: 1; transform: translateY(0); pointer-events: all;
+  }
+
+  &:hover { background: white; color: var(--primary); }
+}
+
+@media (max-width: 600px) {
+  .newsletter-bar .input-wrapper { 
+    // flex-direction: column; 
+    width: 100%; 
+    input { 
+      width: 100%; 
+    } }
+  .bottom-flex { justify-content: center; text-align: center; }
+}
+

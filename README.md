@@ -1,59 +1,54 @@
-# Bettjim21
+# Bettjim - Next Gen Marketplace Platform
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.0.
+![Angular](https://img.shields.io/badge/Angular-v21.0.0-dd0031?style=for-the-badge&logo=angular)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?style=for-the-badge&logo=typescript)
+![Status](https://img.shields.io/badge/Status-Development-yellow?style=for-the-badge)
 
-## Development server
+**Bettjim** es una plataforma de comercio electrónico moderna y de alto rendimiento, construida con la última arquitectura de **Angular 21**. El proyecto se centra en una experiencia de usuario inmersiva (UX), animaciones cinemáticas y una arquitectura reactiva basada en **Signals**.
 
-To start a local development server, run:
+---
 
+## 🚀 Características Principales (Key Features)
+
+### 🎨 UI/UX & Diseño "Glassmorphism"
+- **Efecto Spotlight:** Iluminación dinámica que sigue el cursor del usuario en las tarjetas (CSS Variables + TS).
+- **Infinite Marquee:** Cinta de marcas con desplazamiento infinito optimizado.
+- **Glassmorphism:** Uso intensivo de `backdrop-filter`, transparencias y bordes sutiles para una estética futurista Dark Mode.
+- **Animaciones Ken Burns:** Sliders con zoom progresivo y transiciones suaves.
+
+### ⚡ Rendimiento y Arquitectura
+- **Angular Signals:** Gestión de estado reactiva granular para el contador de tiempo y cálculos financieros (sin Zone.js overhead).
+- **Change Detection Optimization:** Animaciones pesadas (Swiper, Countdowns) ejecutadas fuera del ciclo de Angular (`runOutsideAngular`) para mantener 60fps constantes.
+- **Lazy Loading:** Carga diferida de imágenes y módulos para optimizar el LCP (Largest Contentful Paint).
+
+### 🛠 Componentes Destacados
+1.  **Coming Soon Landing:** Página de espera con cuenta regresiva matemática precisa, captura de leads y feedback visual con **Canvas Confetti**.
+2.  **Hero Slider Pro:** Integración avanzada de Swiper.js con soporte mixto (Video/Imagen), miniaturas sincronizadas y deeplinking.
+3.  **Commission Simulator:** Calculadora reactiva de ganancias para vendedores con visualización gráfica de tarifas.
+
+---
+
+## 🛠 Tech Stack
+
+* **Core:** [Angular CLI](https://github.com/angular/angular-cli) versión 21.0.0.
+* **Lenguaje:** TypeScript 5.2+
+* **Estilos:** SCSS (Sass) con arquitectura modular BEM.
+* **Librerías UI:**
+    * `swiper`: Para carruseles táctiles y sliders.
+    * `canvas-confetti`: Para micro-interacciones de celebración.
+* **Iconos:** SVG nativos optimizados.
+
+---
+
+## ⚙️ Instalación y Configuración
+
+Sigue estos pasos para levantar el entorno de desarrollo local:
+
+### 1. Prerrequisitos
+Asegúrate de tener instalado **Node.js** (v18 o superior recomedado para Angular 21).
+
+### 2. Clonar e Instalar
 ```bash
-ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+git clone [https://github.com/tu-usuario/bettjim.git](https://github.com/tu-usuario/bettjim.git)
+cd bettjim
+npm install

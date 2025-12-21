@@ -1,0 +1,135 @@
+<div class="settings-container">
+
+  <header class="page-header">
+    <h1>Configuración</h1>
+    <p>Administra tus datos personales y seguridad.</p>
+  </header>
+
+  <div class="settings-grid">
+
+    <section class="card profile-card">
+      <div class="card-header">
+        <h2>Información Personal</h2>
+        <p>Actualiza tu foto y datos de contacto.</p>
+      </div>
+
+      <form [formGroup]="profileForm" (ngSubmit)="onSaveProfile()">
+        
+        <div class="avatar-section">
+          <div class="avatar-wrapper">
+             <span class="initials">{{ auth.currentUser()?.name || 'U' }}</span>
+             <button type="button" class="btn-camera">
+               <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+             </button>
+          </div>
+          <div class="avatar-info">
+            <button type="button" class="btn-upload">Subir nueva foto</button>
+            <span class="hint">JPG o PNG. Máx 1MB.</span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="input-group">
+            <label>Nombre Completo</label>
+            <input type="text" formControlName="names">
+          </div>
+          <div class="input-group">
+            <label>Teléfono</label>
+            <input type="text" formControlName="phone">
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label>Correo Electrónico</label>
+          <input type="email" formControlName="email" class="disabled">
+          <span class="note">Para cambiar tu email, contacta a soporte.</span>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn-primary" [disabled]="loadingProfile()">
+            @if(loadingProfile()) { Guardando... } @else { Guardar Cambios }
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card security-card">
+      <div class="card-header">
+        <h2>Contraseña y Seguridad</h2>
+        <p>Mantén tu cuenta segura cambiando tu contraseña periódicamente.</p>
+      </div>
+
+      <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()">
+        <div class="input-group">
+          <label>Contraseña Actual</label>
+          <input type="password" formControlName="currentPassword" placeholder="••••••••">
+        </div>
+
+        <div class="form-row">
+          <div class="input-group">
+            <label>Nueva Contraseña</label>
+            <input type="password" formControlName="newPassword" placeholder="Mínimo 6 caracteres">
+          </div>
+          <div class="input-group">
+            <label>Confirmar Nueva</label>
+            <input type="password" formControlName="confirmPassword" placeholder="Repite la contraseña">
+          </div>
+        </div>
+        
+        @if(passwordForm.hasError('mismatch') && passwordForm.get('confirmPassword')?.touched) {
+          <p class="error-msg">Las contraseñas no coinciden.</p>
+        }
+
+        <div class="form-actions">
+          <button type="submit" class="btn-outline" [disabled]="loadingPass()">
+            @if(loadingPass()) { Actualizando... } @else { Actualizar Contraseña }
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card preferences-card">
+      <div class="card-header">
+        <h2>Notificaciones</h2>
+        <p>Elige qué correos quieres recibir.</p>
+      </div>
+
+      <div class="toggles-list">
+        
+        <div class="toggle-item">
+          <div class="toggle-info">
+            <h3>Estado de Pedidos</h3>
+            <p>Recibe actualizaciones sobre envíos y entregas.</p>
+          </div>
+          <button class="switch" 
+                  [class.active]="notifications().orderUpdates"
+                  (click)="toggleNotif('orderUpdates')">
+             <div class="slider"></div>
+          </button>
+        </div>
+
+        <div class="toggle-item">
+          <div class="toggle-info">
+            <h3>Ofertas y Promociones</h3>
+            <p>Sé el primero en saber sobre descuentos.</p>
+          </div>
+          <button class="switch" 
+                  [class.active]="notifications().emailPromos"
+                  (click)="toggleNotif('emailPromos')">
+             <div class="slider"></div>
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="danger-zone">
+      <div class="dz-info">
+        <h3>Eliminar Cuenta</h3>
+        <p>Esta acción es permanente y no se puede deshacer.</p>
+      </div>
+      <button class="btn-danger">Eliminar mi cuenta</button>
+    </section>
+
+  </div>
+</div>

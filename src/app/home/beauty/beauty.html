@@ -1,0 +1,50 @@
+<div class="beauty-wrapper">
+  <section class="hero-editorial">
+    <div class="hero-bg">
+      <img src="assets/beauty/hero-beauty.png" alt="Beauty Campaign" class="parallax-img" />
+      <div class="overlay-gradient"></div>
+    </div>
+
+    <div class="hero-content">
+      <h1 class="fade-in-up">
+        Brilla <br />
+        <i>Diferente</i>
+      </h1>
+      <p class="fade-in-up delay-1">La nueva era del cuidado personal ha llegado.</p>
+      <div class="hero-actions fade-in-up delay-2">
+        <button class="btn-glass">Ver Skincare</button>
+        <button class="btn-glass dark">Ver Maquillaje</button>
+      </div>
+    </div>
+
+    <div class="scroll-down">
+      <span>Explorar</span>
+      <div class="line"></div>
+    </div>
+  </section>
+  <div class="marquee-strip">
+    <div class="track">
+      <span>CRUELTY FREE ✦ VEGAN FORMULA ✦ DERMATOLOGICALLY TESTED ✦ </span>
+      <span>CRUELTY FREE ✦ VEGAN FORMULA ✦ DERMATOLOGICALLY TESTED ✦ </span>
+    </div>
+  </div>
+  <app-stories-slider [categories]="categories()" />
+
+  <section class="hero-promo reveal" #animateItem>
+    <div class="promo-card main">
+      <div class="text-content">
+        <span class="tag-sale">MEGA SALE</span>
+        <h2>
+          Skincare <br />
+          Revolution
+        </h2>
+        <p>Hasta 50% OFF</p>
+        <button class="btn-shop">Comprar Ahora</button>
+      </div>
+      <img src="assets/img/hero-beauty.png" class="promo-img" />
+    </div>
+  </section>
+
+  <app-product-slider title="Top Ventas" [products]="top10Products()" />
+  <app-product-slider title="Los Mas Vistos" [products]="top10Products()" />
+</div>

@@ -1,0 +1,182 @@
+/* --- VARS --- */
+$temu-orange: #FF7700;
+$temu-yellow: #FFD700;
+$primary: #FF2E63;
+$white: #FFF;
+
+.overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 99999;
+  display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(5px);
+}
+
+.modal-container {
+  background: white; width: 90%; max-width: 400px;
+  border-radius: 20px; padding: 30px 20px; text-align: center;
+  position: relative; overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  border: 4px solid $temu-yellow; /* Borde dorado tipo casino */
+
+  /* Fondo decorativo */
+  background: radial-gradient(circle, #FFF 20%, #FFF0F3 100%);
+}
+
+.btn-close {
+  position: absolute; top: 10px; right: 10px; background: #EEE; border: none;
+  width: 30px; height: 30px; border-radius: 50%; font-weight: bold; cursor: pointer;
+  z-index: 10; &:hover { background: #DDD; }
+}
+
+.header-text {
+  margin-bottom: 20px;
+  h2 { margin: 0; color: $primary; font-weight: 900; font-size: 1.5rem; text-transform: uppercase; }
+  p { margin: 5px 0 0; color: #666; font-size: 0.9rem; }
+}
+
+/* --- RULETA --- */
+.wheel-wrapper {
+  position: relative; width: 280px; height: 280px; margin: 0 auto;
+}
+
+.pointer {
+  position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
+  width: 0; height: 0; 
+  border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid $primary;
+  z-index: 5; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));
+}
+
+.wheel {
+  width: 100%; height: 100%; border-radius: 50%;
+  border: 8px solid $temu-orange;
+  position: relative;
+  transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); /* Efecto de frenado realista */
+  
+  /* Dibujamos los segmentos con gradiente cónico */
+  background: conic-gradient(
+    $primary 0% 16.66%,
+    $temu-yellow 16.66% 33.33%,
+    $primary 33.33% 50%,
+    $temu-yellow 50% 66.66%,
+    $primary 66.66% 83.33%,
+    $temu-yellow 83.33% 100%
+  );
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
+}
+
+/* TEXTOS DENTRO DE LA RULETA */
+.segment {
+  position: absolute; top: 0; left: 50%; width: 2px; height: 50%;
+  transform-origin: bottom center; /* Clave para que giren desde el centro */
+  display: flex; justify-content: center; padding-top: 20px;
+  
+  span {
+    color: white; /* Color por defecto (fondo rojo/oscuro) */
+    font-weight: 800; font-size: 0.75rem; 
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    text-align: center;
+    line-height: 1.2;
+    /* Importante: para que el texto no se voltee si rota mucho */
+    display: inline-block; 
+  }
+
+  /* Color alternativo para los gajos amarillos (si usas patrón alternado) */
+  &.dark-text span {
+    color: #FF2E63; /* El color primario (rojo) sobre fondo amarillo */
+    text-shadow: none;
+  }
+}
+
+/* Rotamos cada texto para que quede en su gajo */
+
+
+.spin-btn {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 70px; height: 70px; border-radius: 50%; background: white; border: 4px solid white;
+  box-shadow: 0 0 15px rgba(0,0,0,0.2); font-weight: 800; color: $primary; cursor: pointer;
+  z-index: 4; font-size: 0.9rem;
+  &:active { transform: translate(-50%, -50%) scale(0.95); }
+  &:disabled { background: #EEE; color: #999; cursor: not-allowed; }
+}
+
+/* --- ESTADO DE GANADOR --- */
+.prize-stage {
+  h2 { font-size: 2rem; color: $temu-orange; margin-bottom: 20px; }
+  .prize-box {
+    background: #FFFBEB; border: 2px dashed $temu-orange; padding: 20px; margin-bottom: 20px; border-radius: 10px;
+    .huge-text { font-size: 2.5rem; font-weight: 900; color: $primary; display: block; }
+  }
+  
+  .input-group {
+    display: flex; gap: 10px; margin-top: 20px;
+    input { flex: 1; padding: 12px; border: 1px solid #CCC; border-radius: 8px; }
+    .btn-claim { background: $primary; color: white; border: none; padding: 0 20px; border-radius: 8px; font-weight: 700; cursor: pointer; animation: pulse 1.5s infinite; }
+  }
+  .timer { font-size: 0.8rem; color: red; margin-top: 15px; }
+}
+
+/* Animaciones */
+.fade-in { animation: fadeIn 0.3s ease; }
+.bounce-in { animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+.fade-in-up { animation: fadeInUp 0.5s ease; }
+@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+@keyframes bounceIn { 0% { transform: scale(0.3); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+//Winers
+.winners-ticker {
+  background: #FFF0F3; border-radius: 20px; padding: 5px 10px; margin-bottom: 15px;
+  overflow: hidden; height: 30px; position: relative; width: 100%;
+  border: 1px solid #FF2E63;
+  
+  .ticker-content {
+    display: flex; gap: 20px; position: absolute; white-space: nowrap;
+    animation: tickerMove 15s linear infinite;
+    
+    span { font-size: 0.8rem; color: #FF2E63; font-weight: 700; display: flex; align-items: center; gap: 5px; }
+  }
+}
+
+@keyframes tickerMove {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); } /* Ajusta según el largo del texto */
+}
+
+.floating-trigger {
+  position: fixed; bottom: 100px; right: 20px; z-index: 9990;
+  width: 60px; height: 60px; background: #FFD700; border-radius: 50%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3); cursor: pointer; border: 3px solid white;
+  
+  .emoji { font-size: 1.8rem; line-height: 1; }
+  .tag { font-size: 0.7rem; font-weight: 900; color: #FF2E63; background: white; padding: 2px 5px; border-radius: 5px; position: absolute; bottom: -10px; }
+  
+  &:hover { transform: scale(1.1); }
+}
+
+/* Animación de latido para llamar la atención */
+.bounce { animation: bounce 2s infinite; }
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+  40% {transform: translateY(-10px);}
+  60% {transform: translateY(-5px);}
+}
+.feedback-error {
+  color: #FF2E63; /* Rojo Bettjim */
+  font-weight: 800;
+  background: #FFF0F3;
+  padding: 5px 10px;
+  border-radius: 10px;
+  display: inline-block;
+}
+
+/* Animación de vibración (Shake) para indicar "Error" */
+.shake-animation {
+  animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes shake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+  40%, 60% { transform: translate3d(4px, 0, 0); }
+}

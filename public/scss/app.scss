@@ -1,0 +1,19 @@
+// src/scss/styles.scss
+
+// 1. CONFIGURACIÓN GLOBAL (Variables y Mixins)
+@import 'settings/variables'; 
+// @import 'settings/mixins'; 
+
+// 2. BASE (Reseteos, tipografía global)
+@import 'base/reset'; 
+
+// 3. LAYOUT (Estilos de alto nivel como el MainLayout, Footer)
+// @import 'layout/main-layout'; 
+
+// 4. COMPONENTES (Estilos específicos y encapsulados)
+// @import 'components/header';
+// @import 'components/sidebar'; 
+// @import 'components/toast'; 
+
+// [Nota: Si usas 'styleUrls' en los componentes, no necesitas importarlos aquí,
+// solo si quieres que el SCSS de los componentes sea global]
