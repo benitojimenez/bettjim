@@ -8,7 +8,7 @@
 
 ---
 
-## 🚀 Características Principales (Key Features)
+## 🚀 Características Principales (Key Features) 
 
 ### 🎨 UI/UX & Diseño "Glassmorphism"
 - **Efecto Spotlight:** Iluminación dinámica que sigue el cursor del usuario en las tarjetas (CSS Variables + TS).
