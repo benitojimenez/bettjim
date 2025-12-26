@@ -1,0 +1,351 @@
+// === PALETA DE COLORES MODO CLARO (SOFT WHITE) ===
+$primary: #FF2E63; // Tu Rojo Neon (Se mantiene para acentos)
+$bg-page: #f8fafc; // Fondo de página (Blanco humo / Slate 50)
+$bg-document: rgba(255, 255, 255, 0.95); // Fondo del documento (Casi opaco)
+$border-color: #e2e8f0; // Bordes grises suaves (Slate 200)
+$text-main: #1e293b; // Texto principal oscuro (Slate 800)
+$text-muted: #64748b; // Texto secundario gris (Slate 500)
+$input-bg: #ffffff; // Fondo de inputs (Blanco puro)
+
+// CONTENEDOR PRINCIPAL
+.page-container {
+  min-height: 100vh;
+  background-color: $bg-page;
+  // Gradiente sutil rojo en la parte superior
+  background-image: radial-gradient(circle at 50% 0%, rgba($primary, 0.05), transparent 60%);
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
+  color: $text-main;
+}
+
+// LA HOJA (DOCUMENTO)
+.document-wrapper {
+  width: 100%;
+  max-width: 850px;
+  background: $bg-document;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid #cbd5e1;
+  border-radius: 16px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08); // Sombra suave
+  overflow: hidden;
+  position: relative;
+
+  // Línea superior decorativa de marca
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(to right, $primary, #ff8fa3);
+  }
+}
+
+// HEADER
+.doc-header {
+  padding: 30px 40px;
+  border-bottom: 1px solid $border-color;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  background: rgba(248, 250, 252, 0.5);
+
+  .brand-area {
+    h1 { margin: 0; font-size: 1.8rem; color: $text-main; letter-spacing: -0.5px; font-weight: 800; }
+    .company-details { margin-top: 8px; font-size: 0.8rem; color: $text-muted; line-height: 1.4; }
+  }
+
+  .meta-data {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-end;
+
+    .data-box {
+      border: 1px solid $border-color;
+      border-radius: 8px;
+      padding: 8px 14px;
+      text-align: right;
+      background: #ffffff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+
+      .label { display: block; font-size: 0.65rem; color: $text-muted; letter-spacing: 1px; font-weight: 600; }
+      .value, .code { display: block; font-size: 1rem; color: $text-main; font-weight: 700; font-family: monospace; }
+      
+      .code { color: $primary; }
+    }
+  }
+}
+
+// CUERPO DEL DOCUMENTO
+.doc-body {
+  padding: 40px;
+}
+
+.intro-text {
+  font-size: 0.9rem;
+  color: $text-muted;
+  margin-bottom: 35px;
+  text-align: center;
+  font-style: italic;
+  background: rgba($primary, 0.03);
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px dashed rgba($primary, 0.2);
+}
+
+.divider { border: 0; border-top: 1px solid $border-color; margin: 35px 0; }
+
+// TÍTULOS DE SECCIÓN
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 25px;
+
+  .number {
+    background: $primary;
+    color: white;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1rem;
+    box-shadow: 0 4px 10px rgba($primary, 0.3);
+  }
+  h3 { margin: 0; font-size: 1.2rem; color: $text-main; font-weight: 700; }
+}
+
+// --- ESTILOS DE FORMULARIO ---
+
+// Layout Grid de 2 columnas
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+
+// Grupo de Input Básico
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+  width: 100%; // Asegura que ocupe su celda
+  
+  label { font-size: 0.85rem; color: $text-main; font-weight: 600; }
+  
+  input, select, textarea {
+    background: $input-bg;
+    border: 2px solid $border-color;
+    border-radius: 10px;
+    padding: 14px;
+    color: $text-main;
+    font-family: inherit;
+    font-size: 0.95rem;
+    transition: all 0.2s ease-in-out;
+
+    &::placeholder { color: #cbd5e1; }
+
+    &:focus {
+      outline: none;
+      border-color: $primary;
+      background: #ffffff;
+      box-shadow: 0 0 0 4px rgba($primary, 0.1);
+    }
+  }
+
+  &.full { width: 100%; }
+}
+
+// Input de documento (Select pequeño + Input largo)
+.doc-group {
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 12px;
+  .select-wrapper { width: 90px; }
+  input { flex: 1; }
+}
+
+// --- CORRECCIÓN MONTO Y DESCRIPCIÓN ---
+.grid-amount-desc {
+  display: grid;
+  // Columna 1 fija para el monto (150px), Columna 2 el resto
+  grid-template-columns: 150px 1fr; 
+  gap: 24px;
+  margin-bottom: 24px;
+  align-items: flex-start;
+
+  .form-group { margin-bottom: 0; } // El margen lo maneja el gap del grid
+}
+
+// Input con prefijo S/.
+.currency-input {
+  position: relative;
+  width: 100%;
+  
+  input { padding-left: 45px !important; font-weight: 700; width: 100%; }
+  
+  span {
+    position: absolute;
+    left: 15px; top: 50%; transform: translateY(-50%);
+    color: $text-muted; font-weight: 600;
+    pointer-events: none;
+    z-index: 2;
+  }
+}
+
+// TARJETAS DE SELECCIÓN (Producto/Servicio)
+.radio-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 25px;
+
+  .radio-card {
+    cursor: pointer;
+    input { display: none; }
+    .card-inner {
+      border: 2px solid $border-color;
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      background: #ffffff;
+      transition: 0.2s;
+      color: $text-muted;
+      font-weight: 600;
+      .icon { font-size: 1.5rem; }
+    }
+    input:checked + .card-inner {
+      background: rgba($primary, 0.05);
+      border-color: $primary;
+      color: $primary;
+      box-shadow: 0 4px 12px rgba($primary, 0.15);
+    }
+  }
+}
+
+// SELECTOR RECLAMO / QUEJA
+.type-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 30px;
+
+  .type-box {
+    border: 2px solid $border-color;
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    input { display: none; }
+
+    .header { margin-bottom: 10px; color: $text-main; font-size: 1.1rem; }
+    p { margin: 0; font-size: 0.85rem; color: $text-muted; line-height: 1.5; }
+
+    &:hover { border-color: darken($border-color, 10%); }
+
+    &.selected {
+      border-color: $primary;
+      background: rgba($primary, 0.04);
+      box-shadow: 0 8px 20px rgba($primary, 0.1);
+      .header { color: $primary; }
+      transform: translateY(-2px);
+    }
+  }
+}
+
+// CHECKBOXES
+.checkbox-simple, .legal-check {
+  label {
+    display: flex;
+    gap: 12px;
+    cursor: pointer;
+    align-items: flex-start;
+    input { margin-top: 3px; accent-color: $primary; width: 18px; height: 18px; }
+    span, .text { font-size: 0.85rem; color: $text-main; line-height: 1.5; }
+  }
+}
+.checkbox-simple { margin: 20px 0; }
+
+// ANIMACIONES
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.animated-fade { animation: fadeInDown 0.3s ease-out; }
+
+// FOOTER Y BOTONES
+.doc-footer { margin-top: 40px; }
+
+.legal-check { 
+  margin-bottom: 30px; 
+  background: rgba($primary, 0.03); 
+  padding: 15px; 
+  border-radius: 8px; 
+  border: 1px solid $border-color; 
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-bottom: 25px;
+
+  button {
+    padding: 14px 36px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+  }
+
+  .btn-cancel {
+    background: #ffffff;
+    color: $text-muted;
+    border: 2px solid $border-color;
+    &:hover { background: $border-color; color: $text-main; }
+  }
+
+  .btn-submit {
+    background: $primary;
+    color: white;
+    box-shadow: 0 8px 20px rgba($primary, 0.3);
+    &:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 12px 25px rgba($primary, 0.4); }
+    &:disabled { background: #cbd5e1; color: #94a3b8; cursor: not-allowed; box-shadow: none; transform: none; }
+  }
+}
+
+.final-legal {
+  font-size: 0.7rem;
+  color: $text-muted;
+  text-align: center;
+  border-top: 1px solid $border-color;
+  padding-top: 25px;
+  line-height: 1.5;
+}
+
+// === RESPONSIVE ===
+@media (max-width: 768px) {
+  .page-container { padding: 0; background-color: #fff; }
+  .document-wrapper { border: none; box-shadow: none; border-radius: 0; }
+  
+  .doc-header { flex-direction: column; gap: 20px; padding: 20px; }
+  .meta-data { width: 100%; align-items: flex-start; flexDirection: row; justify-content: space-between; }
+  
+  // Colapsar Grids a 1 columna
+  .grid-2, .type-selector, .radio-cards, .doc-group { grid-template-columns: 1fr; }
+  
+  // AQUÍ ESTÁ EL AJUSTE CLAVE MÓVIL PARA MONTO/DESC
+  .grid-amount-desc { grid-template-columns: 1fr; gap: 16px; }
+
+  .doc-body { padding: 20px 15px; }
+  .actions { flex-direction: column-reverse; button { width: 100%; } }
+  
+  .doc-group { flex-direction: column; align-items: stretch; .select-wrapper { width: 100%; } }
+}

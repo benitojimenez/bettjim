@@ -1,4 +1,4 @@
-import { Component, computed, effect, ElementRef, inject, signal, ViewChild } from '@angular/core';
+import { Component, computed, effect, ElementRef, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Products } from '../../services/product';
 import { ProductTwo } from '../../shared/components/product/product-two/product-two';
@@ -6,14 +6,21 @@ import { ProductTwo } from '../../shared/components/product/product-two/product-
 import { StoriesSlider } from '../widgets/stories-slider/stories-slider';
 import { ProductSlider } from '../widgets/product-slider/product-slider';
 import { HeroSlider } from "../widgets/hero-slider/hero-slider";
+import { Seo } from '../../services/seo';
+import { TrustBadges } from "../../shared/components/trust-badges/trust-badges";
+import { CategoryGrid } from "../widgets/category-grid/category-grid";
+import { Brand } from "../widgets/brand/brand";
+
 @Component({
   selector: 'app-fashion-one',
-  imports: [CommonModule, ProductTwo, StoriesSlider, ProductSlider, HeroSlider],
+  imports: [CommonModule, ProductSlider, HeroSlider, TrustBadges, CategoryGrid, Brand],
   templateUrl: './fashion-one.html',
   styleUrl: './fashion-one.scss',
 })
-export class FashionOne {
+export class FashionOne implements OnInit {
   ps = inject(Products);
+  seo = inject(Seo);
+
   // 1. Capturamos el contenedor del HTML
   @ViewChild('storiesList') storiesList!: ElementRef;
  
@@ -37,6 +44,16 @@ export class FashionOne {
     // 4. Retornamos solo los primeros 10
     return allProducts.slice(0,10 );
   });
+  ngOnInit() {
+    // Configurar SEO para la página de inicio de moda
+    this.seo.generateTags({
+       title: 'Bettjim.com | Tu Mundo, a un click de distancia',
+      description: 'Bettjim.com es una tienda online peruana de tecnología, moda, belleza y más. Descubre productos innovadores y confiables.',
+      keywords: 'Moda, tienda de moda, ropa en línea, accesorios de moda, tendencias de moda',
+      type: 'website',
+      image: 'obtener_logo/bettjim.png'
+    });
+  }
   // Signals para los datos
   categories = signal([
     { name: 'Skin Care', img: 'https://euroestetika.com/wp-content/uploads/2023/07/13.skincare.jpg' },

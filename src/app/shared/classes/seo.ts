@@ -6,6 +6,7 @@ export interface SeoConfig {
   keywords?: string;
   type?: 'website' | 'article' | 'product'; // Por defecto 'website'
   
+  
   // Datos específicos de Producto (Opcionales)
   price?: number;
   currency?: string;

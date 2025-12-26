@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -10,7 +10,7 @@ import { ToastService } from '../../services/toast';
 import { Auth } from '../../services/auth';
 import { Cart } from '../../services/cart';
 import { Breadcrumbs } from "../../shared/components/breadcrumbs/breadcrumbs";
-
+import { Seo } from '../../services/seo';
 @Component({
   selector: 'app-login',
   standalone: true, // Asumo que es standalone por los imports
@@ -18,18 +18,30 @@ import { Breadcrumbs } from "../../shared/components/breadcrumbs/breadcrumbs";
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
-export class Login {
+export class Login implements OnInit {
 
   // 1. INYECCIONES (Nombres claros)
   private fb = inject(FormBuilder);
   private router = inject(Router);
+  private seo = inject(Seo);
+  
 
   // Servicios Públicos/Privados con nombres descriptivos
   public userService = inject(User);     // Antes "user"
   public cartService = inject(Cart); // Antes "ps"
   public auth = inject(Auth)
   private toast = inject(ToastService);
-
+  ngOnInit() {
+    // Configurar SEO para la página de login
+    this.seo.generateTags({
+      title: 'Iniciar Sesión | Bettjim.com',  
+      description: 'Accede a tu cuenta en Bettjim para disfrutar de compras rápidas y seguras. ¡Inicia sesión ahora!',
+      keywords: 'Iniciar sesión, cuenta de usuario, acceso a cuenta, Bettjim',
+      slug: 'auth/login',
+      type: 'website',
+      image: 'obtener_logo/bettjim.png'
+    });
+  }
   // 2. SEÑALES DE UI
   showPassword = signal(false);
   isLoading = signal(false);

@@ -1,0 +1,193 @@
+// Importar variables si no están disponibles globalmente en el componente
+// @import 'styles.scss'; 
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0; // top, right, bottom, left = 0
+  background: rgba(0, 0, 0, 0.6); // Fondo oscuro
+  backdrop-filter: blur(8px); // Efecto Blur PRO
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.2s ease-out;
+
+  .modal-card {
+    background: var(--bg-dark, #09090b); // Usa tu variable global o fallback
+    border: 1px solid var(--glass-border, rgba(255,255,255,0.1));
+    border-radius: var(--radius-lg, 24px);
+    width: 100%;
+    max-width: 480px;
+    padding: 24px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1); // Efecto rebote suave
+    color: var(--text-inverse, white);
+  }
+}
+
+// Header
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+
+  h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    font-family: var(--font-heading, sans-serif);
+  }
+
+  .close-btn {
+    background: rgba(255,255,255,0.05);
+    border: none;
+    color: var(--text-muted, #9ca3af);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+
+    &:hover {
+      background: rgba(255,255,255,0.1);
+      color: white;
+      transform: rotate(90deg); // Pequeña rotación al cerrar
+    }
+  }
+}
+
+// Social Grid
+.social-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 30px;
+
+  .social-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    color: var(--text-muted, #9ca3af);
+    font-size: 0.75rem;
+    transition: transform 0.2s;
+
+    .icon-box {
+      width: 50px;
+      height: 50px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--glass-border, rgba(255,255,255,0.08));
+      transition: all 0.2s;
+      color: white;
+    }
+
+    &:hover {
+      transform: translateY(-3px);
+      color: white;
+      
+      // Colores Específicos al Hover
+      &.whatsapp .icon-box { background: #25D366; border-color: #25D366; color: black; }
+      &.facebook .icon-box { background: #1877F2; border-color: #1877F2; }
+      &.twitter .icon-box { background: #000; border-color: #fff; }
+      &.linkedin .icon-box { background: #0A66C2; border-color: #0A66C2; }
+    }
+  }
+}
+
+// Copy Link Section
+.copy-section {
+  label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-muted, #9ca3af);
+    margin-bottom: 10px;
+  }
+
+  .input-wrapper {
+    display: flex;
+    background: rgba(0,0,0,0.3); // Fondo input muy oscuro
+    border: 1px solid var(--glass-border, rgba(255,255,255,0.1));
+    border-radius: 12px;
+    padding: 6px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s;
+
+    .link-text {
+      flex: 1;
+      padding: 10px 12px;
+      font-size: 0.9rem;
+      color: var(--text-light, #9ca3af);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-family: var(--font-mono, monospace); // Fuente técnica
+    }
+
+    button {
+      background: var(--text-inverse, white);
+      color: black;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+
+      &:hover {
+        background: var(--primary, #FF2E63);
+        color: white;
+      }
+    }
+
+    // Estado Copiado
+    &.copied {
+      border-color: var(--success, #10b981);
+      
+      button {
+        background: var(--success, #10b981);
+        color: white;
+        cursor: default;
+      }
+    }
+
+    .success-msg {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+  }
+}
+
+// Keyframes
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleUp {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+// Responsive
+@media (max-width: 480px) {
+  .social-grid {
+    grid-template-columns: repeat(2, 1fr); // 2 columnas en móviles
+    gap: 16px;
+  }
+  .modal-card {
+    padding: 20px;
+  }
+}

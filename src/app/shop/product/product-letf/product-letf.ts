@@ -1,22 +1,23 @@
-import { Component, computed, inject, OnDestroy, OnInit, signal, ChangeDetectionStrategy, effect } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, computed, inject, OnDestroy, OnInit, signal, ChangeDetectionStrategy, effect, Renderer2, ElementRef, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformServer } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Subscription, interval } from 'rxjs';
-import { Inventory } from './../../../shared/classes/inventory';
 // Servicios y Configuración
 import { Products } from '../../../services/product';
 import { environment } from '../../../../environments/environment';
-
+import { ProductSlider } from '../../../home/widgets/product-slider/product-slider';
 // Componentes y Pipes compartidos
 import { Breadcrumbs } from '../../../shared/components/breadcrumbs/breadcrumbs';
 import { DiscountPipe } from "../../../shared/pipes/discount-pipe";
 import { Cart } from '../../../services/cart';
 import { Seo } from '../../../services/seo';
+import { ShareModal } from "../../widgets/share-modal/share-modal";
+import { ViewerToast } from "../../widgets/viewer-toast/viewer-toast";
 
 @Component({
   selector: 'app-product-letf',
   standalone: true,
-  imports: [CommonModule, Breadcrumbs, DiscountPipe],
+  imports: [CommonModule, Breadcrumbs, DiscountPipe, ProductSlider, ShareModal, ViewerToast],
   templateUrl: './product-letf.html',
   styleUrl: './product-letf.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -29,7 +30,10 @@ export default class ProductLetf implements OnInit, OnDestroy {
   private seo = inject(Seo);
   private route = inject(ActivatedRoute);
   public ps = inject(Products);
-  public cartService = inject(Cart)
+  public cartService = inject(Cart);
+  private renderer = inject(Renderer2);
+  private el = inject(ElementRef);
+  private _platformId = inject(PLATFORM_ID);
   public URL_IMG = signal(environment.API_URL + 'product_imagen/');
 
   // ================================================================
@@ -37,6 +41,7 @@ export default class ProductLetf implements OnInit, OnDestroy {
   // ================================================================
 
   // Estado del Producto y UI
+  isShareModalOpen = signal<boolean>(false);
   public activeImage = signal<string>('');
   public quantity = signal<number>(1);
   public loading = signal<boolean>(true);
@@ -46,7 +51,8 @@ export default class ProductLetf implements OnInit, OnDestroy {
   public timeLeft = signal<string>('');
   public viewers = signal<number>(12);
   public stockLeft = signal<number>(0);
-
+  public url: string = environment.API_URL + 'product_imagen/';
+  public urlDomain: string = 'https://bettjim.com/';
   // ================================================================
   // 3. COMPUTED SIGNALS (DERIVADOS)
   // ================================================================
@@ -73,7 +79,7 @@ export default class ProductLetf implements OnInit, OnDestroy {
   });
 
   // ESTA ES LA MAGIA:
-  public top10Products = computed(() => {
+  public relatedProducts = computed(() => {
     // 1. Obtenemos la lista completa (que ya se habrá actualizado gracias al efecto de arriba)
     const allProducts = this.ps.displayProducts();
 
@@ -104,12 +110,7 @@ export default class ProductLetf implements OnInit, OnDestroy {
   // ================================================================
   // 4. DATOS ESTÁTICOS / MOCKS
   // ================================================================
-  public relatedProducts = [
-    { title: 'Case Minimalista', price: 45, img: 'ruta-img-1.jpg', slug: 'case-min' },
-    { title: 'Protector Pantalla', price: 20, img: 'ruta-img-2.jpg', slug: 'protector' },
-    { title: 'Cargador Rápido', price: 80, img: 'ruta-img-3.jpg', slug: 'cargador' },
-    { title: 'Soporte Auto', price: 55, img: 'ruta-img-4.jpg', slug: 'soporte' },
-  ];
+
 
   public reviews = [
     { user: 'Carlos M.', rating: 5, text: 'Excelente calidad, llegó antes de tiempo.', date: new Date() },
@@ -138,7 +139,7 @@ export default class ProductLetf implements OnInit, OnDestroy {
         // Nota: Asumo que filterByCategory espera un array string[]
         this.ps.filterByCategory.set([product.category]);
       }
-      if(product.type_inventory === 1){
+      if (product.type_inventory === 1) {
         this.productStock.set(product.stock)
         this.stockLeft.set(product.stock)
       }
@@ -150,21 +151,28 @@ export default class ProductLetf implements OnInit, OnDestroy {
       if (product) {
         // Solo actualizamos SEO si el producto ya cargó (no es null)
         this.seo.generateTags({
-          title: product.title,
+          title: product.title + ' | Bettjim.com',
           description: product.summary || `Compra ${product.title} al mejor precio en Bettjim.`,
-          image: product.images?.[0]?.src || product.title, // Tu lógica de imagen
+          image: 'product_imagen/' + (product.images?.[0]?.src || product.title), // Tu lógica de imagen
           slug: `product/${product.slug}`,
           type: 'product',
           price: this.cartService.getDiscount(product),
           currency: 'PEN',
           brand: 'Bettjim',
-          stock: product.stock > 0 ,
+          stock: product.stock > 0,
           keywords: `comprar ${product.title}, bettjim, moda peru`
         });
-        
-        console.log('✅ SEO actualizado para:', product.title);
+
+        // console.log('Agregando JSON-LD para producto:', product);
+        if (isPlatformServer(this._platformId)) {
+          console.log('✅ SEO actualizado para:', product.title);
+          // Agregar JSON-LD para el producto
+          this.addJsonLdScript(product, inventories || []);
+          this.addBreadcrumbSchema(product);
+        }
       }
     });
+
   }
 
   // ================================================================
@@ -182,6 +190,7 @@ export default class ProductLetf implements OnInit, OnDestroy {
     // B. Iniciar lógica de marketing
     this.startCountdown();
     this.startViewersSimulation();
+
   }
 
 
@@ -239,13 +248,13 @@ export default class ProductLetf implements OnInit, OnDestroy {
   // Acciones de Compra
   addToCart() {
     const prod = this.ps.cleanProductSlug();
-    if(prod.type_inventory ===2){
-       const data = {
-        product:prod,
+    if (prod.type_inventory === 2) {
+      const data = {
+        product: prod,
         user: localStorage.getItem('_id') ?? 'null',
         type_discount: null,  // 1 = porcentaje, 2 = moneda
         discount: prod.discount ?? 0,
-        quantity:this.quantity(),
+        quantity: this.quantity(),
         variety: `${this.color()}-${this.size()}`,
         inventory: this.inventory_id(),
         code_cupon: null,
@@ -257,7 +266,7 @@ export default class ProductLetf implements OnInit, OnDestroy {
       };
 
       this.cartService.addToCartVariant(data);
-    }else{
+    } else {
       // console.log(`Agregando ${this.quantity()} de ${prod.title}`);
       this.cartService.addToCart(prod); // Asumiendo que tu servicio tiene este método
     }
@@ -357,5 +366,204 @@ export default class ProductLetf implements OnInit, OnDestroy {
       this.quantity.set(1);
     }
 
+  }
+
+  openShare() {
+    this.isShareModalOpen.set(true);
+  }
+
+  closeShare() {
+    this.isShareModalOpen.set(false);
+  }
+  private checkProductStock(product: any, variantsWithStock: any[]): boolean {
+    // 1. Si no hay variantes, usa el stock global del producto
+    if (product.type_inventory === 1) {
+      return product.stock > 0;
+    }
+    // 2. Si hay variantes, verifica si AL MENOS UNA de las variantes de color está en stock.
+    // Usamos el stock calculado en la preparación de variantsInfo
+    const hasAnyStock = variantsWithStock.some((v: any) => v.stock > 0);
+    return hasAnyStock;
+
+  }
+
+
+
+
+  private addJsonLdScript(product: any, inventories: any[]) {
+    console.log('Agregando JSON-LD para producto:', product);
+    if (!product) return;
+
+    // --- PASO 1: Determinar la disponibilidad global del producto ---
+    // (Este cálculo sigue siendo necesario para el esquema principal)
+    const variantsInfo = product.variants?.map((variant: any) => {
+      const sizesArray = Array.isArray(variant.sizes) ? variant.sizes : [variant.size];
+
+      const hasAnyStock = sizesArray.some((size: string) => {
+        const inventoryItem = inventories.find((item: any) => {
+          return item.variant.color === variant.color && item.variant.size === size;
+        });
+        return (inventoryItem?.stock || 0) > 0;
+      });
+
+      return { stock: hasAnyStock ? 1 : 0 };
+    }) || [];
+
+    // Lógica para determinar la disponibilidad global del producto
+    const isProductInStock = this.checkProductStock(product, variantsInfo);
+    // ----------------------------------------------------------------------
+
+
+    // --- PASO 2: Preparar datos básicos (SKU, Imágenes, Precio) ---
+    const productIdBase = product._id?.$oid || product.id || "";
+    const images = product.images?.map((img: any) => `${this.url}${img.src}`) || [];
+    const discountPercent = parseFloat(product.discount) || 0;
+
+    const discountActive =
+
+      discountPercent > 0 &&
+
+      (product.discount_start || product.start_discount) &&
+
+      (product.discount_end || product.end_discount);
+    const discountedPrice = this.cartService.getDiscount(product);
+    // --------------------------------------------------------------
+
+
+    // --- PASO 3: Crear el schema principal (Product) ---
+    const productSchema: any = {
+      "@context": "https://schema.org/",
+      "@type": "Product",
+      "name": product.title,
+      "description": product.summary || product.description,
+      "image": images,
+      "brand": {
+        "@type": "Brand",
+        "name": product.brand || "Bettjim"
+      },
+      "sku": productIdBase,
+      "url": `${this.urlDomain}product/${product.slug}`,
+      "category": product.category,
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "PEN",
+        "price": discountedPrice,
+        "availability": isProductInStock
+          ? "https://schema.org/InStock"
+          : "https://schema.org/OutOfStock",
+        "url": `${this.urlDomain}product/${product.slug}`,
+        "seller": {
+          "@type": "Organization",
+          "name": "Bettjim",
+          "url": this.urlDomain
+        },
+        // ... (Se mantiene la parte de priceSpecification si es necesaria para descuentos)
+        ...(discountActive && {
+          "priceSpecification": {
+            "@type": "UnitPriceSpecification",
+            "price": discountedPrice,
+            "priceCurrency": "PEN",
+            "eligibleQuantity": { "@type": "QuantitativeValue", "value": 1 },
+            "validFrom": product.discount_start || product.start_discount,
+            "validThrough": product.discount_end || product.end_discount,
+          }
+        })
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": product.stars || 4.7,
+        "reviewCount": product.t_reviews || 1
+      }
+    };
+    // --------------------------------------------------------------
+
+    // --- PASO 4: Inyectar el esquema JSON-LD ---
+    const jsonLdArray: any[] = [productSchema]; // Solo el esquema principal
+
+    const script = this.renderer.createElement('script');
+    script.type = 'application/ld+json';
+    script.text = JSON.stringify(jsonLdArray);
+
+    // Adjuntar al HEAD del documento
+    const head = this.el.nativeElement.ownerDocument.head;
+    this.renderer.appendChild(head, script);
+    // ------------------------------------------
+  }
+
+
+  private addBreadcrumbSchema(product: any) {
+    // Inicializar el arreglo de elementos del breadcrumb
+    const itemListElement: any[] = [
+      // Nivel 1: Inicio
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Inicio",
+        "item": this.urlDomain
+      }
+    ];
+
+    let positionCounter = 2; // Contador para la posición en la lista
+
+    // Nivel 2: Categoría (Obligatorio)
+    const categoryName = product.category || "Productos";
+    itemListElement.push({
+      "@type": "ListItem",
+      "position": positionCounter++, // Usa la posición y luego incrementa
+      "name": categoryName,
+      "item": `${this.urlDomain}shop?category=${product.category || 'all'}`
+    });
+
+    // Nivel 3 (Opcional): Subcategoría o Colección
+    // Agregamos este nivel SÓLO si la subcategoría/colección existe Y no es igual a la categoría
+    const subCategory = product.subcategory || product.collections?.[0];
+
+    if (subCategory && subCategory !== categoryName) {
+      // La URL de la subcategoría debe ser lo más precisa posible
+      let subCategoryUrl = `${this.urlDomain}shop?category=${product.category}`;
+      if (product.subcategory) {
+        subCategoryUrl += `&subcategory=${product.subcategory}`;
+      } else if (product.collections?.[0]) {
+        subCategoryUrl += `&collection=${product.collections[0]}`;
+      }
+
+      itemListElement.push({
+        "@type": "ListItem",
+        "position": positionCounter++,
+        "name": subCategory,
+        "item": subCategoryUrl
+      });
+    }
+
+    // Último Nivel: Producto (Página Actual)
+    itemListElement.push({
+      "@type": "ListItem",
+      "position": positionCounter++,
+      "name": product.title,
+      "item": `${this.urlDomain}product/${product.slug}`
+    });
+
+    // Construir el esquema final
+    const breadcrumbSchema = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": itemListElement
+    };
+
+    // const script = this.renderer.createElement('script');
+    // script.type = 'application/ld+json';
+
+    // script.text = JSON.stringify(breadcrumbSchema);
+    // this.renderer.appendChild(this.el.nativeElement, script);
+    const script = this.renderer.createElement('script');
+    script.type = 'application/ld+json';
+    script.text = JSON.stringify(breadcrumbSchema);
+
+    // *** CAMBIO CRUCIAL AQUÍ ***
+    const head = this.el.nativeElement.ownerDocument.head;
+    this.renderer.appendChild(head, script);
+
+    // El método anterior que causaba el error era: 
+    // this.renderer.appendChild(this.el.nativeElement, script);
   }
 }

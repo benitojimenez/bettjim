@@ -1,5 +1,5 @@
 import { Variants } from './../../../shared/classes/product';
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { environment } from '../../../../environments/environment';
@@ -9,13 +9,14 @@ import { LayoutService } from '../../../services/Layout';
 import { Categories} from '../../../services/categories';
 import { ProductOne } from '../../../shared/components/product/product-one/product-one';
 import { ProductTwo } from '../../../shared/components/product/product-two/product-two';
+import { Seo } from '../../../services/seo';
 @Component({
   selector: 'app-shop',
   imports: [CommonModule, ProductTwo],
   templateUrl: './shop.html',
   styleUrl: './shop.scss',
 })
-export default class Shop {
+export default class Shop implements OnInit {
   public URL_IMG: string = environment.API_URL + 'product_imagen/';
   // Servicios
   public ps = inject(Products);
@@ -23,6 +24,8 @@ export default class Shop {
   public layout = inject(LayoutService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  public seo = inject(Seo);
+
 
   // Estado UI
   public showCartDetail = false;
@@ -61,6 +64,15 @@ export default class Shop {
     this.ps.searchTerm.set(term);
   }
   ngOnInit() {
+    // Configurar SEO para la página de inicio de moda
+    this.seo.generateTags({
+      title: 'Bettjim.com | Tu Mundo, a un click de distancia',
+      description: 'Bettjim.com es una tienda online peruana de tecnología, moda, belleza y más. Descubre productos innovadores y confiables.',
+      keywords: 'Moda, tienda de moda, ropa en línea, accesorios de moda, tendencias de moda',
+      type: 'website',
+      image: 'obtener_logo/bettjim.png'
+    });
+
     // 🔥 EL CEREBRO: Escucha la URL y decide qué mostrar
     this.route.queryParams.subscribe(params => {
       // 1. Search 

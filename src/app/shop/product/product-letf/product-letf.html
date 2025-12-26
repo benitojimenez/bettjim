@@ -67,28 +67,23 @@
         <div class="timer-display">{{ timeLeft() }}</div>
       </div>
       }
-
-      <div class="live-viewers">
-        <span class="pulse-dot"></span>
-        <strong>{{ viewers() }} personas</strong> están viendo este producto.
-      </div>
       <hr class="divider" />
       @if (prod.type_inventory===2) {
       <div class="variants-section">
         <div class="variant-group">
           <span class="label">
-          @if (!this.color() && indexVariant() === 0) { Seleciones Color: <strong></strong> }
-          @else { Color seleccionado{{ this.color() ? ': ' + this.color() : ''
-          }} }</span>
+            @if (!this.color() && indexVariant() === 0) { Seleciones Color: <strong></strong> }
+            @else { Color seleccionado{{ this.color() ? ': ' + this.color() : '' }} }</span
+          >
           <div class="color-options">
             @for (item of prod.variants; track $index) {
-              <button 
-              class="color-btn active" 
+            <button
+              class="color-btn active"
               [style.background-color]="item.color_code"
               [class.active]="item.color == this.color()"
-              (click)="ChangeVariants(item, prod,$index)"
-              ></button>
-            }            
+              (click)="ChangeVariants(item, prod, $index)"
+            ></button>
+            }
           </div>
         </div>
       </div>
@@ -96,28 +91,32 @@
 
       <div class="variants-section">
         <div class="variant-group">
-          <span class="label">Selecione Talla: <strong>{{size()}}</strong></span>
+          <span class="label"
+            >Selecione Talla: <strong>{{ size() }}</strong></span
+          >
           <div class="size-options">
             @for (item of sizes(); track $index) {
-              <button 
-              class="size-btn active" 
-              (click)="Size(item,$index)"
-            [class]="{'active': $index === indexSize()}">{{item |titlecase}}</button>
-            } 
+            <button
+              class="size-btn active"
+              (click)="Size(item, $index)"
+              [class]="{ active: $index === indexSize() }"
+            >
+              {{ item | titlecase }}
+            </button>
+            }
           </div>
         </div>
       </div>
       }
       <div class="inventory-status">
         @if (prod.type_inventory===1) {
-           <div class="status-text">
+        <div class="status-text">
           ¡Date prisa! Solo quedan <strong>{{ stockLeft() }} unidades</strong>.
-          </div>
-        }
-        @if (sizes().length ) {
-           <div class="status-text">
+        </div>
+        } @if (sizes().length ) {
+        <div class="status-text">
           ¡Date prisa! Solo quedan <strong>{{ stockLeft() }} unidades</strong>.
-          </div>
+        </div>
         }
         <!-- <div class="progress-bar">
           <div class="fill" style="width: 35%"></div>
@@ -132,37 +131,38 @@
             <button (click)="updateQuantity(1)" [disabled]="isMaxStockReached()">+</button>
           </div>
 
-          <button class="btn-add-cart" (click)="addToCart()" [disabled]=" isMaxStockReached()">AGREGAR</button>
+          <button class="btn-add-cart" (click)="addToCart()" [disabled]="isMaxStockReached()">
+            AGREGAR
+          </button>
 
-          <button class="btn-buy-now" (click)="buyNow()" [disabled]=" isMaxStockReached()">COMPRAR AHORA</button>
+          <button class="btn-buy-now" (click)="buyNow()" [disabled]="isMaxStockReached()">
+            COMPRAR AHORA
+          </button>
         </div>
       </div>
-
-      <div class="trust-logistics-box">
-        <div class="logistics-row">
-          <div class="icon-box">🚚</div>
-          <div class="text-box">
-            <strong>Llega el {{ deliveryDate() }}</strong>
-            <p>Si pides en las próximas 4 horas.</p>
-          </div>
-        </div>
-
-        <div class="trust-grid">
-          <div class="trust-item">
-            <span class="icon">🔒</span>
-            <span>Pago Seguro</span>
-          </div>
-          <div class="trust-item">
-            <span class="icon">↺</span>
-            <span>Devolución Gratis</span>
-          </div>
-          <div class="trust-item">
-            <span class="icon">🛡️</span>
-            <span>Garantía 12 Meses</span>
-          </div>
-        </div>
+<hr class="divider" />
+      <!-- <app-trust-badges /> -->
+      <div class="shared-product">
+        <button (click)="openShare()">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="18" cy="5" r="3"></circle>
+            <circle cx="6" cy="12" r="3"></circle>
+            <circle cx="18" cy="19" r="3"></circle>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+          </svg>
+          Compartir
+        </button>
       </div>
-
       <div class="tabs-container">
         <div class="tabs-header">
           <button [class.active]="activeTab() === 'desc'" (click)="setTab('desc')">
@@ -203,30 +203,21 @@
       </div>
     </div>
   </div>
-  @if (top10Products().length > 0) {
-  <section class="related-section">
-    <h3>Completa tu estilo</h3>
-    <!-- <div class="related-grid">
-        @for (prodRel of top10Products(); track $index) {
-        <div class="mini-product-card">
-          <div class="mini-img-box">
-            <a [routerLink]="['/product', prodRel.slug]" style="cursor: pointer">
-                  <img 
-                    [src]="prodRel.images[0] ? (URL_IMG() + prodRel.images[0].src) : 'assets/placeholder.jpg'" 
-                    [alt]="prodRel.title"
-                    loading="lazy"
-                  >
-                </a>
-          </div>
-          
-          <div class="mini-info">
-            <h4>{{ prodRel.title }}</h4>
-            <span class="mini-price">{{ prodRel.price | currency : ps.Currency.currency }}</span>
-            <button class="btn-mini-add" [routerLink]="['/product/', prodRel.slug]" >Ver</button>
-          </div>
-        </div>
-        }
-      </div> -->
-  </section>
+  @if (relatedProducts().length > 0) {
+
+  <app-product-slider
+    [products]="relatedProducts()"
+    [title]="'Productos relacionados'"
+  ></app-product-slider>
+
   } }
 </div>
+@if (isShareModalOpen()) {
+<app-share-modal
+  [productUrl]="ps.cleanProductSlug().slug"
+  [productTitle]="ps.cleanProductSlug().title"
+  (close)="closeShare()"
+/>
+
+}
+<app-viewer-toast/>

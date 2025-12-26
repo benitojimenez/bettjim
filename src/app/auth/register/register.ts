@@ -5,6 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 import { User } from '../../services/user';
 import { ToastService } from '../../services/toast';
 import { Breadcrumbs } from "../../shared/components/breadcrumbs/breadcrumbs";
+import { Seo } from '../../services/seo';
 @Component({
   selector: 'app-register',
   imports: [CommonModule, ReactiveFormsModule, RouterLink, Breadcrumbs],
@@ -16,6 +17,7 @@ export class Register implements OnInit {
   userService = inject(User)
   toast = inject(ToastService)
   router = inject(Router)
+  seo = inject(Seo);
 
   // Señales de UI
   showPassword = signal(false);
@@ -51,6 +53,16 @@ export class Register implements OnInit {
     return this.registerForm.hasError('mismatch') && this.registerForm.get('confirmPassword')?.touched;
   }
   ngOnInit(): void {
+    // Configurar SEO para la página de registro
+    this.seo.generateTags({
+      title: 'Crear Cuenta | Bettjim.com',
+      description: 'Únete a Bettjim.com y crea tu cuenta para disfrutar de una experiencia de compra personalizada. ¡Regístrate ahora!',
+      keywords: 'Crear cuenta, registro, Bettjim',
+      slug: 'auth/register',
+      type: 'website',
+      image: 'obtener_logo/bettjim.png'
+    });
+
      
     this.registerForm.get('email')?.valueChanges.subscribe(value => {
       // console.log('Valor del email:', value);

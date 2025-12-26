@@ -465,3 +465,44 @@ $color-red:#e63535;
     gap: 20px;
   }
 }
+
+.shared-product {
+  display: inline-flex; // Para que ocupe solo lo necesario
+  margin-bottom: 10px; // Espaciado si hay elementos arriba
+
+  button {
+    // 1. ESTRUCTURA
+    display: flex;
+    align-items: center;
+    gap: 8px; // Espacio entre icono (si lo agregas) y texto
+    padding: 10px 20px;
+    
+    // 2. ESTILO BASE (Sutil / Glass)
+    background: rgba(255, 255, 255, 0.03); // Fondo casi invisible
+    border: 1px solid var(--glass-border, rgba(255,255,255,0.1));
+    border-radius: 100px; // Pill shape (muy moderno)
+    
+    // 3. TIPOGRAFÍA
+    font-family: var(--font-family);
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-muted); // Gris suave por defecto
+    
+    // 4. ANIMACIÓN
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    // 5. INTERACCIÓN (La magia)
+    &:hover {
+      background: rgba(255, 46, 99, 0.1); // Fondo rojo muy suave (10%)
+      border-color: var(--primary); // Borde se vuelve Neon Red
+      color: var(--primary); // Texto se vuelve Neon Red
+      transform: translateY(-2px); // Flota un poco
+      box-shadow: 0 4px 12px rgba(255, 46, 99, 0.15); // Glow suave
+    }
+
+    &:active {
+      transform: scale(0.98); // Efecto de click
+    }
+  }
+}

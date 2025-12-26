@@ -1,0 +1,189 @@
+<div class="page-container">
+  
+  <div class="bg-gradient"></div>
+
+  <div class="document-wrapper">
+    
+    <header class="doc-header">
+      <div class="brand-area">
+        <h1>Libro de Reclamaciones</h1>
+        <p class="company-details">
+          {{ companyInfo.razonSocial }} <br>
+          RUC: {{ companyInfo.ruc }} <br>
+          {{ companyInfo.address }}
+        </p>
+      </div>
+      
+      <div class="meta-data">
+        <div class="data-box">
+          <span class="label">HOJA DE RECLAMACIÓN</span>
+          <span class="code">{{ claimCode }}</span>
+        </div>
+        <div class="data-box date">
+          <span class="label">FECHA</span>
+          <span class="value">{{ currentDate | date:'dd/MM/yyyy' }}</span>
+        </div>
+      </div>
+    </header>
+
+    <form [formGroup]="complaintForm" (ngSubmit)="onSubmit()" class="doc-body">
+      
+      <p class="intro-text">
+        Conforme a lo establecido en el código de protección y defensa del consumidor, este establecimiento cuenta con un Libro de Reclamaciones a su disposición.
+      </p>
+
+      <section class="form-section">
+        <div class="section-title">
+          <span class="number">1</span>
+          <h3>Identificación del Consumidor Reclamante</h3>
+        </div>
+        
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Nombre Completo</label>
+            <input type="text" formControlName="name" placeholder="Nombres y Apellidos">
+          </div>
+          <div class="form-group doc-group">
+            <div class="select-wrapper">
+              <select formControlName="documentType">
+                <option value="DNI">DNI</option>
+                <option value="CE">CE</option>
+                <option value="RUC">RUC</option>
+              </select>
+            </div>
+            <input type="tel" formControlName="documentNumber" placeholder="N° Documento">
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Correo Electrónico</label>
+            <input type="email" formControlName="email" placeholder="Para enviarle una copia">
+          </div>
+          <div class="form-group">
+            <label>Teléfono / Celular</label>
+            <input type="tel" formControlName="phone" placeholder="999 999 999">
+          </div>
+        </div>
+
+        <div class="form-group full">
+          <label>Domicilio</label>
+          <input type="text" formControlName="address" placeholder="Dirección, Distrito, Ciudad">
+        </div>
+
+        <div class="checkbox-simple">
+          <label>
+            <input type="checkbox" formControlName="isMinor">
+            <span>Soy menor de edad</span>
+          </label>
+        </div>
+        
+        @if (complaintForm.get('isMinor')?.value) {
+          <div class="form-group full animated-fade">
+            <label>Nombre del Padre o Apoderado</label>
+            <input type="text" formControlName="parentName" placeholder="Nombre completo del representante">
+          </div>
+        }
+      </section>
+
+      <hr class="divider">
+
+      <section class="form-section">
+        <div class="section-title">
+          <span class="number">2</span>
+          <h3>Identificación del Bien Contratado</h3>
+        </div>
+
+        <div class="radio-cards">
+          <label class="radio-card">
+            <input type="radio" formControlName="contractType" value="producto">
+            <div class="card-inner">
+              <span class="icon">📦</span>
+              <span>Producto</span>
+            </div>
+          </label>
+          <label class="radio-card">
+            <input type="radio" formControlName="contractType" value="servicio">
+            <div class="card-inner">
+              <span class="icon">🛠️</span>
+              <span>Servicio</span>
+            </div>
+          </label>
+        </div>
+
+        <div class="grid-amount-desc">
+          <div class="form-group amount">
+            <label>Monto Reclamado</label>
+            <div class="currency-input">
+              <span>S/</span>
+              <input type="number" formControlName="amount" placeholder="0.00">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Descripción</label>
+            <input type="text" formControlName="description" placeholder="Ej. Zapatillas Nike Talla 42...">
+          </div>
+        </div>
+      </section>
+
+      <hr class="divider">
+
+      <section class="form-section">
+        <div class="section-title">
+          <span class="number">3</span>
+          <h3>Detalle de la Reclamación</h3>
+        </div>
+
+        <div class="type-selector">
+          <label class="type-box" [class.selected]="complaintForm.get('type')?.value === 'reclamo'">
+            <input type="radio" formControlName="type" value="reclamo">
+            <div class="header">
+              <strong>RECLAMO</strong>
+            </div>
+            <p>Disconformidad relacionada a los productos o servicios.</p>
+          </label>
+          
+          <label class="type-box" [class.selected]="complaintForm.get('type')?.value === 'queja'">
+            <input type="radio" formControlName="type" value="queja">
+            <div class="header">
+              <strong>QUEJA</strong>
+            </div>
+            <p>Disconformidad no relacionada a los productos o servicios (ej: mala atención).</p>
+          </label>
+        </div>
+
+        <div class="form-group full">
+          <label>Detalle del Reclamo/Queja</label>
+          <textarea formControlName="detail" rows="4" placeholder="Describa los hechos detalladamente..."></textarea>
+        </div>
+
+        <div class="form-group full">
+          <label>Pedido del Consumidor</label>
+          <textarea formControlName="request" rows="2" placeholder="¿Qué solución espera? (Ej. Cambio de producto, devolución...)"></textarea>
+        </div>
+      </section>
+
+      <div class="doc-footer">
+        <div class="legal-check">
+          <label>
+            <input type="checkbox" formControlName="terms">
+            <span class="text">Declaro ser el titular del servicio y acepto el tratamiento de mis datos personales según la Política de Privacidad.</span>
+          </label>
+        </div>
+
+        <div class="actions">
+          <!-- <button type="button" class="btn-cancel">Cancelar</button> -->
+          <button type="submit" class="btn-submit" [disabled]="complaintForm.invalid">
+            Registrar Reclamo
+          </button>
+        </div>
+
+        <p class="final-legal">
+          * La formulación del reclamo no impide acudir a otras vías de solución de controversias ni es requisito previo para interponer una denuncia ante el INDECOPI.<br>
+          * El proveedor deberá dar respuesta al reclamo en un plazo no mayor a quince (15) días hábiles improrrogables.
+        </p>
+      </div>
+
+    </form>
+  </div>
+</div>

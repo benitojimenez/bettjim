@@ -1,0 +1,106 @@
+// WRAPPER PRINCIPAL
+.badges-wrapper {
+  margin: 30px 0;
+  position: relative;
+  
+  // Fade lateral para indicar continuidad en el slider
+  mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+}
+
+// ESTILO DE LA TARJETA (SLIDE)
+.trust-card {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  
+  // Estilo Glass Dark
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid var(--glass-border, rgba(255,255,255,0.05));
+  border-radius: 16px;
+  padding: 16px;
+  height: 100%; // Asegura que todos tengan la misma altura
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none; // Evita seleccionar texto al arrastrar
+
+  // ICONO
+  .icon-wrapper {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.03);
+    color: var(--text-muted);
+    transition: all 0.3s ease;
+
+    svg { 
+      width: 24px; 
+      height: 24px;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    // COLORES (Se aplican dinámicamente)
+    &.shield { color: var(--success, #10b981); }
+    &.return { color: #3b82f6; }
+    &.shipping { color: #0ea5e9; }
+    &.offers { color: #8b5cf6; }
+    &.support { color: #14b8a6; }
+    &.tracking { color: #f97316; }
+    &.price { color: #eab308; }
+  }
+
+  // TEXTOS
+  .text-content {
+    display: flex;
+    flex-direction: column;
+    
+    h4 {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 2px;
+      white-space: nowrap;
+    }
+    
+    p {
+      margin: 0;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+  }
+
+  // INTERACCIÓN HOVER (Solo Desktop)
+  @media (min-width: 1024px) {
+    &:hover {
+      background: rgba(255, 255, 255, 0.05);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px -10px rgba(0,0,0,0.3);
+
+      .icon-wrapper {
+        background: var(--bg-card);
+        transform: scale(1.1);
+        
+        // Glow según color
+        &.shield { box-shadow: 0 0 15px rgba(16, 185, 129, 0.2); }
+        &.return { box-shadow: 0 0 15px rgba(59, 130, 246, 0.2); }
+        &.shipping { box-shadow: 0 0 15px rgba(14, 165, 233, 0.2); }
+        &.offers { box-shadow: 0 0 15px rgba(139, 92, 246, 0.2); }
+        &.support { box-shadow: 0 0 15px rgba(20, 184, 166, 0.2); }
+        &.tracking { box-shadow: 0 0 15px rgba(249, 115, 22, 0.2); }
+        &.price { box-shadow: 0 0 15px rgba(234, 179, 8, 0.2); }
+      }
+    }
+  }
+}
+
+// AJUSTE SWIPER WEB COMPONENT
+swiper-container {
+  width: 100%;
+  padding-bottom: 10px; // Espacio para que no corte la sombra
+}

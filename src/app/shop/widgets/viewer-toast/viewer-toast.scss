@@ -1,0 +1,185 @@
+/* viewer-toast.component.scss */
+
+.viewer-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  z-index: 900;
+  
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  
+  // --- CAMBIO DE COLOR AQUÍ ---
+  // Antes (Gris): background: rgba(15, 23, 42, 0.85);
+  
+  // AHORA (Verde Emerald Premium):
+  background: linear-gradient(135deg, rgba(6, 95, 70, 0.95), rgba(16, 185, 129, 0.9)); 
+  // Esto mezcla un verde oscuro con uno más brillante.
+  
+  backdrop-filter: blur(8px); // Mantenemos el efecto vidrio
+  
+  // Borde sutil para definirlo
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  
+  padding: 10px 18px; // Un poco más de padding
+  border-radius: 100px;
+  
+  // Sombra verde para dar efecto de "Luz"
+  box-shadow: 0 8px 20px -5px rgba(16, 185, 129, 0.4);
+  
+  color: white; // Texto blanco puro para contraste
+  font-family: var(--font-family);
+  
+  // ... resto de las animaciones (opacity, transform) ...
+  opacity: 0;
+  transform: translateY(20px) scale(0.95);
+  pointer-events: none;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: all;
+  }
+
+  // Ajuste del Icono para que se vea bien sobre verde
+  .icon {
+    display: flex;
+    color: white; // Blanco puro
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+  }
+
+  // Texto
+  .content {
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1); // Sombra texto para legibilidad
+    
+    .count {
+      font-weight: 800; // Más grueso
+      font-size: 0.95rem;
+      color: white;
+      margin-bottom: 2px;
+    }
+    
+    .text {
+      font-size: 0.75rem;
+      // Usamos un blanco con transparencia en lugar de gris
+      color: rgba(255, 255, 255, 0.9); 
+      white-space: nowrap;
+    }
+  }
+
+  // Indicador "Live" (Punto)
+  .live-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 6px;
+    
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background-color: white; // Ahora el punto es BLANCO porque el fondo es verde
+      border-radius: 50%;
+      position: relative;
+      box-shadow: 0 0 10px rgba(255,255,255,0.8);
+      
+      &::before {
+        content: '';
+        position: absolute;
+        inset: -4px;
+        border-radius: 50%;
+        background-color: white;
+        opacity: 0.5;
+        animation: pulse 2s infinite;
+      }
+    }
+  }
+
+  // Botón cerrar
+  .close-btn {
+    background: rgba(0,0,0,0.1); // Fondo oscuro sutil
+    border: none;
+    color: rgba(255,255,255,0.8);
+    padding: 4px;
+    margin-left: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    transition: all 0.2s;
+
+    &:hover {
+      background: white;
+      color: #065f46; // Texto verde al hacer hover
+    }
+  }
+}
+
+// ... Keyframes y Media Query igual que antes ...
+@keyframes pulse {
+  0% { transform: scale(0.5); opacity: 0; }
+  50% { opacity: 0.4; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+// VERSIÓN COMPACTA PARA MÓVILES
+@media (max-width: 600px) {
+  .viewer-toast {
+    // 1. POSICIONAMIENTO
+    left: 50%;
+    bottom: 5rem; // Altura que pediste
+    width: max-content;
+    
+    // 2. REDUCCIÓN DE TAMAÑO (Mini Pill)
+    padding: 6px 12px; // Mucho menos relleno (antes era 10px 18px)
+    gap: 8px; // Elementos más juntos
+    border-radius: 30px; // Bordes ajustados
+
+    // 3. TEXTOS MÁS PEQUEÑOS
+    .content {
+      .count {
+        font-size: 0.8rem; // Reducido (antes 0.95rem)
+        margin-bottom: 0; // Sin margen extra
+      }
+      
+      .text {
+        font-size: 0.65rem; // Reducido (antes 0.75rem)
+        opacity: 0.9;
+      }
+    }
+
+    // 4. ICONOS MÁS PEQUEÑOS
+    .icon svg {
+      width: 16px; // Antes 20px
+      height: 16px;
+    }
+
+    // 5. PUNTO LIVE MÁS SUTIL
+    .live-indicator {
+      margin-left: 4px;
+      .pulse-dot {
+        width: 6px; // Antes 8px
+        height: 6px;
+      }
+    }
+
+    // 6. BOTÓN CERRAR DISCRETO
+    .close-btn {
+      padding: 2px;
+      margin-left: 6px;
+      svg {
+        width: 12px;
+        height: 12px;
+      }
+    }
+
+    // ANIMACIÓN CENTRADA
+    transform: translateX(-50%) translateY(10px); // Menos desplazamiento
+    &.show {
+      transform: translateX(-50%) translateY(0);
+    }
+  }
+}

@@ -1,11 +1,8 @@
-<app-hero-slider/>
-<div class="beauty-wrapper">
+<app-hero-slider />
 
-  <app-product-slider 
-  title="Top Ventas" 
-  [products]="top10Products()"/>
-   <app-product-slider 
-  title="Los Mas Vistos" 
-  [products]="top10Products()"/>
+<app-trust-badges />
+<!-- <app-category-grid/> -->
 
-</div>
+<app-product-slider title="Top Ventas" [products]="top10Products()" />
+<app-brand/>
+<app-product-slider title="Los Mas Vistos" [products]="top10Products()" />

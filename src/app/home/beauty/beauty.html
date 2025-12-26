@@ -29,8 +29,8 @@
     </div>
   </div>
   <app-stories-slider [categories]="categories()" />
-
-  <section class="hero-promo reveal" #animateItem>
+  <app-product-slider title="Top Ventas" [products]="top10Products()" />
+   <section class="hero-promo reveal" #animateItem>
     <div class="promo-card main">
       <div class="text-content">
         <span class="tag-sale">MEGA SALE</span>
@@ -44,7 +44,5 @@
       <img src="assets/img/hero-beauty.png" class="promo-img" />
     </div>
   </section>
-
-  <app-product-slider title="Top Ventas" [products]="top10Products()" />
   <app-product-slider title="Los Mas Vistos" [products]="top10Products()" />
 </div>

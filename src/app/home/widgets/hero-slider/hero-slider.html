@@ -1,36 +1,31 @@
+@if (ads.productsResource.isLoading()) {
+
+<div class="loading-spinner">
+  <div class="spinner"></div>
+</div>
+} @else if (ads.productsResource.error()) {
+<div class="error-message">Error loading ads.</div>
+} @else {
 <section class="hero-section">
-  
   <swiper-container #heroSwiper init="false" class="hero-swiper">
-    @for (slide of slides; track slide.id) {
-      <swiper-slide>
-        
-        <div class="media-bg">
-          @if (slide.type === 'video') {
-            <video 
-              [poster]="slide.poster"
-              autoplay 
-              muted 
-              loop 
-              playsinline
-              class="bg-video ken-burns">
-              <source [src]="slide.src" type="video/mp4">
-            </video>
-          } @else {
-            <img [src]="slide.src" alt="Hero Bg" class="bg-img ken-burns">
-          }
-          
-          <div class="overlay"></div>
-        </div>
+    @for (slide of ads.cleanAds(); track slide._id) {
+    <swiper-slide>
+      <div class="media-bg">
+        <img [src]="urlImage() + slide.image" alt="Hero Bg" class="bg-img ken-burns" />
 
-        <div class="container content-wrapper">
-          <div class="content glass-card"> <span class="subtitle slide-in-top">{{ slide.subtitle }}</span>
-            <h1 class="title slide-in-left">{{ slide.title }}</h1>
-            <p class="desc fade-in">{{ slide.desc }}</p>
-            <a [href]="slide.link" class="btn-hero bounce-in">{{ slide.btnText }}</a>
-          </div>
+        <div class="overlay"></div>
+      </div>
+      @if (slide.title) {
+      <div class="container content-wrapper">
+        <div class="content glass-card">
+          <span class="subtitle slide-in-top">{{ slide.title }}</span>
+          <h1 class="title slide-in-left">{{ slide.subTitle }}</h1>
+          <p class="desc fade-in">{{ slide.description ? slide.description : slide.category }}</p>
+          <a [href]="slide.url" class="btn-hero bounce-in">{{ slide.button }}</a>
         </div>
-
-      </swiper-slide>
+      </div>
+      }
+    </swiper-slide>
     }
   </swiper-container>
 
@@ -43,5 +38,5 @@
   <div class="autoplay-progress">
     <div class="bar" [style.width.%]="progressWidth()"></div>
   </div>
-
 </section>
+}

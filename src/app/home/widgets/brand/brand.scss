@@ -1,0 +1,92 @@
+// VARIABLES
+$marquee-speed: 60s; // Más lento porque el track es muy largo ahora
+$logo-height: 50px;
+$gap: 80px; // Espacio moderno y amplio
+
+.marquee-wrapper {
+  background: transparent;
+  padding: 50px 0;
+  overflow: hidden;
+  width: 100%;
+  position: relative;
+  
+  // Máscara de desvanecimiento en los bordes (Efecto moderno)
+  mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+
+  .marquee-track {
+    // Usamos FLEX aquí solo para poner los dos grupos grandes uno al lado del otro
+    display: flex;
+    // Importante: el ancho se ajusta al contenido, y evitamos que se rompa en líneas
+    width: max-content;
+    white-space: nowrap; 
+
+    // LA ANIMACIÓN MATEMÁTICA EXACTA
+    // Como tenemos 2 grupos idénticos gigantes, movemos exactamente la mitad.
+    animation: scroll-infinite $marquee-speed linear infinite;
+    
+    // Pausa al pasar el mouse (UX)
+    &:hover { animation-play-state: paused; }
+  }
+
+  // ESTILO MODERNO DE LOS GRUPOS USANDO GRID
+  .logo-group {
+    display: grid;
+    // Esto alinea los items en una sola fila horizontal
+    grid-auto-flow: column; 
+    // Esto define el espacio exacto entre cada logo
+    gap: $gap;
+    align-items: center;
+    
+    // TRUCO CLAVE PARA EVITAR EL ESPACIO EN BLANCO:
+    // Añadimos un margen derecho al grupo igual al gap.
+    // Esto asegura que la distancia entre el último logo del Grupo 1
+    // y el primer logo del Grupo 2 sea perfecta.
+    margin-right: $gap; 
+
+    img {
+      height: $logo-height;
+      width: auto;
+      object-fit: contain;
+      
+      // Estilo "Ghost" (Elegante y sutil)
+      filter: grayscale(100%) opacity(0.4);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      // Evita que el navegador intente arrastrar la imagen
+      user-select: none; 
+      -webkit-user-drag: none;
+
+      // Hover Effect Moderno
+      &:hover {
+        filter: grayscale(0%) opacity(1);
+        transform: scale(1.15); // Zoom un poco más notorio
+        filter: drop-shadow(0 4px 12px rgba(255, 255, 255, 0.3));
+      }
+    }
+  }
+}
+
+// KEYFRAMES EXACTOS
+@keyframes scroll-infinite {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    // Movemos exactamente el 50% del ancho total del track.
+    // Al llegar aquí, el Grupo 2 está exactamente donde empezó el Grupo 1.
+    transform: translateX(-50%); 
+  }
+}
+
+// RESPONSIVE (Ajuste para móviles)
+@media (max-width: 768px) {
+  .marquee-wrapper {
+    padding: 30px 0;
+    .logo-group {
+      gap: 40px; // Reducimos el espacio
+      margin-right: 40px; // El margen debe coincidir con el gap
+      img { height: 35px; } // Logos más pequeños
+    }
+  }
+}
