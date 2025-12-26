@@ -475,19 +475,31 @@ export default class ProductLetf implements OnInit, OnDestroy {
         "reviewCount": product.t_reviews || 1
       }
     };
-    // --------------------------------------------------------------
-
     // --- PASO 4: Inyectar el esquema JSON-LD ---
-    const jsonLdArray: any[] = [productSchema]; // Solo el esquema principal
 
-    const script = this.renderer.createElement('script');
-    script.type = 'application/ld+json';
-    script.text = JSON.stringify(jsonLdArray);
+    const jsonLdArray: any[] = [productSchema];
+    const newScriptContent = JSON.stringify(jsonLdArray);
+    const SCRIPT_ID = 'json-ld-product-schema'; // ID ÚNICO
 
-    // Adjuntar al HEAD del documento
+    // =======================================================
+    // SOLUCIÓN: BUSCAR ANTES DE CREAR
+    // =======================================================
     const head = this.el.nativeElement.ownerDocument.head;
-    this.renderer.appendChild(head, script);
-    // ------------------------------------------
+    const existingScript = head.querySelector(`#${SCRIPT_ID}`);
+
+    if (existingScript) {
+      // CASO A: YA EXISTE -> Solo actualizamos el contenido
+      console.log('🔄 Actualizando Schema Producto existente...');
+      existingScript.text = newScriptContent;
+    } else {
+      // CASO B: NO EXISTE -> Lo creamos de cero
+      console.log('✨ Creando Schema Producto nuevo...');
+      const script = this.renderer.createElement('script');
+      script.id = SCRIPT_ID; // ¡Importante ponerle el ID!
+      script.type = 'application/ld+json';
+      script.text = newScriptContent;
+      this.renderer.appendChild(head, script);
+    }
   }
 
 
@@ -550,20 +562,27 @@ export default class ProductLetf implements OnInit, OnDestroy {
       "itemListElement": itemListElement
     };
 
-    // const script = this.renderer.createElement('script');
-    // script.type = 'application/ld+json';
+    const newScriptContent = JSON.stringify(breadcrumbSchema);
+    const SCRIPT_ID = 'json-ld-breadcrumb-schema'; // ID ÚNICO
 
-    // script.text = JSON.stringify(breadcrumbSchema);
-    // this.renderer.appendChild(this.el.nativeElement, script);
-    const script = this.renderer.createElement('script');
-    script.type = 'application/ld+json';
-    script.text = JSON.stringify(breadcrumbSchema);
-
-    // *** CAMBIO CRUCIAL AQUÍ ***
+    // =======================================================
+    // SOLUCIÓN: BUSCAR ANTES DE CREAR
+    // =======================================================
     const head = this.el.nativeElement.ownerDocument.head;
-    this.renderer.appendChild(head, script);
+    const existingScript = head.querySelector(`#${SCRIPT_ID}`);
 
-    // El método anterior que causaba el error era: 
-    // this.renderer.appendChild(this.el.nativeElement, script);
+    if (existingScript) {
+      // CASO A: Actualizar
+      console.log('🔄 Actualizando Breadcrumb existente...');
+      existingScript.text = newScriptContent;
+    } else {
+      // CASO B: Crear
+      console.log('✨ Creando Breadcrumb nuevo...');
+      const script = this.renderer.createElement('script');
+      script.id = SCRIPT_ID;
+      script.type = 'application/ld+json';
+      script.text = newScriptContent;
+      this.renderer.appendChild(head, script);
+    }
   }
 }

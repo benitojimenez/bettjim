@@ -20,7 +20,7 @@ Disallow: /checkout
 Disallow: /thank-you
 
 # 🚫 BLOQUEAR (Legal y Operativo - No aporta SEO)
-Disallow: /libro-de-reclamaciones
+Disallow: /libro-reclamaciones
 Disallow: /devolucion
 Disallow: /privacidad
 Disallow: /terminos-condiciones      
