@@ -66,9 +66,10 @@ export default class Shop implements OnInit {
   ngOnInit() {
     // Configurar SEO para la página de inicio de moda
     this.seo.generateTags({
-      title: 'Bettjim.com | Tu Mundo, a un click de distancia',
-      description: 'Bettjim.com es una tienda online peruana de tecnología, moda, belleza y más. Descubre productos innovadores y confiables.',
-      keywords: 'Moda, tienda de moda, ropa en línea, accesorios de moda, tendencias de moda',
+      title: 'Bettjim.com | Tu mundo a un clic de distancia',
+      description: 'Bettjim.com es una tienda online peruana de tecnología, moda, belleza y más. Descubre productos innovadores y confiables. Compra ahora y vive la experiencia Bettjim. ',
+      slug: 'shop',
+      keywords: 'Moda, tienda de moda, ropa en línea, accesorios de moda, tendencias de moda 2026, estilo personal, compras de moda, moda sostenible, ropa casual, ropa formal, calzado de moda, bolsos y carteras, joyería de moda, moda para hombres, moda para mujeres, moda unisex, moda de verano, moda de invierno, moda urbana, moda vintage, moda de lujo, belleza, tienda de belleza, productos de belleza en línea, cuidado de la piel, maquillaje, fragancias, cosméticos, tecnología, gadgets, electrónica de consumo, ofertas tecnológicas, reseñas de productos tecnológicos',
       type: 'website',
       image: 'obtener_logo/bettjim.png'
     });

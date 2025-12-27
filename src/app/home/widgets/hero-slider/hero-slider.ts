@@ -20,15 +20,6 @@ export class HeroSlider implements AfterViewInit {
   progressWidth = signal(0);
   urlImage = signal(environment.API_URL+'image_ads/');
 
-  // Definición del recurso
-  adsResource = resource({
-    loader: () => fetch(environment.API_URL+'get_ads/').then(res => res.json())
-  });
-
-  slidesSignal = computed(() => {
-    const data = this.adsResource.value();
-    return data.data ? data.data : [];
-  });
     // {
     //   id: 1,
     //   type: 'video', // 🔥 NUEVO: Soporte de Video

@@ -34,9 +34,9 @@ export class Login implements OnInit {
   ngOnInit() {
     // Configurar SEO para la página de login
     this.seo.generateTags({
-      title: 'Iniciar Sesión | Bettjim.com',  
-      description: 'Accede a tu cuenta en Bettjim para disfrutar de compras rápidas y seguras. ¡Inicia sesión ahora!',
-      keywords: 'Iniciar sesión, cuenta de usuario, acceso a cuenta, Bettjim',
+      title: 'Iniciar sesión | Bettjim.com',  
+      description: 'Accede a tu cuenta en Bettjim.com para disfrutar de una experiencia de compra personalizada. Gestiona tus pedidos, guarda tus productos favoritos y mantente al día con las últimas ofertas. Inicia sesión ahora y descubre todo lo que Bettjim tiene para ti.',
+      keywords: 'Iniciar sesión, cuenta de usuario, tienda online, Bettjim, gestión de pedidos, productos favoritos, ofertas exclusivas',
       slug: 'auth/login',
       type: 'website',
       image: 'obtener_logo/bettjim.png'

@@ -21,12 +21,12 @@ export class Beauty {
   constructor() {
     // Configurar SEO para esta página
     this.seo.generateTags({
-      title: 'Belleza en Bettjim.com | Productos que Realzan tu Estilo',
-      description: 'Descubre los mejores productos de belleza en Bettjim. Desde cuidado de la piel hasta maquillaje, encuentra todo lo que necesitas para resaltar tu belleza natural.',
+      title: 'Bettjim.com | Belleza a un clic de distancia',
+      description: 'Descubre la mejor selección de productos de belleza en Bettjim.com. Desde cuidado de la piel hasta maquillaje y fragancias, encuentra todo lo que necesitas para resaltar tu belleza natural. Compra ahora y vive la experiencia Bettjim.com en tu hogar. ',
       image: 'obtener_logo/bettjim.png',
       slug: 'belleza',
       type: 'website',
-      keywords: 'belleza, cuidado de la piel, maquillaje, fragancias, productos de belleza, tienda de belleza en línea'
+      keywords: 'Belleza, tienda de belleza, productos de belleza en línea, cuidado de la piel, maquillaje, fragancias, cosméticos, tendencias de belleza 2026, rutina de cuidado facial, productos veganos de belleza, belleza sostenible, consejos de belleza, reseñas de productos de belleza, ofertas de belleza, sets de regalo de belleza'
     });
   }
 

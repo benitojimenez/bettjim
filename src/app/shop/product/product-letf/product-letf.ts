@@ -160,12 +160,11 @@ export default class ProductLetf implements OnInit, OnDestroy {
           currency: 'PEN',
           brand: 'Bettjim',
           stock: product.stock > 0,
-          keywords: `comprar ${product.title}, bettjim, moda peru`
+          keywords: `comprar ${product.title}, bettjim, moda peru, tienda online peru, ${product.category}}`
         });
 
         // console.log('Agregando JSON-LD para producto:', product);
         if (isPlatformServer(this._platformId)) {
-          console.log('✅ SEO actualizado para:', product.title);
           // Agregar JSON-LD para el producto
           this.addJsonLdScript(product, inventories || []);
           this.addBreadcrumbSchema(product);

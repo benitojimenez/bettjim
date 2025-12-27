@@ -15,7 +15,7 @@ export class AdsService {
   constructor() { }
 
     //  EL RECURSO (La petición HTTP reactiva)
-  public productsResource = httpResource<AdsResponse>(() => {
+  public AdsResource = httpResource<AdsResponse>(() => {
 
     const urlTarget = `${environment.API_URL}get_ads/`;
 
@@ -23,7 +23,7 @@ export class AdsService {
   }, { defaultValue: { data: [] } });
 
   public cleanAds = computed(() => {
-    return this.productsResource.value()?.data ?? [];
+    return this.AdsResource.value()?.data ?? [];
   });
 
 }

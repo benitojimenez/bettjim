@@ -55,9 +55,9 @@ export class Register implements OnInit {
   ngOnInit(): void {
     // Configurar SEO para la página de registro
     this.seo.generateTags({
-      title: 'Crear Cuenta | Bettjim.com',
-      description: 'Únete a Bettjim.com y crea tu cuenta para disfrutar de una experiencia de compra personalizada. ¡Regístrate ahora!',
-      keywords: 'Crear cuenta, registro, Bettjim',
+      title: 'Crear cuenta | Bettjim.com',
+      description: 'Únete a Bettjim.com y crea tu cuenta para disfrutar de una experiencia de compra personalizada. Guarda tus productos favoritos, realiza pedidos fácilmente y mantente informado sobre las últimas ofertas y novedades. Regístrate ahora y forma parte de la comunidad Bettjim.',
+      keywords: 'Crear cuenta, registro de usuario, tienda online, Bettjim, experiencia de compra personalizada, productos favoritos, ofertas exclusivas, registro fácil',
       slug: 'auth/register',
       type: 'website',
       image: 'obtener_logo/bettjim.png'

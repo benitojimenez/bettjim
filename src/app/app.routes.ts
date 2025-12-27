@@ -14,9 +14,9 @@ export const routes: Routes = [
         path: 'shop',
         loadComponent: () => import('./shop/collection/shop/shop').then(c => c.default),
     },
-   {
+    {
         path: 'auth',
-        canActivate:[guestGuard],
+        canActivate: [guestGuard],
         loadChildren: () => import('./auth/auth.routes').then(m => m.auth),
     },
 
@@ -24,11 +24,11 @@ export const routes: Routes = [
         path: 'product/:slug',
         loadComponent: () => import('./shop/product/product-letf/product-letf').then(c => c.default),
     },
-     {
+    {
         path: 'product1/:slug',
         loadComponent: () => import('./shop/product/product-detail-one/product-detail-one').then(c => c.default),
     },
-     {
+    {
         path: 'checkout',
         loadChildren: () => import('./checkout/checkout.routes').then(m => m.checkoutRoutes),
     },
@@ -48,11 +48,11 @@ export const routes: Routes = [
         path: 'nosotros',
         loadComponent: () => import('./pages/about/about'),
     },
-     {
+    {
         path: 'tracking',
         loadComponent: () => import('./pages/tracking/tracking'),
     },
-     {
+    {
         path: 'libro-reclamaciones',
         loadComponent: () => import('./pages/reclamaciones/reclamaciones'),
     },
@@ -62,9 +62,9 @@ export const routes: Routes = [
     },
     // 🔒 RUTAS PRIVADAS (Solo Logueados)
     // Aquí sí obligamos a tener cuenta
-        {
+    {
         path: 'account',
-        canActivate:[authGuard], // 👮‍♂️ El guardián vigila aquí
+        canActivate: [authGuard], // 👮‍♂️ El guardián vigila aquí
         loadChildren: () => import('./account/account.routes').then(m => m.accountRoutes),
     },
     {

@@ -1,9 +1,9 @@
-@if (ads.productsResource.isLoading()) {
+@if (ads.AdsResource.isLoading()) {
 
 <div class="loading-spinner">
   <div class="spinner"></div>
 </div>
-} @else if (ads.productsResource.error()) {
+} @else if (ads.AdsResource.error()) {
 <div class="error-message">Error loading ads.</div>
 } @else {
 <section class="hero-section">

@@ -349,3 +349,130 @@ $input-bg: #ffffff; // Fondo de inputs (Blanco puro)
   
   .doc-group { flex-direction: column; align-items: stretch; .select-wrapper { width: 100%; } }
 }
+// EL SPINNER (Círculo giratorio)
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3); // Borde transparente
+  border-top-color: #ffffff; // Borde superior blanco (el que gira)
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+// EL FONDO OSCURO (OVERLAY)
+.success-overlay {
+  position: fixed;
+  inset: 0; // Top, right, bottom, left: 0
+  background: rgba(15, 23, 42, 0.6); // Slate 900 con transparencia
+  backdrop-filter: blur(8px); // Efecto Blur moderno
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+// LA TARJETA DEL MODAL
+.success-card {
+  background: white;
+  width: 100%;
+  max-width: 450px;
+  padding: 40px 30px;
+  border-radius: 24px;
+  text-align: center;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  position: relative;
+  overflow: hidden;
+  animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); // Efecto rebote suave
+
+  // Línea decorativa superior
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 6px;
+    background: $primary;
+  }
+}
+
+// ICONO CHECK ANIMADO
+.success-icon {
+  width: 80px; height: 80px;
+  background: rgba($primary, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
+  color: $primary;
+  
+  svg {
+    width: 40px; height: 40px;
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    animation: drawCheck 0.8s 0.3s forwards ease-in-out; // Dibuja el check
+  }
+}
+
+h2 { margin: 0 0 8px; color: $text-main; font-size: 1.8rem; letter-spacing: -0.5px; }
+.subtitle { margin: 0 0 30px; color: $text-muted; font-size: 0.95rem; }
+
+// CAJA DEL CÓDIGO (HIGHLIGHT)
+.code-box {
+  background: #f8fafc;
+  border: 2px dashed #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 25px;
+
+  .label { display: block; font-size: 0.7rem; font-weight: 700; color: $text-muted; letter-spacing: 1px; margin-bottom: 8px; }
+  
+  .code-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-family: monospace;
+    font-size: 2rem;
+    font-weight: 700;
+    color: $primary;
+
+    .copy-btn {
+      background: none; border: none; cursor: pointer; color: #cbd5e1;
+      transition: 0.2s;
+      &:hover { color: $text-main; transform: scale(1.1); }
+    }
+  }
+}
+
+.legal-note { font-size: 0.8rem; color: $text-muted; margin-bottom: 30px; line-height: 1.5; }
+
+// BOTÓN DE CIERRE
+.btn-close-modal {
+  background: $primary;
+  color: white;
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+  
+  &:hover {
+    background: darken($primary, 5%);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba($primary, 0.3);
+  }
+}
+
+// ANIMACIONES KEYFRAMES
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes popIn { from { opacity: 0; transform: scale(0.8) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+@keyframes drawCheck { to { stroke-dashoffset: 0; } }
