@@ -7,41 +7,83 @@ $bg-light: #F9FAFB;
   display: block;
   font-family: 'Inter', sans-serif;
   color: $text-dark;
-  overflow-x: hidden; /* Importante para el banner animado */
+  overflow-x: hidden;
 }
 
-/* --- 1. HERO SECTION (Parallax Feel) --- */
+/* --- 1. HERO SECTION PREMIUM (PARALLAX REAL) --- */
 .hero-manifesto {
-  height: 85vh; /* Alto impacto */
+  height: 90vh; /* Un poco más alto */
   position: relative;
-  display: flex; align-items: center; justify-content: center; text-align: center;
-  color: white; overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+  overflow: hidden;
 
-  .hero-bg {
-    position: absolute; 
-    inset: 1; 
-    // z-index: -10;
-    img { width: 100%; height: 105%; object-fit: cover; filter: brightness(0.7); }
-    .overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0, 0, 0, 0.171), transparent); }
+  /* FONDO CON EFECTO PARALLAX (CSS PURO) */
+  .hero-bg-parallax {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    // background-image se define en el HTML
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* EL TRUCO DEL PARALLAX */
+    z-index: 1;
+    filter: brightness(0.6); /* Un poco más oscuro para contraste */
+  }
+
+  /* OVERLAY GRADIENTE */
+  .hero-overlay {
+    position: absolute;
+    inset: 0; /* Ocupa todo */
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.1) 60%);
+    z-index: 2;
   }
 
   .hero-content {
-    max-width: 800px; padding: 20px;
-    .subtitle { display: block; font-size: 0.9rem; letter-spacing: 3px; margin-bottom: 20px; opacity: 0.8; font-weight: 600; }
-    h1 { 
-      font-size: clamp(2.5rem, 8vw, 5rem); /* Tipografía responsiva gigante */
-      font-weight: 900; line-height: 1.1; margin-bottom: 20px; letter-spacing: -1px;
+    position: relative;
+    z-index: 3; /* Por encima de todo */
+    max-width: 900px;
+    padding: 20px;
+
+    .subtitle {
+      display: block;
+      font-size: 1rem;
+      letter-spacing: 4px;
+      margin-bottom: 25px;
+      color: $primary; /* Color de acento */
+      font-weight: 700;
+      text-transform: uppercase;
     }
-    p { font-size: 1.2rem; max-width: 600px; margin: 0 auto; opacity: 0.9; line-height: 1.6; }
+
+    h1 {
+      /* TIPOGRAFÍA GIGANTE ESTILO NIKE/APPLE */
+      font-size: clamp(3rem, 10vw, 6.5rem); 
+      font-weight: 900;
+      line-height: 1;
+      margin-bottom: 30px;
+      letter-spacing: -2px; /* Letras pegadas */
+      text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    p {
+      font-size: 1.3rem;
+      max-width: 650px;
+      margin: 0 auto;
+      opacity: 0.95;
+      line-height: 1.6;
+      font-weight: 400;
+    }
   }
 }
 
 /* --- 2. KINETIC BANNER (Marquee) --- */
 .kinetic-banner {
-  background: $text-dark; color: white; padding: 20px 0; overflow: hidden; white-space: nowrap;
+  background: $text-dark; color: white; padding: 25px 0; overflow: hidden; white-space: nowrap; border-top: 1px solid rgba(255,255,255,0.1);
   .scrolling-text {
-    display: inline-block; animation: scrollText 20s linear infinite;
-    span { font-size: 1.5rem; font-weight: 800; text-transform: uppercase; margin-right: 50px; letter-spacing: 1px; }
+    display: inline-block; animation: scrollText 25s linear infinite; /* Más lento y suave */
+    span { font-size: 1.2rem; font-weight: 700; text-transform: uppercase; margin-right: 60px; letter-spacing: 2px; opacity: 0.9; }
   }
 }
 @keyframes scrollText {
@@ -49,92 +91,158 @@ $bg-light: #F9FAFB;
   to { transform: translateX(-50%); }
 }
 
-/* --- 3. STORY SECTION (Asimétrico) --- */
+/* --- 3. STORY SECTION --- */
 .story-section {
-  padding: 100px 20px; max-width: 1200px; margin: 0 auto;
+  padding: 120px 20px; max-width: 1200px; margin: 0 auto; /* Más padding */
 
   .story-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
-    
-    @media(max-width: 900px) { grid-template-columns: 1fr; gap: 40px; }
+    display: grid; grid-template-columns: 1fr 1fr; gap: 100px; align-items: center;
+    @media(max-width: 900px) { grid-template-columns: 1fr; gap: 50px; }
 
     .story-img-wrapper {
       position: relative;
-      img { width: 100%; border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+      /* Sombra más suave y difuminada */
+      img { width: 100%; border-radius: 20px; box-shadow: 0 30px 60px -15px rgba(0,0,0,0.2); }
       
-      /* Caja flotante sobre la imagen */
       .floating-box {
-        position: absolute; bottom: -30px; right: -30px;
-        background: white; padding: 30px; border-radius: 12px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.08); max-width: 250px;
-        strong { display: block; font-size: 1.1rem; margin-bottom: 10px; color: $primary; }
-        p { margin: 0; font-size: 0.9rem; font-style: italic; color: #555; }
-
-        @media(max-width: 600px) { right: 0; bottom: -20px; max-width: 200px; padding: 20px; }
+        position: absolute; bottom: -40px; right: -40px;
+        background: white; padding: 35px; border-radius: 16px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.1); max-width: 280px;
+        border-left: 4px solid $primary; /* Detalle de acento */
+        strong { display: block; font-size: 1.2rem; margin-bottom: 12px; color: $text-dark; }
+        p { margin: 0; font-size: 0.95rem; font-style: italic; color: #666; line-height: 1.5; }
+        @media(max-width: 600px) { right: 10px; bottom: -30px; max-width: 220px; padding: 25px; }
       }
     }
 
     .story-text {
-      h2 { font-size: 1rem; text-transform: uppercase; color: $primary; letter-spacing: 2px; margin-bottom: 10px; }
-      h3 { font-size: 2.5rem; margin: 0 0 30px; font-weight: 800; }
-      p { font-size: 1.1rem; line-height: 1.7; color: #444; margin-bottom: 20px; }
-      .signature { margin-top: 40px; font-family: cursive; font-size: 1.2rem; color: #666; }
+      h2 { font-size: 0.9rem; text-transform: uppercase; color: $primary; letter-spacing: 3px; margin-bottom: 15px; font-weight: 700; }
+      h3 { font-size: 2.8rem; margin: 0 0 35px; font-weight: 900; line-height: 1.2; }
+      p { font-size: 1.15rem; line-height: 1.8; color: #555; margin-bottom: 25px; }
+      .signature { margin-top: 50px; font-family: cursive; font-size: 1.3rem; color: $text-dark; font-weight: 600; }
     }
   }
 }
 
 /* --- 4. PILLARS SECTION --- */
 .pillars-section {
-  background: $bg-light; padding: 100px 20px;
-  .section-header { margin-bottom: 60px; h2 { font-size: 2.5rem; margin-bottom: 10px; } }
+  background: $bg-light; padding: 120px 20px;
+  .section-header { margin-bottom: 70px; h2 { font-size: 3rem; font-weight: 900; margin-bottom: 15px; } p { font-size: 1.2rem; color: #666; } }
 
   .pillars-grid {
     max-width: 1200px; margin: 0 auto;
     display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px;
-    @media(max-width: 768px) { grid-template-columns: 1fr; }
+    @media(max-width: 768px) { grid-template-columns: 1fr; gap: 60px; /* Más espacio en móvil */ }
 
     .pillar-card {
-      background: white; padding: 40px; border-radius: 16px; position: relative; overflow: hidden; transition: 0.3s;
-      &:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.05); }
+      background: white; padding: 50px 40px; border-radius: 24px; position: relative; overflow: hidden; transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+      border: 1px solid rgba(0,0,0,0.05);
+      /* Sombra al hacer hover más elegante */
+      &:hover { transform: translateY(-15px); box-shadow: 0 30px 60px rgba(0,0,0,0.1); border-color: transparent; }
 
       .big-number {
-        font-size: 6rem; font-weight: 900; color: #F0F0F0; position: absolute; top: -20px; left: 20px; z-index: 0;
+        /* Número gigante pero sutil */
+        font-size: 8rem; font-weight: 900; color: #F5F5F5; position: absolute; top: -30px; right: 20px; z-index: 0; line-height: 1;
       }
-      h3 { font-size: 1.5rem; margin: 20px 0 15px; position: relative; z-index: 1; }
-      p { color: #666; line-height: 1.6; position: relative; z-index: 1; margin: 0; }
+      h3 { font-size: 1.6rem; margin: 20px 0 15px; position: relative; z-index: 1; font-weight: 800; }
+      p { color: #666; line-height: 1.7; position: relative; z-index: 1; margin: 0; font-size: 1.05rem; }
     }
   }
 }
 
-/* --- 5. COMMUNITY GRID (Masonry-ish) --- */
+/* --- 5. COMMUNITY GRID --- */
 .community-section {
-  padding: 100px 20px; max-width: 1200px; margin: 0 auto;
-  .community-header { text-align: center; margin-bottom: 50px; h2 { font-size: 3rem; margin-bottom: 10px; } }
+  padding: 120px 20px; max-width: 1200px; margin: 0 auto;
+  .community-header { text-align: center; margin-bottom: 60px; h2 { font-size: 3.5rem; font-weight: 900; margin-bottom: 15px; } }
 
   .community-grid {
-    display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: 300px 300px; gap: 20px;
-    
-    @media(max-width: 768px) { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+    display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: 320px 320px; gap: 25px;
+    @media(max-width: 768px) { grid-template-columns: 1fr 1fr; grid-template-rows: auto; gap: 15px; }
 
     .grid-item {
-      position: relative; overflow: hidden; border-radius: 12px;
-      img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
-      &:hover img { transform: scale(1.05); }
+      position: relative; overflow: hidden; border-radius: 20px; cursor: pointer;
+      img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s cubic-bezier(0.165, 0.84, 0.44, 1); }
+      /* Efecto zoom lento y elegante */
+      &:hover img { transform: scale(1.08); }
 
-      /* Layout irregular para que se vea moderno */
       &.item-1 { grid-column: span 2; }
       &.item-2 { grid-row: span 2; }
-      @media(max-width: 768px) { &.item-1, &.item-2 { grid-column: span 1; grid-row: span 1; height: 250px;} }
+      @media(max-width: 768px) { &.item-1, &.item-2 { grid-column: span 1; grid-row: span 1; height: 280px;} }
 
       &.center-txt {
-        background: $primary; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 30px;
-        h3 { font-size: 2rem; line-height: 1.1; margin-bottom: 20px; }
-        .btn-link { color: white; text-decoration: none; font-weight: 700; border-bottom: 2px solid white; padding-bottom: 5px; }
+        background: $text-dark; /* Negro elegante en lugar de rojo */
+        color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; transition: 0.3s;
+        h3 { font-size: 2.2rem; line-height: 1.1; margin-bottom: 25px; font-weight: 900; }
+        .btn-link { 
+          color: white; text-decoration: none; font-weight: 700; border-bottom: 2px solid $primary; padding-bottom: 8px; transition: 0.3s; letter-spacing: 1px; text-transform: uppercase; font-size: 0.9rem;
+          &:hover { border-color: white; color: $primary; }
+        }
+        &:hover { background: #000; }
       }
     }
   }
 }
 
-/* ANIMACIÓN FADE UP SIMPLE */
-.fade-up { animation: fadeUp 1s ease-out; }
-@keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+/* ANIMACIÓN FADE UP */
+.fade-up { animation: fadeUp 1.2s cubic-bezier(0.165, 0.84, 0.44, 1) forwards; opacity: 0; transform: translateY(40px); }
+@keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+/* --- 3.5 IMPACT METRICS (NUEVO) --- */
+.metrics-section {
+  background: $text-dark; /* Fondo negro sólido */
+  color: white;
+  padding: 80px 20px;
+  position: relative;
+  z-index: 5; /* Asegura que quede encima */
+  
+  .metrics-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+
+    @media(max-width: 900px) {
+      justify-content: center;
+      gap: 40px;
+    }
+  }
+
+  .metric-item {
+    text-align: center;
+    flex: 1;
+    min-width: 150px;
+
+    .count {
+      display: block;
+      font-size: 3.5rem;
+      font-weight: 900;
+      color: white;
+      margin-bottom: 5px;
+      /* Gradiente sutil en el texto para efecto metálico/premium */
+      background: linear-gradient(to right, #fff, #a5a5a5);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1.1;
+    }
+
+    .label {
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: $primary; /* Tu color rojo neón */
+      font-weight: 700;
+    }
+  }
+
+  /* Líneas separadoras elegantes */
+  .separator {
+    width: 1px;
+    height: 60px;
+    background: rgba(255,255,255,0.15);
+    transform: skewX(-15deg); /* Inclinación dinámica */
+    
+    @media(max-width: 900px) { display: none; } /* Se ocultan en móvil */
+  }
+}

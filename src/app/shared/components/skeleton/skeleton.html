@@ -1,0 +1,65 @@
+<div class="container" style="max-width: 1200px; margin: 0 auto; padding: 40px 20px;">
+
+  <section style="margin-bottom: 60px;">
+    <h3 style="margin-bottom: 20px; color: #64748b;">1. Banner Principal (Hero)</h3>
+    
+    <div class="sk-hero-banner"></div>
+  </section>
+
+
+  <section style="margin-bottom: 60px;">
+    <h3 style="margin-bottom: 20px; color: #64748b;">2. Swiper de Productos (Responsive)</h3>
+    <p style="margin-bottom: 15px; font-size: 0.9rem; color: #94a3b8;">
+      En móvil se ve como carrusel cortado. En PC son 4 columnas.
+    </p>
+
+    <div class="sk-swiper-simulation">
+      @for (item of [1,2,3,4]; track $index) {
+        <div class="sk-card">
+          <div class="sk-square"></div> <div>
+            <div class="skeleton sk-text w-75"></div> <div class="skeleton sk-text w-50 title"></div> </div>
+        </div>
+      }
+    </div>
+  </section>
+
+
+  <section style="margin-bottom: 60px;">
+    <h3 style="margin-bottom: 20px; color: #64748b;">3. Perfil de Usuario / Vendedor</h3>
+    
+    <div class="sk-card" style="max-width: 500px;">
+      <div class="sk-row">
+        <div class="sk-circle lg"></div> <div style="flex: 1">
+          <div class="skeleton sk-text title w-50"></div> <div class="skeleton sk-text w-25"></div> </div>
+      </div>
+      <div class="skeleton sk-text w-100"></div>
+      <div class="skeleton sk-text w-100"></div>
+      <div class="skeleton sk-text w-75"></div>
+    </div>
+  </section>
+
+
+  <section style="margin-bottom: 60px;">
+    <h3 style="margin-bottom: 20px; color: #64748b;">4. Elementos Primitivos (Building Blocks)</h3>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+      
+      <div>
+        <h4 style="margin-bottom: 10px;">Círculos / Avatares</h4>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <div class="sk-circle sm"></div>
+          <div class="sk-circle md"></div>
+          <div class="sk-circle lg"></div>
+          <div class="sk-circle xl"></div>
+        </div>
+      </div>
+
+      <div>
+        <h4 style="margin-bottom: 10px;">Líneas de Texto</h4>
+        <div class="skeleton sk-text title w-50"></div>  <div class="skeleton sk-text subtitle w-25"></div> <div class="skeleton sk-text w-100"></div> <div class="skeleton sk-text w-75"></div>
+      </div>
+
+    </div>
+  </section>
+
+</div>

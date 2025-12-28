@@ -85,33 +85,52 @@
   }
 </section> -->
 <section class="slider-section">
-  
   <div class="header">
     <h2>{{ title() }}</h2>
-    
+
     @if (products().length > 0) {
-      <div class="swiper-nav-btns">
-        <button class="custom-prev" aria-label="Anterior">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
-        </button>
-        <button class="custom-next" aria-label="Siguiente">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-        </button>
-      </div>
+    <div class="swiper-nav-btns">
+      <button class="custom-prev" aria-label="Anterior">
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M15 18l-6-6 6-6" />
+        </svg>
+      </button>
+      <button class="custom-next" aria-label="Siguiente">
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M9 18l6-6-6-6" />
+        </svg>
+      </button>
+    </div>
     }
   </div>
 
   @if (products().length === 0) {
-    <div class="skeleton-container">
-      @for (dummy of [1,2,3,4]; track $index) {
-        <div class="skeleton-card">
-          <div class="s-img shimmer"></div>
-          <div class="s-text shimmer"></div>
-          <div class="s-price shimmer"></div>
+  <div class="sk-swiper-simulation">
+    @for (dummy of [1,2,3,4]; track $index) {
+      <div class="sk-card">
+        <div class="sk-square"></div>
+        <div>
+          <div class="skeleton sk-text w-75"></div>
+          <div class="skeleton sk-text w-50 title"></div>
         </div>
-      }
-    </div>
-  } 
+      </div>
+    }
+  </div>
+  }
 
   @else {
     <swiper-container #swiperRef init="false" class="my-swiper">
@@ -124,5 +143,4 @@
 
     <div class="custom-pagination"></div>
   }
-
 </section>

@@ -10,10 +10,11 @@ import { Seo } from '../../services/seo';
 import { TrustBadges } from "../../shared/components/trust-badges/trust-badges";
 import { CategoryGrid } from "../widgets/category-grid/category-grid";
 import { Brand } from "../widgets/brand/brand";
+import { Skeleton } from "../../shared/components/skeleton/skeleton";
 
 @Component({
   selector: 'app-fashion-one',
-  imports: [CommonModule, ProductSlider, HeroSlider, TrustBadges, CategoryGrid, Brand],
+  imports: [CommonModule, ProductSlider, HeroSlider, TrustBadges, CategoryGrid, Brand, Skeleton],
   templateUrl: './fashion-one.html',
   styleUrl: './fashion-one.scss',
 })

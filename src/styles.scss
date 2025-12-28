@@ -156,3 +156,99 @@ ul { list-style: none; }
     opacity: 0.5;
   }
 }
+
+// ==========================================
+// 💀 SKELETON LOADER MASTER SYSTEM
+// ==========================================
+
+// 1. CONFIGURACIÓN
+$sk-base-color: #e2e8f0;       // Gris base
+$sk-highlight-color: #f8fafc;  // Brillo
+$sk-dark-base: #1e293b;        // Dark Mode Base
+$sk-dark-highlight: #334155;   // Dark Mode Brillo
+$sk-radius: 8px;               // Bordes
+$sk-duration: 1.5s;            // Velocidad
+
+// 2. MIXIN DE ANIMACIÓN
+@mixin skeleton-anim {
+  background-color: $sk-base-color;
+  background-image: linear-gradient(90deg, $sk-base-color 0px, $sk-highlight-color 40px, $sk-base-color 80px);
+  background-size: 200% 100%;
+  background-position: -150% 0;
+  animation: sk-shimmer $sk-duration infinite linear;
+  
+  // Soporte Dark Mode
+  :host-context(.dark) &, .dark & {
+    background-color: $sk-dark-base;
+    background-image: linear-gradient(90deg, $sk-dark-base 0px, $sk-dark-highlight 40px, $sk-dark-base 80px);
+  }
+}
+
+@keyframes sk-shimmer {
+  0% { background-position: -150% 0; }
+  100% { background-position: 100% 0; }
+}
+
+// 3. CLASES BASE (PRIMITIVOS)
+.skeleton { @include skeleton-anim; display: block; border-radius: $sk-radius; }
+
+// --- Formas Geométricas ---
+.sk-circle {
+  @include skeleton-anim; border-radius: 50%; flex-shrink: 0;
+  &.sm { width: 32px; height: 32px; }
+  &.md { width: 48px; height: 48px; }
+  &.lg { width: 80px; height: 80px; }
+  &.xl { width: 120px; height: 120px; }
+}
+
+.sk-square {
+  @include skeleton-anim; width: 100%; aspect-ratio: 1 / 1; border-radius: $sk-radius;
+}
+
+.sk-rect {
+  @include skeleton-anim; width: 100%; height: 100%; min-height: 100px; border-radius: $sk-radius;
+}
+
+// --- Textos ---
+.sk-text {
+  @include skeleton-anim; height: 0.8rem; margin-bottom: 0.6rem; border-radius: 4px;
+  &.title { height: 1.5rem; margin-bottom: 1rem; }
+  &.subtitle { height: 1.2rem; margin-bottom: 0.8rem; }
+}
+
+// --- Utilidades de Ancho ---
+.w-100 { width: 100%; } .w-75 { width: 75%; } .w-50 { width: 50%; } .w-25 { width: 25%; }
+
+// 4. COMPONENTES COMPLEJOS
+
+// --- Hero Banner (Responsive) ---
+.sk-hero-banner {
+  @include skeleton-anim; width: 100%; display: block; border-radius: $sk-radius;
+  height: 200px; // Móvil
+  @media (min-width: 768px) { height: 350px; }
+  @media (min-width: 1024px) { height: 450px; }
+  @media (min-width: 1440px) { height: 600px; }
+}
+
+// --- Tarjetas Genéricas ---
+.sk-card {
+  padding: 1rem; border: 1px solid #f1f5f9; border-radius: 12px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+
+// --- Simulación de Swiper (Móvil) / Grid (PC) ---
+.sk-swiper-simulation {
+  display: flex; gap: 15px; overflow: hidden; width: 100%; padding-bottom: 5px;
+  
+  .sk-card { flex: 0 0 80%; min-width: 0; } // Móvil: se sale de la pantalla
+
+  @media (min-width: 768px) {
+    display: grid; grid-template-columns: repeat(4, 1fr); overflow: visible;
+    .sk-card { flex: none; width: auto; }
+  }
+}
+
+// --- Filas (Perfil, Listas) ---
+.sk-row {
+  display: flex; align-items: center; gap: 16px; width: 100%; margin-bottom: 1rem;
+}

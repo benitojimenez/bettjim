@@ -173,6 +173,28 @@ export default class ProductLetf implements OnInit, OnDestroy {
     });
 
   }
+  /* Computed 1: La fuente de la verdad sobre si el descuento ESTÁ activo.
+   * Retorna true/false.
+   */
+  public isDiscountActive = computed(() => {
+    const p = this.ps.cleanProductSlug();
+    
+    // 1. Validar existencia y valor del descuento
+    if (!p.discount) return false;
+    const discountVal = Number(p.discount);
+    if (isNaN(discountVal) || discountVal <= 0) return false;
+
+    // 2. Validar rango de fechas
+    const now = new Date();
+    // Aseguramos que las fechas sean objetos Date válidos
+    const start = new Date(p.discount_start);
+    const end = new Date(p.discount_end);
+
+    // Comprobar validez de fechas (por si vienen vacías o inválidas)
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) return false;
+
+    return now >= start && now <= end;
+  });
 
   // ================================================================
   // 6. CICLO DE VIDA (Angular Hooks)

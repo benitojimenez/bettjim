@@ -17,10 +17,10 @@
         <img [src]="URL_IMG() + activeImage()" [alt]="prod.title" class="hero-img" />
 
         <div class="badges-overlay">
-          @if (prod.discount) {
+          @if (isDiscountActive()) {
           <span class="badge discount">-{{ prod.discount }}%</span>
           }
-          <span class="badge new">PREMIUM</span>
+          <!-- <span class="badge new">PREMIUM</span> -->
         </div>
       </div>
 
@@ -52,13 +52,13 @@
           <span class="current">{{
             prod.price | appDiscount : prod | currency : ps.Currency.currency
           }}</span>
-          @if(prod.discount) {
+          @if(isDiscountActive()) {
           <span class="original">{{ prod.price | currency : ps.Currency.currency }}</span>
           }
         </div>
       </div>
 
-      @if (prod.discount) {
+      @if (isDiscountActive()) {
       <div class="flash-offer-box">
         <div class="offer-header">
           <span class="icon">⚡</span>

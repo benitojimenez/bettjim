@@ -1,8 +1,8 @@
-@if (ads.AdsResource.isLoading()) {
 
-<div class="loading-spinner">
-  <div class="spinner"></div>
-</div>
+@if (ads.AdsResource.isLoading()) {
+<section class="hero-section">
+ <div class="sk-hero-banner"></div>
+</section>
 } @else if (ads.AdsResource.error()) {
 <div class="error-message">Error loading ads.</div>
 } @else {
