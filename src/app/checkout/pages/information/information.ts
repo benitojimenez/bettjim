@@ -73,12 +73,12 @@ export default class Information implements OnInit{
     const currentData = this.checkoutService.checkoutData();
     
     // Si ya hay datos guardados en el servicio, rellenamos el formulario
-    if (currentData.email) {
+ 
       this.form.patchValue({
-        email: currentData.email,
+        email: this.auth.currentUser()?.email,
         newsletter: currentData.newsletter
       });
-    }
+    
 
     if (currentData.shippingAddress) {
       this.form.patchValue({

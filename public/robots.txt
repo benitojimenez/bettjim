@@ -18,6 +18,7 @@ Disallow: /account/
 Disallow: /cart
 Disallow: /checkout
 Disallow: /thank-you
+Disallow: /404
 
 # 🚫 BLOQUEAR (Legal y Operativo - No aporta SEO)
 Disallow: /libro-reclamaciones

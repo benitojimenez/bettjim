@@ -11,6 +11,7 @@ import { RouterLink } from '@angular/router';
 export class FooterOne {
 
   showScrollBtn = false;
+  dateYear: number = new Date().getFullYear();
 
   constructor(
     @Inject(DOCUMENT) private document: Document,

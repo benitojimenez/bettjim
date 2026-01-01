@@ -1,18 +1,21 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { Auth } from '../../services/auth';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
+import { User } from '../../services/user';
 
 @Component({
   selector: 'app-profile',
   imports: [RouterLink, RouterOutlet, RouterLinkActive],
   templateUrl: './profile.html',
   styleUrl: './profile.scss',
+  changeDetection:ChangeDetectionStrategy.OnPush  
 })
 export default class Profile {
 
  public auth = inject(Auth);
   private router = inject(Router);
+  public userService = inject(User);
 
   // Estado del Menú Móvil
   isMobileMenuOpen = signal(false);

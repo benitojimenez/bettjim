@@ -2,9 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { Auth } from '../../../services/auth';
 import { RouterLink } from '@angular/router';
+import { User } from '../../../services/user';
 // Interfaces para tipar los datos (idealmente mover a un archivo de modelos)
 interface DashboardMetrics {
-  activeOrders: number;
   wishlistCount: number;
   loyaltyPoints: number;
 }
@@ -25,12 +25,12 @@ interface RecentOrder {
 })
 export default class Overview {
   public auth = inject(Auth);
+  public userService = inject(User);
 
   // 1. Señal para métricas principales
   metrics = signal<DashboardMetrics>({
-    activeOrders: 2,
-    wishlistCount: 14,
-    loyaltyPoints: 350
+    wishlistCount: 0,
+    loyaltyPoints: 0
   });
 
   // 2. Señal para pedidos recientes (Simulación)

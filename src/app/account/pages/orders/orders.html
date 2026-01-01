@@ -1,78 +1,110 @@
 <div class="orders-container">
-  
   <header class="page-header">
     <h1>Mis Pedidos</h1>
-    
+    @if (user.searchOrder()) {
+    <button (click)="clearFilter()">Limpiar Filtros</button>
+    }
+
     <div class="search-box">
-      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-      <input type="text" placeholder="Buscar por ID o producto...">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+        />
+      </svg>
+      <input
+        #searchInput
+        type="text"
+        placeholder="Buscar por número de pedido..."
+        [value]="user.searchOrder()"
+        (input)="onSearch(searchInput.value)"
+      />
     </div>
   </header>
 
   <nav class="filter-tabs">
     <button [class.active]="activeFilter() === 'all'" (click)="setFilter('all')">Todos</button>
-    <button [class.active]="activeFilter() === 'active'" (click)="setFilter('active')">En Curso</button>
-    <button [class.active]="activeFilter() === 'completed'" (click)="setFilter('completed')">Entregados</button>
-    <button [class.active]="activeFilter() === 'cancelled'" (click)="setFilter('cancelled')">Cancelados</button>
+    <button [class.active]="activeFilter() === 'active'" (click)="setFilter('active')">
+      En Curso
+    </button>
+    <button [class.active]="activeFilter() === 'completed'" (click)="setFilter('completed')">
+      Entregados
+    </button>
+    <button [class.active]="activeFilter() === 'cancelled'" (click)="setFilter('cancelled')">
+      Cancelados
+    </button>
   </nav>
 
   <div class="orders-list">
-    
-    @for (order of filteredOrders(); track order.id) {
-      <div class="order-card">
-        
-        <div class="card-header">
-          <div class="header-left">
-            <span class="order-id">#{{ order.id }}</span>
-            <span class="order-date">{{ order.date | date:'d MMM y, h:mm a' }}</span>
-          </div>
-          <span class="status-badge" [ngClass]="getStatusClass(order.status)">
-            {{ getStatusLabel(order.status) }}
-          </span>
+    @if (user.OrdersResource.isLoading()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <span>Cargando tus pedidos...</span>
+    </div>
+    } @if (user.OrdersResource.error()) {
+    <div class="error-state">
+      <span class="error-icon">!</span>
+      <span>Error al cargar los pedidos. Por favor, inténtalo de nuevo más tarde.</span>
+      <button (click)="user.OrdersResource.reload()">Reintentar</button>
+    </div>
+    } @for (order of user.filteredOrders(); track $index) {
+    <div class="order-card">
+      <div class="card-header">
+        <div class="header-left">
+          <span class="order-id">#{{ order.n_order }}</span>
+          <span class="order-date">{{ order.createdAt | date : 'd MMM y, h:mm a' }}</span>
         </div>
+        <span class="status-badge" [class]="getStatusClass(order.status)">
+          {{ order.status }}
+        </span>
+      </div>
 
-        <div class="card-body">
-          
-          <div class="product-previews">
-            @for (prod of order.products.slice(0, 3); track $index) {
+      <div class="card-body">
+        <div class="product-previews">
+          <!-- @for (prod of order.products.slice(0, 3); track $index) {
               <div class="img-box">
                 <img [src]="prod.image" alt="Producto">
               </div>
             }
             @if (order.products.length > 3) {
               <div class="more-box">+{{ order.products.length - 3 }}</div>
-            }
-          </div>
-
-          <div class="order-total-section">
-            <span class="label">Total del pedido</span>
-            <span class="price">{{ order.total | currency:'PEN':'symbol' }}</span>
-          </div>
+            } -->
         </div>
 
-        <div class="card-footer">
-          @if(order.status === 'delivered') {
-             <a routerLink="/support" class="btn-secondary">Ayuda</a>
-          } @else if (order.status !== 'cancelled') {
-             <button class="btn-secondary">Rastrear</button>
-          }
-
-          <a [routerLink]="['/account/orders', order.id]" class="btn-primary">
-            Ver Detalles
-          </a>
+        <div class="order-total-section">
+          <span class="label">Total del pedido</span>
+          <span class="price">{{ order.total | currency : 'PEN ' : 'symbol' }}</span>
         </div>
-
       </div>
-    } @empty {
-      <div class="empty-state">
-        <div class="icon-circle">
-          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
-        </div>
-        <h3>No tienes pedidos aquí</h3>
-        <p>Parece que no has realizado pedidos en esta categoría.</p>
-        <a routerLink="/" class="btn-start-shopping">Ir a comprar</a>
-      </div>
-    }
 
+      <div class="card-footer">
+        @if(order.status === 'Completado') {
+        <a routerLink="/support" class="btn-secondary">Ayuda</a>
+        } @else if (order.status !== 'Cancelado') {
+        <button class="btn-secondary">Rastrear</button>
+        }
+
+        <a [routerLink]="['/account/orders', order._id]" class="btn-primary" > Ver Detalles </a>
+      </div>
+    </div>
+    } @empty { @if (!user.OrdersResource.isLoading()) {
+    <div class="empty-state">
+      <div class="icon-circle">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+          />
+        </svg>
+      </div>
+      <h3>No tienes pedidos aquí</h3>
+      <p>Parece que no has realizado pedidos en esta categoría.</p>
+      <a routerLink="/" class="btn-start-shopping">Ir a comprar</a>
+    </div>
+    } }
   </div>
 </div>

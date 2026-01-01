@@ -1,82 +1,138 @@
 <div class="detail-container">
-  
+  @if (orderResource.isLoading()) {
+  <div class="loading-spinner">
+    <svg class="spinner" viewBox="0 0 50 50">
+      <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+    </svg>
+  </div>
+  } @if (orderResource.error()) {
+  <div class="error-message">
+    <p>Error al cargar el pedido. Intenta nuevamente.</p>
+  </div>
+  } @if (order()) {
+
   <header class="detail-header">
     <div class="header-left">
-      <a routerLink="/account/orders" class="back-link">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+      <a [routerLink]="['/account/orders']" class="back-link">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M10 19l-7-7m0 0l7-7m-7 7h18"
+          />
+        </svg>
         Volver a mis pedidos
       </a>
       <div class="title-group">
-        <h1>Pedido #{{ order().id }}</h1>
-        <span class="order-date">Realizado el {{ order().date | date:'d MMMM, y' }}</span>
+        <h1>Pedido #{{ order()?.n_order }}</h1>
+        <span class="order-date">Realizado el {{ order()?.createdAt | date : 'medium' }}</span>
       </div>
     </div>
-    
+
     <div class="header-actions">
-      <button class="btn-outline">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-        Factura
-      </button>
-      <button class="btn-primary">
-        Ayuda
-      </button>
+      <button class="btn-outline">Factura</button>
+      <button class="btn-primary">Ayuda</button>
     </div>
   </header>
 
-  @if(order().status !== 'cancelled') {
-    <section class="progress-section">
-      <div class="stepper-wrapper">
-        @for (step of steps; track step.id; let i = $index) {
-          <div class="step-item" [class.completed]="isStepCompleted(i)" [class.active]="i === currentStepIndex()">
-            
-            <div class="step-circle">
-               <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="step.icon" />
-               </svg>
-            </div>
-            
-            <span class="step-label">{{ step.label }}</span>
-            
-            @if(i < steps.length - 1) {
-              <div class="step-line" [class.filled]="isStepCompleted(i)"></div>
-            }
-          </div>
+  @if(order()?.status !== 'Cancelado') {
+  <section class="progress-section">
+    <div class="stepper-wrapper">
+      @for (step of stepsFixed; track $index) {
+
+      <div
+        class="step-item"
+        [class.completed]="isStepCompleted($index)"
+        [class.active]="$index === currentStepIndex()"
+      >
+        <div class="step-circle" [attr.title]="step.label">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              [attr.d]="statusIcons(step.label)"
+            />
+          </svg>
+        </div>
+
+        <span class="step-label">{{ step.label }}</span>
+
+        @if($index < stepsFixed.length - 1) {
+        <div class="step-line" [class.filled]="$index < currentStepIndex()"></div>
         }
       </div>
-      
-      <div class="status-message">
-         @if(order().status === 'shipped') {
-           <p>Tu paquete está en camino. Llega el <strong>Viernes 12</strong>.</p>
-         }
-      </div>
-    </section>
-  } @else {
-    <div class="cancelled-banner">
-      Este pedido fue cancelado el {{ order().date | date }}
+      }
     </div>
+  </section>
+  } @else {
+ <div class="cancelled-banner premium-error">
+    <div class="banner-overlay"></div> <div class="banner-content">
+      <div class="icon-badge">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <div class="text-group">
+        <h3>Pedido Cancelado</h3>
+        <p>Este pedido no ha podido ser procesado y fue anulado definitivamente.</p>
+      </div>
+    </div>
+  </div>
   }
+  @if (timeLine().length > 0) {
+  <section class="card timeline-feed">
+    <h3>Historial de Eventos</h3>
+    
+    <div class="feed-wrapper">
+      @for (event of timeLine(); track $index) {
+        <div class="feed-item" [class.latest]="$index === 0">
+          
+          <div class="feed-date">
+            <span class="date">{{ event.date | date:'dd MMM' }}</span>
+            <span class="time">{{ event.date | date:'shortTime' }}</span>
+          </div>
+
+          <div class="feed-marker">
+            <div class="dot"></div>
+            @if ($index < timeLine().length - 1) {
+              <div class="line"></div>
+            }
+          </div>
+
+          <div class="feed-content">
+            <h4>{{ event.status }}</h4>
+            <p>{{ event.description }}</p>
+          </div>
+          
+        </div>
+      }
+    </div>
+  </section>
+}
 
   <div class="content-grid">
-    
     <div class="left-column">
-      
       <section class="card products-card">
-        <h2>Productos ({{ order().items.length }})</h2>
+        <h2>Productos ({{ details().length }})</h2>
         <div class="items-list">
-          @for (item of order().items; track $index) {
-            <div class="item-row">
-              <div class="item-img">
-                <img [src]="item.image" [alt]="item.name">
-              </div>
-              <div class="item-info">
-                <h3>{{ item.name }}</h3>
-                <p class="variant">Talla: {{ item.size }} | Color: Black</p>
-                <p class="qty">Cant: {{ item.qty }}</p>
-              </div>
-              <div class="item-price">
-                {{ item.price | currency:'PEN' }}
-              </div>
+          @for (item of details(); track item._id) {
+          <div class="item-row">
+            <div class="item-img">
+              <img [src]="URL_IMG() + item.product.images[0].src" [alt]="item.product.title" />
             </div>
+            <div class="item-info">
+              <h3>{{ item.product.title }}</h3>
+              @if (item.variety) {
+              <p class="variant">Variedad: {{ item.variety }}</p>
+              }
+              <p class="qty">Cant: {{ item.quantity }}</p>
+            </div>
+            <div class="item-price">
+              {{ item.unit_price | currency : 'PEN ' }}
+            </div>
+          </div>
           }
         </div>
       </section>
@@ -84,57 +140,54 @@
       <section class="info-row">
         <div class="card info-card">
           <h3>Dirección de Envío</h3>
-          <p class="strong">{{ order().shippingAddress.name }}</p>
-          <p>{{ order().shippingAddress.street }}</p>
-          <p>{{ order().shippingAddress.city }}</p>
-          <p class="phone">{{ order().shippingAddress.phone }}</p>
+          <p class="strong">{{ order()?.shipping?.name }} {{ order()?.shipping?.lastname }}</p>
+          <p>{{ order()?.shipping?.address_text }}</p>
+          <p>{{ order()?.shipping?.city }}, {{ order()?.shipping?.department }}</p>
+          <p class="phone">{{ order()?.shipping?.phone }}</p>
         </div>
-        
+
         <div class="card info-card">
-          <h3>Método de Pago</h3>
+          <h3>Pago</h3>
           <div class="payment-box">
-             <svg class="visa-icon" viewBox="0 0 48 48"><path fill="#1565C0" d="M24,4C12.954,4,4,12.954,4,24s8.954,20,20,20s20-8.954,20-20S35.046,4,24,4z"/><path fill="#FFF" d="M23.768,29.986l-1.928-8.916h-3.08l1.928,8.916H23.768z M35.08,21.07h-2.45c-0.758,0-1.326,0.222-1.666,1.03l-4.734,11.23h3.238l0.648-1.802h3.958l0.374,1.802H38L35.08,21.07z M31.062,28.84l1.248-6.026l2.064,6.026H31.062z M15.176,21.07H9.794l-0.038,0.188c3.748,0.954,6.234,3.254,7.262,6.002l-1.034-5.264l-1.422-7.306h3.19L22.9,29.986h-3.26L15.176,21.07z M12.862,21.654H9.642c0.076-0.334,3.136-8.238,3.22-8.584h2.64L12.862,21.654z"/></svg>
-             <span>{{ order().paymentMethod }}</span>
+            <span>{{ order()?.payment?.payment_type || 'Tarjeta' }}</span>
           </div>
+          <p class="text-sm text-gray-500">ID: {{ order()?.payment?.transaction_id }}</p>
         </div>
       </section>
-
     </div>
 
     <div class="right-column">
       <section class="card summary-card">
         <h2>Resumen</h2>
-        
         <div class="summary-row">
           <span>Subtotal</span>
-          <span>{{ order().summary.subtotal | currency:'PEN' }}</span>
+          <span>{{ order()?.subtotal | currency : 'PEN ' }}</span>
         </div>
         <div class="summary-row">
           <span>Envío</span>
-          <span>{{ order().summary.shipping | currency:'PEN' }}</span>
+          <span>{{ order()?.shipping_price | currency : 'PEN ' }}</span>
         </div>
-        @if(order().summary.discount > 0) {
-          <div class="summary-row discount">
-            <span>Descuento</span>
-            <span>-{{ order().summary.discount | currency:'PEN' }}</span>
-          </div>
-        }
         <div class="divider"></div>
         <div class="summary-row total">
           <span>Total</span>
-          <span>{{ order().summary.total | currency:'PEN' }}</span>
+          <span>{{ order()?.total | currency : 'PEN ' }}</span>
         </div>
       </section>
-      
-      @if(order().status === 'shipped') {
-        <section class="card tracking-card">
-           <h3>Seguimiento</h3>
-           <p class="track-number">{{ order().trackingNumber }}</p>
-           <button class="btn-track-full">Ver en mapa</button>
-        </section>
+
+      @if (order()?.shipping?.tracking_number) {
+      <section class="card tracking-card">
+        <h3>Seguimiento</h3>
+        <p class="track-number">{{ order()?.shipping?.tracking_number }}</p>
+        <p class="track-number">{{ order()?.shipping?.tracking_url }}</p>
+
+        @if (order()?.shipping?.tracking_url) {
+        <a [href]="order()?.shipping?.tracking_url" target="_blank" class="btn-track-full">
+          Ver ubicación
+        </a>
+        }
+      </section>
       }
     </div>
-
   </div>
-
+  }
 </div>

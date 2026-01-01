@@ -1,53 +1,107 @@
 <div class="settings-container">
-
   <header class="page-header">
-    <h1>Configuración</h1>
-    <p>Administra tus datos personales y seguridad.</p>
+    <div class="header-content">
+      <h1>Configuración</h1>
+      <p>Gestiona tu identidad, seguridad y preferencias en la plataforma.</p>
+    </div>
   </header>
 
   <div class="settings-grid">
-
     <section class="card profile-card">
       <div class="card-header">
-        <h2>Información Personal</h2>
-        <p>Actualiza tu foto y datos de contacto.</p>
+        <div class="title-wrapper">
+          <svg class="icon-header" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+            />
+          </svg>
+          <div>
+            <h2>Información Personal</h2>
+            <p>Datos utilizados para facturación y logística de envíos.</p>
+          </div>
+        </div>
       </div>
 
       <form [formGroup]="profileForm" (ngSubmit)="onSaveProfile()">
-        
         <div class="avatar-section">
           <div class="avatar-wrapper">
-             <span class="initials">{{ auth.currentUser()?.name || 'U' }}</span>
-             <button type="button" class="btn-camera">
-               <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-             </button>
+            <span class="initials">{{ 'U' }}</span>
+            <button type="button" class="btn-camera" title="Cambiar foto">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+            </button>
           </div>
           <div class="avatar-info">
-            <button type="button" class="btn-upload">Subir nueva foto</button>
-            <span class="hint">JPG o PNG. Máx 1MB.</span>
+            <button type="button" class="btn-upload">Subir foto</button>
+            <span class="hint">JPG o PNG (Máx 1MB).</span>
           </div>
         </div>
 
-        <div class="form-row">
+        <div class="form-grid">
           <div class="input-group">
-            <label>Nombre Completo</label>
-            <input type="text" formControlName="names">
+            <label>Nombres</label>
+            <input type="text" formControlName="names" placeholder="Ej. Juan" />
+          </div>
+          <div class="input-group">
+            <label>Apellidos</label>
+            <input type="text" formControlName="lastName" placeholder="Ej. Pérez" />
           </div>
           <div class="input-group">
             <label>Teléfono</label>
-            <input type="text" formControlName="phone">
+            <input type="text" formControlName="phone" placeholder="+51 999 999 999" />
+          </div>
+          <div class="input-group">
+            <label>Fecha de Nacimiento</label>
+            <input type="date" formControlName="birthdate" />
+          </div>
+          <div class="input-group">
+            <label>Género</label>
+            <select formControlName="gender">
+              <option value="varon">Masculino</option>
+              <option value="mujer">Femenino</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>DNI / Documento</label>
+            <input type="text" formControlName="dni" placeholder="Número de identidad" />
+          </div>
+          <div class="input-group full-width">
+            <label>Correo Electrónico</label>
+            <div class="input-with-icon">
+              <input type="email" formControlName="email" class="disabled" readonly />
+              <svg class="icon-lock" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                />
+              </svg>
+            </div>
+            <span class="note"
+              >Para modificar tu correo, por favor contacta con soporte técnico.</span
+            >
           </div>
         </div>
 
-        <div class="input-group">
-          <label>Correo Electrónico</label>
-          <input type="email" formControlName="email" class="disabled">
-          <span class="note">Para cambiar tu email, contacta a soporte.</span>
-        </div>
-
         <div class="form-actions">
-          <button type="submit" class="btn-primary" [disabled]="loadingProfile()">
-            @if(loadingProfile()) { Guardando... } @else { Guardar Cambios }
+          <button type="submit" class="btn-save" [disabled]="loadingProfile()">
+            {{ loadingProfile() ? 'Guardando...' : 'Guardar Información' }}
           </button>
         </div>
       </form>
@@ -55,34 +109,110 @@
 
     <section class="card security-card">
       <div class="card-header">
-        <h2>Contraseña y Seguridad</h2>
-        <p>Mantén tu cuenta segura cambiando tu contraseña periódicamente.</p>
+        <div class="title-wrapper">
+          <svg class="icon-header" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+            />
+          </svg>
+          <div>
+            <h2>Seguridad de la Cuenta</h2>
+            <p>Actualiza tus credenciales de acceso.</p>
+          </div>
+        </div>
       </div>
 
       <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()">
-        <div class="input-group">
+        <div class="input-group full-width">
           <label>Contraseña Actual</label>
-          <input type="password" formControlName="currentPassword" placeholder="••••••••">
+          <div class="password-box">
+            <input
+              [type]="showOldPass() ? 'text' : 'password'"
+              formControlName="currentPassword"
+              placeholder="••••••••"
+            />
+            <button type="button" class="eye-toggle" (click)="showOldPass.set(!showOldPass())">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  [attr.d]="
+                    showOldPass()
+                      ? 'M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21'
+                      : 'M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z'
+                  "
+                />
+              </svg>
+            </button>
+          </div>
         </div>
 
-        <div class="form-row">
+        <div class="form-grid">
           <div class="input-group">
             <label>Nueva Contraseña</label>
-            <input type="password" formControlName="newPassword" placeholder="Mínimo 6 caracteres">
+            <div class="password-box">
+              <input
+                [type]="showNewPass() ? 'text' : 'password'"
+                formControlName="newPassword"
+                placeholder="Mínimo 6 caracteres"
+              />
+            <button type="button" class="eye-toggle" (click)="showNewPass.set(!showNewPass())">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  [attr.d]="
+                    showNewPass()
+                      ? 'M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21'
+                      : 'M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z'
+                  "
+                />
+              </svg>
+            </button>
+            </div>
           </div>
           <div class="input-group">
             <label>Confirmar Nueva</label>
-            <input type="password" formControlName="confirmPassword" placeholder="Repite la contraseña">
+            <div class="password-box">
+              <input
+                [type]="showConfirmPass() ? 'text' : 'password'"
+                formControlName="confirmPassword"
+                placeholder="Repite la contraseña"
+              />
+              <button type="button" class="eye-toggle" (click)="showConfirmPass.set(!showConfirmPass())">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  [attr.d]="
+                    showConfirmPass()
+                      ? 'M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21'
+                      : 'M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z'
+                  "
+                />
+              </svg>
+            </button>
+            </div>
           </div>
         </div>
-        
+
         @if(passwordForm.hasError('mismatch') && passwordForm.get('confirmPassword')?.touched) {
-          <p class="error-msg">Las contraseñas no coinciden.</p>
+        <p class="error-msg">Las contraseñas no coinciden.</p>
         }
 
         <div class="form-actions">
-          <button type="submit" class="btn-outline" [disabled]="loadingPass()">
-            @if(loadingPass()) { Actualizando... } @else { Actualizar Contraseña }
+          <button
+            type="submit"
+            class="btn-update-pass"
+            [disabled]="loadingPass() || passwordForm.invalid"
+          >
+            {{ loadingPass() ? 'Actualizando...' : 'Actualizar Contraseña' }}
           </button>
         </div>
       </form>
@@ -90,46 +220,121 @@
 
     <section class="card preferences-card">
       <div class="card-header">
-        <h2>Notificaciones</h2>
-        <p>Elige qué correos quieres recibir.</p>
+        <div class="title-wrapper">
+          <svg class="icon-header" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+            />
+          </svg>
+          <div>
+            <h2>Notificaciones y Promociones</h2>
+            <p>Elige qué quieres recibir en tu correo.</p>
+          </div>
+        </div>
       </div>
 
       <div class="toggles-list">
-        
         <div class="toggle-item">
           <div class="toggle-info">
             <h3>Estado de Pedidos</h3>
-            <p>Recibe actualizaciones sobre envíos y entregas.</p>
+            <p>Alertas sobre envíos y entregas.</p>
           </div>
-          <button class="switch" 
-                  [class.active]="notifications().orderUpdates"
-                  (click)="toggleNotif('orderUpdates')">
-             <div class="slider"></div>
+          <button
+            type="button"
+            class="switch"
+            [class.active]="notifications().orderUpdates"
+            (click)="toggleNotif('orderUpdates')"
+          >
+            <div class="slider"></div>
           </button>
         </div>
-
         <div class="toggle-item">
           <div class="toggle-info">
-            <h3>Ofertas y Promociones</h3>
-            <p>Sé el primero en saber sobre descuentos.</p>
+            <h3>Ofertas Exclusivas</h3>
+            <p>Cupones y promociones flash.</p>
           </div>
-          <button class="switch" 
-                  [class.active]="notifications().emailPromos"
-                  (click)="toggleNotif('emailPromos')">
-             <div class="slider"></div>
+          <button
+            type="button"
+            class="switch"
+            [class.active]="notifications().emailPromos"
+            (click)="toggleNotif('emailPromos')"
+          >
+            <div class="slider"></div>
           </button>
         </div>
-
+        <div class="toggle-item">
+          <div class="toggle-info">
+            <h3>Novedades de Bettjim</h3>
+            <p>Nuevas tiendas y productos.</p>
+          </div>
+          <button
+            type="button"
+            class="switch"
+            [class.active]="notifications().news"
+            (click)="toggleNotif('news')"
+          >
+            <div class="slider"></div>
+          </button>
+        </div>
       </div>
     </section>
 
-    <section class="danger-zone">
-      <div class="dz-info">
-        <h3>Eliminar Cuenta</h3>
-        <p>Esta acción es permanente y no se puede deshacer.</p>
+    <section class="danger-card">
+      <div class="danger-header">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" class="icon-danger">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+          />
+        </svg>
+        <div class="danger-text">
+          <h3>Eliminar mi cuenta</h3>
+          <p>Esta acción borrará tus datos permanentemente.</p>
+        </div>
       </div>
-      <button class="btn-danger">Eliminar mi cuenta</button>
+      <button class="btn-danger" type="button" (click)="onDeleteAccount()">Cerrar cuenta</button>
     </section>
-
   </div>
 </div>
+
+@if (showDeleteModal()) {
+  <div class="modal-backdrop" (click)="showDeleteModal.set(false)">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      
+      <div class="modal-icon">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+      </div>
+
+      <div class="modal-body">
+        <h3>¿Estás absolutamente seguro?</h3>
+        <p>Esta acción <strong>no se puede deshacer</strong>. Al eliminar tu cuenta:</p>
+        <ul>
+          <li>Perderás acceso a tu historial de pedidos y facturas.</li>
+          <li>Se eliminará tu lista de deseos (Wishlist).</li>
+          <li>No podrás recuperar tu nombre de usuario actual.</li>
+        </ul>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" (click)="showDeleteModal.set(false)">
+          Cancelar, quiero quedarme
+        </button>
+        <button type="button" class="btn-confirm-delete" [disabled]="loadingDelete()" (click)="confirmDelete()">
+          @if(loadingDelete()) {
+            <span class="spinner"></span> Eliminando...
+          } @else {
+            Sí, eliminar mi cuenta
+          }
+        </button>
+      </div>
+
+    </div>
+  </div>
+}

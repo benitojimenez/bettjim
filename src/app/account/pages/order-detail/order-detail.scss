@@ -1,24 +1,34 @@
-:host {
-  --primary: #111;
-  --text-main: #1f2937;
-  --text-muted: #6b7280;
-  --border: #e5e7eb;
-  --bg-page: #f9fafb;
-  --bg-card: #ffffff;
-  --radius: 12px;
-  --green: #10b981;
-
-  /* Variables para el tamaño del stepper */
-  --circle-size: 40px;
-  --line-thickness: 3px;
-}
-
+/* =================================================================
+   ESTILOS PRINCIPALES CON VARIABLES LOCALE
+   ================================================================= */
 .detail-container {
+  /* 🎨 VARIABLES LOCALES */
+  --primary: #111111;       
+  --success: #10b981;       
+  --text-main: #1f2937;     
+  --text-muted: #9ca3af;    
+  --border: #e5e7eb;        
+  --bg-card: #ffffff;       
+  --bg-page: #f9fafb;       
+  --bg-accent: #f3f4f6;     
+  
+  --radius: 12px;           
+  --circle-size: 40px;      /* Tamaño del círculo */
+
+  /* Layout */
   display: flex; flex-direction: column; gap: 30px;
   animation: fadeIn 0.4s ease-out;
+  padding-bottom: 60px; /* Espacio extra abajo en móvil */
 }
 
-/* --- 1. HEADER --- */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================
+   1. HEADER
+   ========================================= */
 .detail-header {
   display: flex; justify-content: space-between; align-items: flex-end;
   flex-wrap: wrap; gap: 20px;
@@ -27,274 +37,407 @@
     .back-link {
       display: flex; align-items: center; gap: 6px;
       color: var(--text-muted); text-decoration: none; font-size: 0.9rem; margin-bottom: 10px;
-      transition: color 0.2s;
       svg { width: 16px; height: 16px; }
-      &:hover { color: var(--primary); }
     }
-    h1 { font-size: 1.8rem; font-weight: 800; margin: 0; line-height: 1.1; }
+    h1 { font-size: 1.8rem; font-weight: 800; margin: 0; line-height: 1.1; color: var(--primary); }
     .order-date { color: var(--text-muted); font-size: 0.9rem; }
   }
 
   .header-actions {
     display: flex; gap: 10px;
-    
     button {
       padding: 10px 18px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 0.9rem;
-      display: flex; align-items: center; gap: 8px; transition: 0.2s;
-      
-      &.btn-outline {
-        background: white; border: 1px solid var(--border); color: var(--text-main);
-        &:hover { background: #f3f4f6; }
-      }
-      &.btn-primary {
-        background: var(--primary); color: white; border: 1px solid var(--primary);
-        &:hover { background: #333; }
-      }
-      svg { width: 18px; height: 18px; }
+      display: flex; align-items: center; gap: 8px; border: 1px solid transparent;
+      &.btn-outline { background: var(--bg-card); border-color: var(--border); color: var(--text-main); }
+      &.btn-primary { background: var(--primary); color: white; }
     }
   }
 }
 
-/* --- 2. STEPPER DE PROGRESO (La Joya de la Corona) --- */
-/* --- STEPPER DE PROGRESO (Escritorio - Horizontal) --- */
+/* =========================================
+   2. STEPPER DE PROGRESO (SOLUCIÓN RESPONSIVE)
+   ========================================= */
 .progress-section {
-  background: white; border-radius: var(--radius); border: 1px solid var(--border);
-  padding: 30px 40px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-  /* Eliminamos overflow: hidden para que la línea pueda salir del item si es necesario */
+  background: var(--bg-card); 
+  border-radius: var(--radius); 
+  border: 1px solid var(--border);
+  padding: 30px 40px; 
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
 }
 
 .stepper-wrapper {
   display: flex; 
-  justify-content: space-between; 
-  align-items: flex-start; /* Alineamos arriba para que los círculos queden al mismo nivel */
+  justify-content: space-between; /* Horizontal en PC */
+  align-items: flex-start; 
   position: relative;
-  margin-bottom: 30px; /* Espacio para el mensaje de estado */
 }
 
 .step-item {
-  display: flex; flex-direction: column; align-items: center;
+  display: flex; 
+  flex-direction: column; /* Círculo arriba, texto abajo en PC */
+  align-items: center;
   position: relative; 
-  flex: 1; /* Cada paso ocupa el mismo espacio */
+  flex: 1; 
   
-  /* El último paso no necesita extender una línea, pero debe ocupar su espacio */
   &:last-child { 
     flex: 1; 
-    .step-line { display: none; } /* Aseguramos que no haya línea en el último */
+    .step-line { display: none; } 
   }
 
-  /* Línea Conectora (PC: Horizontal) */
+  /* --- LÍNEA HORIZONTAL (PC) --- */
   .step-line {
     position: absolute;
-    top: calc(var(--circle-size) / 2); /* Centrada verticalmente con el círculo */
-    left: 50%; /* Empieza en el centro del círculo actual */
-    width: 100%; /* Se extiende hasta el centro del siguiente círculo */
-    height: var(--line-thickness);
-    background: #e5e7eb;
-    z-index: 1; /* Detrás del círculo */
+    top: calc(var(--circle-size) / 2); 
+    left: 50%; /* Empieza al centro del item */
+    width: 100%; /* Se estira a la derecha */
+    height: 3px;
+    background: var(--border); 
+    z-index: 1; 
     transform: translateY(-50%);
     transition: background 0.4s ease;
     
-    &.filled { background: var(--green); }
+    &.filled { background: var(--success); }
   }
 
-  /* Círculo */
+  /* --- CÍRCULO --- */
   .step-circle {
-    width: var(--circle-size); height: var(--circle-size); border-radius: 50%;
-    background: white; /* Fondo blanco para tapar la línea que pasa por detrás */
-    color: #9ca3af;
-    border: 2px solid #e5e7eb; /* Borde por defecto */
+    width: var(--circle-size); height: var(--circle-size); 
+    border-radius: 50%; background: var(--bg-card); 
+    color: var(--text-muted); border: 2px solid var(--border); 
     display: flex; align-items: center; justify-content: center;
-    z-index: 2; /* Por delante de la línea */
-    position: relative;
-    transition: all 0.3s;
+    z-index: 2; position: relative; flex-shrink: 0;
     
     svg { width: 20px; height: 20px; }
   }
 
-  /* Etiqueta */
+  /* --- TEXTO --- */
   .step-label {
-    margin-top: 10px; font-size: 0.9rem; font-weight: 500; color: #9ca3af;
-    text-align: center;
+    margin-top: 12px; font-size: 0.9rem; font-weight: 500; 
+    color: var(--text-muted); text-align: center;
   }
 
-  /* ESTADO: COMPLETADO */
+  /* ESTADOS */
   &.completed {
-    .step-line { background: var(--green); } /* La línea que sale de un paso completado es verde */
-    .step-circle { 
-      background: var(--green); 
-      color: white; 
-      border-color: var(--green); 
-    }
-    .step-label { color: var(--green); font-weight: 700; }
+    .step-line { background: var(--success); } 
+    .step-circle { background: var(--success); color: white; border-color: var(--success); }
+    .step-label { color: var(--success); font-weight: 700; }
   }
   
-  /* ESTADO: ACTIVO (Paso actual, p.ej. "Enviado") */
   &.active {
     .step-circle { 
-      background: white; 
-      border: 2px solid var(--green); 
-      color: var(--green);
+      background: var(--success); border-color: var(--success); color: white;
+      transform: scale(1.15); box-shadow: 0 0 0 5px rgba(16, 185, 129, 0.15); 
     }
-    .step-label { color: var(--text-main); font-weight: 700; }
-    /* La línea que sale del paso activo NO debe estar llena aún */
-    .step-line { background: #e5e7eb; } 
+    .step-label { color: var(--success); font-weight: 800; }
+    .step-line { background: var(--border); } 
   }
-}
-
-/* Mensaje de Estado (Centrado) */
-.status-message {
-  text-align: center; /* <-- ESTO CENTRA EL TEXTO */
-  color: var(--text-main);
-  font-size: 1.1rem;
-  
-  p { margin: 0; }
-  strong { color: var(--text-main); font-weight: 700; }
 }
 
 /* =========================================
-   📱 SOLUCIÓN MÓVIL (Vertical Timeline)
+   3. CONTENIDO GRID
    ========================================= */
-@media (max-width: 768px) {
-  /* ... (Mantén todo el código de la media query móvil igual que antes) ... */
-  .progress-section { padding: 25px 20px; }
-
-  .stepper-wrapper {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0;
-    margin-bottom: 20px;
-  }
-
-  .step-item {
-    flex-direction: row;
-    align-items: flex-start;
-    width: 100%;
-    padding-bottom: 30px;
-    flex: initial;
-
-    &:last-child { padding-bottom: 0; }
-
-    .step-label {
-      margin-top: 8px;
-      margin-left: 15px;
-      text-align: left;
-      font-size: 0.95rem;
-    }
-
-    .step-circle {
-      width: 36px; height: 36px;
-      border-width: 2px; /* Mantener borde en móvil */
-      svg { width: 18px; height: 18px; }
-      /* En móvil, el círculo no necesita tapar la línea de la misma forma */
-      background: #f3f4f6; 
-      &.completed { background: var(--green); }
-      &.active { background: white; }
-    }
-
-    /* Línea Vertical Móvil */
-    .step-line {
-      top: auto; left: auto; transform: none; width: auto; 
-      
-      left: 17px; /* Centrado con el círculo de 36px (36/2 - 2/2) */
-      top: 36px;
-      width: 2px;
-      height: calc(100% - 2px); /* Ajuste fino para que conecte */
-      z-index: 1;
-    }
-  }
-  
-  /* El mensaje de estado también se ve bien centrado en móvil */
-  .status-message {
-      font-size: 1rem;
-  }
-}
-/* --- 3. CONTENIDO GRID --- */
 .content-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr; /* 66% - 33% */
+  grid-template-columns: 2fr 1fr; /* 2/3 y 1/3 */
   gap: 25px;
 }
 
-.left-column { display: flex; flex-direction: column; gap: 25px; }
-.right-column { display: flex; flex-direction: column; gap: 25px; }
+.left-column, .right-column { display: flex; flex-direction: column; gap: 25px; }
 
-/* Estilos de Tarjeta General */
+/* Tarjetas */
 .card {
-  background: white; border: 1px solid var(--border); border-radius: var(--radius);
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
   padding: 25px;
-  h2, h3 { margin: 0 0 20px 0; font-size: 1.1rem; font-weight: 700; }
+  h2, h3 { margin: 0 0 20px 0; font-size: 1.1rem; font-weight: 700; color: var(--primary); }
 }
 
-/* LISTA DE ITEMS */
+/* Items */
 .item-row {
-  display: flex; gap: 15px; padding: 15px 0; border-bottom: 1px solid #f3f4f6;
+  display: flex; gap: 15px; padding: 15px 0; border-bottom: 1px solid var(--bg-accent);
   &:last-child { border-bottom: none; padding-bottom: 0; }
-  
   .item-img {
-    width: 70px; height: 70px; border-radius: 8px; background: #f9fafb; border: 1px solid var(--border);
+    width: 70px; height: 70px; border-radius: 8px; background: var(--bg-page); border: 1px solid var(--border);
     overflow: hidden; flex-shrink: 0;
     img { width: 100%; height: 100%; object-fit: cover; }
   }
-  
   .item-info {
     flex: 1;
-    h3 { margin: 0 0 5px 0; font-size: 0.95rem; font-weight: 600; line-height: 1.3; }
-    .variant { font-size: 0.85rem; color: var(--text-muted); margin: 0; }
-    .qty { font-size: 0.85rem; color: var(--text-main); margin-top: 4px; font-weight: 500; }
+    h3 { margin: 0 0 5px 0; font-size: 0.95rem; font-weight: 600; color: var(--text-main); }
+    .variant, .qty { font-size: 0.85rem; color: var(--text-muted); display: block; }
   }
-  
-  .item-price { font-weight: 700; font-size: 1rem; }
+  .item-price { font-weight: 700; font-size: 1rem; color: var(--text-main); }
 }
 
-/* INFO ROW (Envío y Pago) */
-.info-row {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 25px;
-}
+/* Info */
+.info-row { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
 .info-card {
   p { margin: 0; font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; }
   .strong { color: var(--text-main); font-weight: 700; margin-bottom: 4px; }
-  .phone { margin-top: 8px; }
 }
 
-.payment-box {
-  display: flex; align-items: center; gap: 10px;
-  .visa-icon { width: 40px; }
-  span { font-weight: 500; font-size: 0.9rem; }
-}
-
-/* RESUMEN (Summary) */
+/* Resumen */
 .summary-row {
-  display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.95rem;
-  &.discount { color: var(--green); }
-  &.total { font-weight: 800; font-size: 1.2rem; margin-top: 15px; margin-bottom: 0; }
+  display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.95rem; color: var(--text-main);
+  &.total { font-weight: 800; font-size: 1.2rem; margin-top: 15px; color: var(--primary); }
 }
 .divider { height: 1px; background: var(--border); margin: 15px 0; }
-
-/* TRACKING */
-.tracking-card {
-  background: #f3f4f6; border: none;
-  .track-number { font-family: monospace; font-size: 1.1rem; background: white; padding: 10px; border-radius: 6px; text-align: center; border: 1px solid var(--border); margin-bottom: 15px; }
-  .btn-track-full { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
+.tracking-card .track-number { 
+  font-family: monospace; background: white; padding: 10px; border: 1px solid var(--border); 
+  text-align: center; border-radius: 6px; display: block; margin-bottom: 10px; word-break: break-all;
+}
+.btn-track-full { 
+  display: block; width: 100%; padding: 12px; background: var(--primary); color: white; 
+  text-align: center; text-decoration: none; border-radius: 8px; font-weight: 600;
 }
 
-/* =========================================
-   📱 RESPONSIVE
-   ========================================= */
-@media (max-width: 900px) {
-  .content-grid { grid-template-columns: 1fr; } /* Colapsar columnas */
-  .info-row { grid-template-columns: 1fr; } /* Info cards una bajo otra */
-}
+/* =================================================================
+   📱 MEDIA QUERIES (MÓVIL) - CORRECCIÓN TOTAL
+   ================================================================= */
+@media (max-width: 768px) {
+  
+  .detail-container { padding: 15px; gap: 20px; }
 
-@media (max-width: 600px) {
+  /* 1. Header Stackeado */
   .detail-header {
     flex-direction: column; align-items: flex-start;
     .header-actions { width: 100%; button { flex: 1; justify-content: center; } }
   }
-  
-  
+
+  /* 2. Grid Stackeado */
+  .content-grid { grid-template-columns: 1fr; }
+  .info-row { grid-template-columns: 1fr; }
+
+  /* 3. TRANSFORMACIÓN DEL STEPPER A VERTICAL */
+  .progress-section { padding: 20px; }
+
+  .stepper-wrapper {
+    flex-direction: column; /* Apilar verticalmente */
+    gap: 0;
+  }
+
+  .step-item {
+    flex-direction: row; /* Círculo a la izq, texto a la derecha */
+    align-items: flex-start; /* Alinear arriba */
+    width: 100%;
+    /* Altura mínima para que quepa la línea */
+    min-height: 70px; 
+    
+    &:last-child { min-height: auto; }
+
+    /* RESETEAR POSICIONES DE ESCRITORIO */
+    .step-line {
+      /* Cambiar a línea vertical */
+      width: 2px;
+      height: 100%; 
+      top: 0; 
+      left: 20px; /* Centro exacto del círculo (40px / 2) */
+      
+      /* Quitar transformaciones de PC */
+      transform: none; 
+      
+      /* Empezar debajo del círculo */
+      margin-top: 40px; 
+    }
+
+    /* Ajustar texto */
+    .step-label {
+      margin-top: 8px; 
+      margin-left: 15px; 
+      text-align: left;
+    }
+  }
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+/* =========================================
+   TIMELINE DETALLADO (Bitácora - TODO VERDE)
+   ========================================= */
+/* =========================================
+   TIMELINE DETALLADO (TODO VERDE: TEXTO Y PUNTOS)
+   ========================================= */
+.timeline-feed {
+  
+  .feed-wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .feed-item {
+    display: flex;
+    gap: 15px;
+    position: relative;
+    padding-bottom: 25px; 
+
+    &:last-child {
+      padding-bottom: 0;
+    }
+
+    /* 1. FECHA (Izquierda) - AHORA VERDE */
+    .feed-date {
+      display: flex; flex-direction: column; align-items: flex-end;
+      min-width: 60px; text-align: right; padding-top: 2px;
+      
+      /* CAMBIO: Fecha en verde para todos */
+      .date { font-weight: 700; font-size: 0.85rem; color: var(--success); }
+      .time { font-size: 0.75rem; color: var(--text-muted); }
+    }
+
+    /* 2. MARCADOR (Centro) - TODO VERDE */
+    .feed-marker {
+      display: flex; flex-direction: column; align-items: center;
+      position: relative; min-width: 20px;
+
+      .dot {
+        width: 12px; height: 12px;
+        border-radius: 50%;
+        background: var(--success); /* Punto verde */
+        border: 2px solid white;
+        box-shadow: 0 0 0 1px var(--success);
+        z-index: 2;
+      }
+
+      .line {
+        width: 2px;
+        flex-grow: 1; 
+        background: var(--success); /* Línea verde */
+        opacity: 0.5; 
+        margin-top: 2px;
+        min-height: 100%;
+        position: absolute;
+        top: 10px; bottom: -15px; left: 50%;
+        transform: translateX(-50%);
+        z-index: 1;
+      }
+    }
+
+    /* 3. CONTENIDO (Derecha) - TÍTULO VERDE */
+    .feed-content {
+      flex: 1; padding-top: 0;
+      
+      /* CAMBIO: Título en verde para todos */
+      h4 { 
+        margin: 0 0 4px 0; font-size: 0.95rem; font-weight: 700; 
+        color: var(--success); /* <--- AQUÍ ESTÁ EL CAMBIO */
+      }
+      
+      /* La descripción la dejamos gris para que se lea mejor, o cámbiala a var(--success) si prefieres todo verde */
+      p { 
+        margin: 0; font-size: 0.9rem; color: var(--text-muted); line-height: 1.4; 
+      }
+    }
+
+    /* ESTILO EXTRA PARA EL ÚLTIMO EVENTO (El de arriba) */
+    /* Solo le damos un brillo extra al punto, ya que el texto ahora es verde para todos */
+    &.latest {
+      .feed-marker .dot {
+        transform: scale(1.3); 
+        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2); 
+      }
+    }
+  }
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .timeline-feed .feed-item {
+    gap: 10px;
+    .feed-date {
+      min-width: auto; text-align: left; align-items: flex-start; margin-bottom: 2px;
+    }
+  }
+}
+
+.cancelled-banner.premium-error {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
+  border: 1px solid #f87171;
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 2rem;
+  box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.1);
+
+  /* Efecto de brillo que pasa de izquierda a derecha */
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+      to right,
+      transparent,
+      rgba(255, 255, 255, 0.6),
+      transparent
+    );
+    transform: skewX(-25deg);
+    animation: sweep 4s infinite;
+  }
+
+  .banner-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .icon-badge {
+    width: 50px;
+    height: 50px;
+    background: #ef4444;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+    animation: pulse-red 2s infinite;
+
+    svg {
+      width: 28px;
+      height: 28px;
+      color: white;
+    }
+  }
+
+  .text-group {
+    h3 {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #991b1b;
+      letter-spacing: -0.025em;
+    }
+    p {
+      margin: 4px 0 0 0;
+      font-size: 0.95rem;
+      color: #b91c1c;
+      font-weight: 500;
+    }
+  }
+}
+
+/* --- ANIMACIONES --- */
+
+@keyframes sweep {
+  0% { left: -100%; }
+  30% { left: 150%; }
+  100% { left: 150%; }
+}
+
+@keyframes pulse-red {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); }
+  70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .cancelled-banner.premium-error {
+    padding: 20px;
+    .banner-content {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
 }
