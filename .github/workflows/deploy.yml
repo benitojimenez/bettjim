@@ -1,4 +1,4 @@
-name: Deploy Fronted to GHCR
+name: Deploy Frontend SSR to GHCR
 
 on:
   push:
@@ -6,8 +6,8 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  # Esto generará: ghcr.io/tu-usuario/nombre-del-repo:latest
-  IMAGE_NAME: ${{ github.repository }}
+  # Asegúrate de usar minúsculas para el nombre de la imagen
+  IMAGE_NAME: benitojimenez/frontend 
 
 jobs:
   build-and-push:
@@ -20,6 +20,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # 1. Preparamos Node.js en el entorno de GitHub
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      # 2. Instalamos dependencias y compilamos
+      - name: Install and Build SSR
+        run: |
+          npm ci
+          npm run build:ssr
+        # NOTA: Asegúrate que 'build:ssr' existe en tu package.json
+        # Si usas Angular nuevo (v17+), a veces es solo 'ng build' (si habilitaste hydratation)
+
+      # 3. Login en Docker
       - name: Log in to GHCR
         uses: docker/login-action@v3
         with:
@@ -27,7 +43,8 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push Backend Image
+      # 4. Construir imagen (usando los archivos de dist/ generados arriba)
+      - name: Build and push Docker Image
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -46,10 +63,17 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd ~/bettjim
-            # Nos aseguramos de estar logueados para bajar la imagen privada
+            
+            # Login para poder bajar la imagen privada
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            # Descarga solo la imagen del Fronted
-            docker compose pull bettjim
-            # Reinicia solo el servicio del frontend sin afectar al proxy ni al mongo
-            docker compose up -d bettjim
+            
+            # Bajamos la nueva imagen
+            # IMPORTANTE: Asegúrate que en docker-compose.yml el servicio se llame 'frontend'
+            # y la imagen coincida con 'ghcr.io/benitojimenez/frontend:latest'
+            docker compose pull frontend
+            
+            # Reiniciamos solo el frontend
+            docker compose up -d frontend
+            
+            # Limpieza de imágenes viejas
             docker image prune -f
