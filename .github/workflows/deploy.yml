@@ -6,8 +6,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  # Asegúrate de usar minúsculas para el nombre de la imagen
-  IMAGE_NAME: benitojimenez/frontend 
+  IMAGE_NAME: benitojimenez/bettjim
 
 jobs:
   build-and-push:
@@ -20,20 +19,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 1. Preparamos Node.js en el entorno de GitHub
+      # 1. Preparamos Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22.12.0'
+          node-version: '22' # Usar la versión mayor '22' es más seguro que una específica
           cache: 'npm'
 
-      # 2. Instalamos dependencias y compilamos
+      # 2. Instalamos dependencias y compilamos (CORREGIDO)
       - name: Install and Build SSR
         run: |
           npm ci
-          npm run build:ssr
-        # NOTA: Asegúrate que 'build:ssr' existe en tu package.json
-        # Si usas Angular nuevo (v17+), a veces es solo 'ng build' (si habilitaste hydratation)
+          npm run build
 
       # 3. Login en Docker
       - name: Log in to GHCR
@@ -43,7 +40,8 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # 4. Construir imagen (usando los archivos de dist/ generados arriba)
+      # 4. Construir imagen Docker
+      # Docker tomará la carpeta 'dist' que se creó en el paso 2
       - name: Build and push Docker Image
         uses: docker/build-push-action@v5
         with:
@@ -67,13 +65,7 @@ jobs:
             # Login para poder bajar la imagen privada
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             
-            # Bajamos la nueva imagen
-            # IMPORTANTE: Asegúrate que en docker-compose.yml el servicio se llame 'frontend'
-            # y la imagen coincida con 'ghcr.io/benitojimenez/frontend:latest'
-            docker compose pull frontend
-            
-            # Reiniciamos solo el frontend
-            docker compose up -d frontend
-            
-            # Limpieza de imágenes viejas
+            # Bajamos y actualizamos
+            docker compose pull bettjim
+            docker compose up -d bettjim
             docker image prune -f
