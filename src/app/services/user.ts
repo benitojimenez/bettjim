@@ -80,14 +80,8 @@ export class User {
 
     // 4. VERIFICAMOS SI ESTAMOS EN EL NAVEGADOR ANTES DE USAR localStorage
      if (isPlatformBrowser(this.platformId) && this.authService.isAuthenticated()) {
-    const userId = localStorage.getItem('_id');
     return {
-      url: `${environment.API_URL}get_orders_user/${userId}`,
-      method: 'GET'
-    };
-  } else {
-    return {
-      url: `${environment.API_URL}get_orders_user/guest`,
+      url: `${environment.API_URL}get_orders_user`,
       method: 'GET'
     };
   }

@@ -17,7 +17,7 @@ export class Categories {
 
   //  EL RECURSO (La petición HTTP reactiva)
   public categoriesResource = httpResource<CategoryResponse>(() => {
-    const rlTarget = `${environment.API_URL}public_category/`;
+    const rlTarget = `${environment.API_URL}public_category`;
     return { url: rlTarget, method: 'GET' };
   }, { defaultValue: { data: [] } });
 

@@ -1,11 +1,8 @@
-
-@if (ads.AdsResource.isLoading()) {
-<section class="hero-section">
- <div class="sk-hero-banner"></div>
+@if (isLoading()) {
+<section class="hero-section" >
+  <div class="sk-hero-banner"></div>
 </section>
-} @else if (ads.AdsResource.error()) {
-<div class="error-message">Error loading ads.</div>
-} @else {
+}@else {
 <section class="hero-section">
   <swiper-container #heroSwiper init="false" class="hero-swiper">
     @for (slide of ads.cleanAds(); track slide._id) {
@@ -40,3 +37,12 @@
   </div>
 </section>
 }
+
+<!-- @if (ads.AdsResource.isLoading()) {
+<section class="hero-section">
+ <div class="sk-hero-banner"></div>
+</section>
+} @else  -->
+@if (ads.AdsResource.error()) {
+<div class="error-message">Error loading ads.</div>
+} 
