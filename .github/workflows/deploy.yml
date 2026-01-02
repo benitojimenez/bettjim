@@ -1,62 +1,55 @@
-name: Build and Deploy Angular Project to VPS
+name: Deploy Fronted to GHCR
 
 on:
   push:
-    branches:
-      - master  # Cambia 'main' por tu rama principal si es diferente
+    branches: [ "master" ]
+
+env:
+  REGISTRY: ghcr.io
+  # Esto generará: ghcr.io/tu-usuario/nombre-del-repo:latest
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  build-and-deploy:
+  build-and-push:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
 
     steps:
-      # Paso 1: Checkout del código
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      # Paso 2: Configurar Node.js
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
         with:
-          node-version: '22.12.0'  # Cambia a la versión que usa tu proyecto Angular 19
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Paso 3: Instalar las dependencias
-      - name: Install dependencies
-        run: npm install --legacy-peer-deps
+      - name: Build and push Backend Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
 
-      # Paso 4: Compilar el proyecto Angular
-      - name: Build Angular project
-        run: npm run build -- --configuration production  # Cambia 'production' si usas otra configuración
-
-      # Paso 5: Crear el directorio .ssh
-      - name: Create .ssh directory
-        run: mkdir -p ~/.ssh
-
-      # Paso 6: Añadir el host remoto a la lista de hosts conocidos
-      - name: Add host to known_hosts
-        env:
-          HOST: ${{ secrets.VPS_HOST }}  # Asegúrate de que 'VPS_HOST' esté configurado en tus secretos de GitHub
-        # run: ssh-keyscan -H $HOST >> ~/.ssh/known_hosts
-        run: ssh-keyscan -H $HOST >> ~/.ssh/known_hosts 2>/dev/null
-
-      # Paso 7: Transferir archivos compilados al VPS
-      - name: Deploy to VPS
-        env:
-          HOST: ${{ secrets.VPS_HOST }}
-          USER: ${{ secrets.VPS_USER }}
-          SSH_PRIVATE_KEY: ${{ secrets.VPS_SSH_KEY }}
-        run: |
-          # Guardar la clave privada y ajustar permisos  
-          echo "$SSH_PRIVATE_KEY" | tr -d '\r' > key.pem
-          chmod 600 key.pem
-          
-          # Transferir solo los archivos compilados al VPS
-          rsync -avz -e "ssh -i key.pem" --delete ./dist/bettjim/ ${USER}@${HOST}:/var/www/bettjim/
-          
-          # Conectarse al VPS, reiniciar PM2 y eliminar carpetas
-          ssh -i key.pem ${USER}@${HOST} "
-            source /root/.nvm/nvm.sh &&
-            pm2 restart 0 &&
-            # sudo rm -rf /var/www/bettjim/browser/shop /var/www/bettjim/browser/account &&
-            echo 'Carpetas eliminadas correctamente'
-          "
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to VPS via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd ~/bettjim
+            # Nos aseguramos de estar logueados para bajar la imagen privada
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            # Descarga solo la imagen del Fronted
+            docker compose pull bettjim
+            # Reinicia solo el servicio del frontend sin afectar al proxy ni al mongo
+            docker compose up -d bettjim
+            docker image prune -f
