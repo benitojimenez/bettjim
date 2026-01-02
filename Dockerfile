@@ -1,5 +1,5 @@
 # Usamos Node Alpine (versión ligera igual que tu entorno)
-FROM node:22-alpine
+FROM node:22.12.0-alpine
 
 WORKDIR /app
 
