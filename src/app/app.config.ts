@@ -26,7 +26,7 @@ export const appConfig: ApplicationConfig = {
     ),
     
     // 3. DEFINIR ESPAÑOL COMO IDIOMA POR DEFECTO
-    { provide: LOCALE_ID, useValue: 'es' },
+    // { provide: LOCALE_ID, useValue: 'es' },
     provideClientHydration(withEventReplay(), withIncrementalHydration()),
     provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
   ]
