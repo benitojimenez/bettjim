@@ -113,8 +113,8 @@ export class User {
   });
 
 
-  get_order_details(): Observable<any> {
-    return this._http.get(environment.API_URL+'get_order_details');
+  get_order_details(id:string): Observable<any> {
+     return this._http.get(`${environment.API_URL}get_order_details/${id}`);
   }
 
   //update profile user
