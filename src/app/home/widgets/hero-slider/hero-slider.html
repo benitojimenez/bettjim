@@ -8,7 +8,7 @@
     @for (slide of ads.cleanAds(); track slide._id) {
     <swiper-slide>
       <div class="media-bg">
-        <img [src]="urlImage() + slide.image" alt="Hero Bg" class="bg-img ken-burns" />
+        <img [src]="urlImage() + slide.image[0]" alt="Hero Bg" class="bg-img ken-burns" />
 
         <div class="overlay"></div>
       </div>

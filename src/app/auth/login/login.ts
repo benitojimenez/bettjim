@@ -67,12 +67,9 @@ export class Login implements OnInit {
     this.isLoading.set(true);
     const credentials = this.loginForm.value;
 
-    this.userService.login(credentials)
-      .pipe(
-        finalize(() => this.isLoading.set(false))
-      )
-      .subscribe({
+    this.userService.login(credentials).subscribe({
         next: (resp: any) => {
+          console.log('Respuesta Login:', resp);
           // TU LÓGICA: 
           // true = Verificado (Entra)
           // false = No Verificado (Valida código)
@@ -85,11 +82,12 @@ export class Login implements OnInit {
             this.cartService.syncLocalCart();
             this.handleSuccessfulLogin(resp);
           } else {
-            this.handleVerificationRedirect(resp, credentials.email);
+            this.handleVerificationRedirect(resp);
           }
         },
         error: (err) => {
           this.handleLoginError(err);
+          // console.error('Error Login:', err);
         }
       });
   }
@@ -97,6 +95,7 @@ export class Login implements OnInit {
   // --- MÉTODOS PRIVADOS ---
 
   private handleSuccessfulLogin(resp: any) {
+    this.isLoading.set(false);
     this.toast.success(resp.message || 'Bienvenido', 'top-center');
 
     // // Guardar sesión
@@ -112,25 +111,24 @@ export class Login implements OnInit {
     this.router.navigate(['/account/profile']);
   }
 
-  private handleVerificationRedirect(resp: any, email: string | null | undefined) {
+  private handleVerificationRedirect(resp: any) {
     // ✅ Aquí también aseguramos la ruta absoluta con '/'
     this.router.navigate(['/auth/verify-code'], {
       state: {
-        email: email,
-        token: resp.token,
-        refreshToken: resp.refreshToken,
         id: resp.data._id
       }
     });
   }
 
   private handleLoginError(err: any) {
-    console.error('Error Login:', err);
+    this.isLoading.set(false);
+    // console.error('Error Login:', err);
     const errorMessage = err.error?.message || 'Ocurrió un error inesperado.';
 
     // Simplificación del switch
     if ([400, 401, 403, 500].includes(err.status)) {
       this.toast.error(errorMessage, 'top-center');
+       this.handleVerificationRedirect(err.error);
     } else {
       this.toast.error('No se pudo conectar con el servidor', 'bottom-center');
     }

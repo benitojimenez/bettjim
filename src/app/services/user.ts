@@ -27,8 +27,7 @@ export class User {
   constructor() { }
 
   register(data: any): Observable<any> {
-    let headers = new HttpHeaders().set('Content-Type', 'application/json');
-    return this._http.post(environment.API_URL + 'register/', data, { headers: headers });
+    return this._http.post(environment.API_URL + 'register', data);
   }
 
   //
@@ -36,8 +35,7 @@ export class User {
     return this._http.post(environment.API_URL + 'login', data);
   }
   verify_user(id: any, data: any): Observable<any> {
-    let headers = new HttpHeaders().set('Content-Type', 'application/json');
-    return this._http.put(environment.API_URL + 'verify_user/' + id, data, { headers: headers });
+    return this._http.put(environment.API_URL + 'verify_user/' + id, data);
   }
 
   /* ---------------------------------------------

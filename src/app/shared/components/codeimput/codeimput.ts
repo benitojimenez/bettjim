@@ -62,10 +62,10 @@ export class CodeImput {
     const regex = this.getValidationRegex();
     value = value.replace(regex, '');
     
-    // Convertir a mayúsculas si son letras
-    if (this.inputType() !== 'numeric') {
-      value = value.toUpperCase();
-    }
+    // // Convertir a mayúsculas si son letras
+    // if (this.inputType() !== 'numeric') {
+    //   value = value.toUpperCase();
+    // }
 
     this.digitsArray[index] = value;
     input.value = value; // Reflejar limpieza en el DOM

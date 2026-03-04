@@ -151,17 +151,33 @@ export class Auth { // Cambiado nombre a Auth por convención
   // 3. HELPERS PRIVADOS (SSR SAFE)
   // ================================================================
 
-  /**
+ /**
    * Carga el estado inicial desde el navegador
    */
   private hydrateState() {
     if (isPlatformBrowser(this._platformId)) {
       const token = localStorage.getItem('token');
-      if (token && !this._jwtHelper.isTokenExpired(token)) {
-        this._accessToken.set(token);
+
+      // 1. Validar que el token exista Y tenga la estructura básica de un JWT (3 partes)
+      if (token && token.split('.').length === 3) {
+        try {
+          // 2. Validamos si está expirado de forma segura
+          if (!this._jwtHelper.isTokenExpired(token)) {
+            this._accessToken.set(token);
+          } else {
+            // Si expiró, cerramos sesión
+            this.logOut();
+          }
+        } catch (error) {
+          // 3. Si tiene 3 partes pero está corrupto (ej. un usuario lo editó a mano)
+          console.error('Token corrupto o inválido detectado. Limpiando sesión...');
+          this.logOut();
+        }
       } else {
-        // Si hay token pero expiró, intentamos limpiar
-        if (token) this.logOut();
+        // Si hay algo en el storage pero NO es un JWT (ej: string "null" o texto basura)
+        if (token) {
+          this.logOut(); // Esto limpiará la basura del localStorage
+        }
       }
     }
   }

@@ -104,6 +104,7 @@ export class Register implements OnInit {
     console.log('Register Data:', this.registerForm.value);
     this.userService.register(this.registerForm.value).subscribe({
       next: (resp) => {
+        console.log('respuesta de la creacion del cliente', resp);
         this.isLoading.set(false);
         // this._loadingService.hide();
         this.registerForm.reset();

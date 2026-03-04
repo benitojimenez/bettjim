@@ -22,9 +22,7 @@ export class VerifyCode {
   auth = inject(Auth)
   // Inyectamos el ID de la plataforma para saber si estamos en Server o Browser
   private platformId = inject(PLATFORM_ID);
-  email = '';
-  Token = '';
-  refreshToken = '';
+
   userID = '';
   isLoading = signal(false);
   fullCode = signal<string>('');
@@ -32,10 +30,10 @@ export class VerifyCode {
   constructor() {
     // 1. Intentamos leer la señal de Angular Router (Funciona en ambos, pero suele ser null al inicio)
     const nav = this.router.currentNavigation();
-    const routerState = nav?.extras.state as { email: string, token: string, refreshtoken: string, id: string } | undefined;
+    const routerState = nav?.extras.state as { id: string } | undefined;
 
-    if (routerState && routerState.email && routerState.id) {
-      this.setData(routerState.email, routerState.token, routerState.refreshtoken, routerState.id);
+    if (routerState && routerState.id) {
+      this.setData(routerState.id);
     }
     else {
       // 2. FALLBACK SEGURO PARA SSR
@@ -44,8 +42,8 @@ export class VerifyCode {
 
         const nativeState = history.state;
 
-        if (nativeState && nativeState.email) {
-          this.setData(nativeState.email, nativeState.token, nativeState.refreshtoken, nativeState.id);
+        if (nativeState && nativeState.id) {
+          this.setData(nativeState.id);
         } else {
           // Si estamos en el navegador y no hay datos, volvemos al login
           this.router.navigate(['/auth/login']);
@@ -56,16 +54,12 @@ export class VerifyCode {
     }
   }
   // Helper para asignar datos
-  private setData(email: string, token: string, refreshtoken: string, userId: string) {
-    this.email = email;
-    this.Token = token;
-    this.refreshToken = refreshtoken
+  private setData(userId: string) {
     this.userID = userId
-    console.log('Datos recuperados:', this.email);
   }
   // Esta función se ejecuta cuando el hijo emite "codeCompleted"
   onCodeReady(code: string) {
-    console.log('Código recibido del hijo:', code);
+    // console.log('Código recibido del hijo:', code);
     this.fullCode.set(code);
 
     // Opcional: Enviar automáticamente al backend sin esperar click en botón
@@ -86,17 +80,18 @@ export class VerifyCode {
 
     this.user.verify_user(this.userID, data).subscribe({
       next: (resp) => {
-        console.log(resp);
+        // console.log(resp);
         // this._loadingService.hide();  // Ocultar el loader
         const data={
           _id:this.userID,
-          token:this.Token,
-          refreshToken:this.refreshToken,
+          token:resp.token,
+          refreshToken:resp.refreshToken,
 
         }
         this.isLoading.set(false);
         this.toast.success(resp.message, 'top-center');
-        this.auth.loginSuccess(this.Token, this.refreshToken, this.userID);
+        //  this.router.navigate(['/auth/login']);
+        this.auth.loginSuccess(resp.token, resp.refreshToken, this.userID);
         this.handleSuccessfulLogin(data);
       },
       error: (err) => {
