@@ -3,6 +3,9 @@ import { isPlatformBrowser } from '@angular/common';
 import { CheckoutState, INITIAL_CHECKOUT_STATE, Address } from '../shared/classes/checkout';
 import { Products } from './product';
 import { Cart } from './cart';
+import { environment } from '../../environments/environment.development';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 // Interfaces locales para métodos de envío
 export interface ShippingMethod {
   id: string;
@@ -19,6 +22,7 @@ export class CheckoutService {
 
   private platformId = inject(PLATFORM_ID);
   private ps = inject(Products);
+  _http = inject(HttpClient);
   private cartService = inject(Cart)
   private readonly STORAGE_KEY = 'bettjim_checkout_session';
   private readonly FREE_SHIPPING_THRESHOLD = 99.00;
@@ -254,5 +258,9 @@ export class CheckoutService {
      this.cartService.serverCartResource
 
     }
+  }
+
+  checkoutOrder(data: any): Observable<any> {
+    return this._http.post(environment.API_URL + 'checkout', data);
   }
 }

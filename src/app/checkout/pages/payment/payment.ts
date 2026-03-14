@@ -219,64 +219,67 @@ export default class Payment {
         dni: this.form.value.document_number
       }
     }
+
+     // 3. Register Order in Backend
+    this.processBackendOrder('card', 'chargeResp.cargo.id');
     // console.log(data);
     // Encriptar los datos de la tarjeta
-    this._culquiService.createToken(this.encryptData(data)).subscribe({
-      next: (resp) => {
-        // console.log('resp-1', resp);
+    // this._culquiService.createToken(this.encryptData(data)).subscribe({
+    //   next: (resp) => {
+    //     // console.log('resp-1', resp);
 
-        const Charge = {
-          amount: this.convertToCents(this.checkoutService.orderTotal()),
-          currency_code: "PEN", // PEN o USD
-          email: this.form.value.email,
-          source_id: resp.token.id, //Soporta cargos únicos como recurrencia
-          description: "Pago de Orden en Bettjim.com",
-          antifraud_details: {
-            first_name: this.form.value.first_name,
-            last_name: this.form.value.last_name,
-            address: this.form.value.address,
-            address_city: this.form.value.address_city,
-            country_code: "PE",
-          },
-          metadata: {
-            dni: this.form.value.document_number,
-            id_user: this.auth.getId() || 'User',
-          },
+    //     const Charge = {
+    //       amount: this.convertToCents(this.checkoutService.orderTotal()),
+    //       currency_code: "PEN", // PEN o USD
+    //       email: this.form.value.email,
+    //       source_id: resp.token.id, //Soporta cargos únicos como recurrencia
+    //       description: "Pago de Orden en Bettjim.com",
+    //       antifraud_details: {
+    //         first_name: this.form.value.first_name,
+    //         last_name: this.form.value.last_name,
+    //         address: this.form.value.address,
+    //         address_city: this.form.value.address_city,
+    //         country_code: "PE",
+    //       },
+    //       metadata: {
+    //         dni: this.form.value.document_number,
+    //         id_user: this.auth.getId() || 'User',
+    //       },
          
 
-        }
+    //     }
 
-        this._culquiService.createCharge(this.encryptData(Charge)).subscribe({
-          next: (chargeResp) => {
-            this.cardForm.reset();
-            // console.log('Charge Created:', chargeResp);
-            this.toast.success(chargeResp.cargo.outcome.merchant_message, 'top-center');
-            // this.checkoutService.transaccionID.set(chargeResp.cargo.id);
+    //     this._culquiService.createCharge(this.encryptData(Charge)).subscribe({
+    //       next: (chargeResp) => {
+    //         this.cardForm.reset();
+    //         // console.log('Charge Created:', chargeResp);
+    //         this.toast.success(chargeResp.cargo.outcome.merchant_message, 'top-center');
+    //         // this.checkoutService.transaccionID.set(chargeResp.cargo.id);
             
-            // 3. Register Order in Backend
-            this.processBackendOrder('card', chargeResp.cargo.id);
-          },
-          error: (err) => this.handlePaymentError(err)
+    //         // 3. Register Order in Backend
+    //         this.processBackendOrder('card', chargeResp.cargo.id);
+    //       },
+    //       error: (err) => this.handlePaymentError(err)
           
-        });
+    //     });
 
-      },
-      error: (err) => {
-         this.isProcessing.set(false);
-        // console.log('errorr', err);
-        // Si el error es de la tarjeta, mostrar el mensaje de error
-        if (err.error.code === 'card_declined') {
-          this.toast.error(err.error.message, 'top-center');
-        } else {
-          // Si el error es de otro tipo, mostrar el mensaje de error general
-          this.toast.error('Error al procesar el pago.', 'top-center');
-        }
-        // Si el error es de otro tipo, mostrar el mensaje de error general
-        this.toast.error(err.error.error, 'top-center');
+    //   },
+    //   error: (err) => {
+    //      this.isProcessing.set(false);
+    //     // console.log('errorr', err);
+    //     // Si el error es de la tarjeta, mostrar el mensaje de error
+    //     if (err.error.code === 'card_declined') {
+    //       this.toast.error(err.error.message, 'top-center');
+    //     } else {
+    //       // Si el error es de otro tipo, mostrar el mensaje de error general
+    //       this.toast.error('Error al procesar el pago.', 'top-center');
+    //     }
+    //     // Si el error es de otro tipo, mostrar el mensaje de error general
+    //     this.toast.error(err.error.error, 'top-center');
 
-      }
+    //   }
 
-    });
+    // });
   }
 
   /**
@@ -292,48 +295,51 @@ export default class Payment {
         dni: this.YapeForm.value.document_number
       }
     };
+    // 3. Register Order in Backend
+    console.log(data);
+    this.processBackendOrder('yape', 'chargeResp.cargo.id');
 
     // 1. Create Yape Token
-    this._culquiService.createTokenYape(this.encryptData(data)).subscribe({
-      next: (resp) => {
-        // console.log('Token Yape Created:', resp);
+    // this._culquiService.createTokenYape(this.encryptData(data)).subscribe({
+    //   next: (resp) => {
+    //     // console.log('Token Yape Created:', resp);
         
-        // 2. Create Charge
-        const Charge = {
-          amount: this.convertToCents(this.checkoutService.orderTotal()),
-          currency_code: "PEN",
-          email: this.checkoutService.email(),
-          source_id: resp.token.id,
-          description: "Pago de Orden en Bettjim.com",
-          antifraud_details: {
-            address: this.checkoutService.shippingAddress()?.address,
-            address_city: "Lima",
-            country_code: "PE",
-            first_name: this.auth.getLastName() || 'Cliente Yape',
-            last_name: this.auth.getLastName() || 'Cliente Yape',
-            phone_number: this.YapeForm.value.phone
-          },
-          metadata: {
-            dni: this.YapeForm.value.document_number,
-            id_user: this.auth.getId() || 'User',
-          }
-        };
+    //     // 2. Create Charge
+    //     const Charge = {
+    //       amount: this.convertToCents(this.checkoutService.orderTotal()),
+    //       currency_code: "PEN",
+    //       email: this.checkoutService.email(),
+    //       source_id: resp.token.id,
+    //       description: "Pago de Orden en Bettjim.com",
+    //       antifraud_details: {
+    //         address: this.checkoutService.shippingAddress()?.address,
+    //         address_city: "Lima",
+    //         country_code: "PE",
+    //         first_name: this.auth.getLastName() || 'Cliente Yape',
+    //         last_name: this.auth.getLastName() || 'Cliente Yape',
+    //         phone_number: this.YapeForm.value.phone
+    //       },
+    //       metadata: {
+    //         dni: this.YapeForm.value.document_number,
+    //         id_user: this.auth.getId() || 'User',
+    //       }
+    //     };
 
-        this._culquiService.createCharge(this.encryptData(Charge)).subscribe({
-          next: (chargeResp) => {
-            // console.log('Charge Created:', chargeResp);
-            this.YapeForm.reset();
-            this.toast.success(chargeResp.cargo.outcome.merchant_message, 'top-center');
-            // this.checkoutService.transaccionID.set(chargeResp.cargo.id);
+    //     this._culquiService.createCharge(this.encryptData(Charge)).subscribe({
+    //       next: (chargeResp) => {
+    //         // console.log('Charge Created:', chargeResp);
+    //         this.YapeForm.reset();
+    //         this.toast.success(chargeResp.cargo.outcome.merchant_message, 'top-center');
+    //         // this.checkoutService.transaccionID.set(chargeResp.cargo.id);
             
-            // 3. Register Order in Backend
-            this.processBackendOrder('yape', chargeResp.cargo.id);
-          },
-          error: (err) => this.handlePaymentError(err)
-        });
-      },
-      error: (err) => this.handlePaymentError(err)
-    });
+    //         // 3. Register Order in Backend
+    //         this.processBackendOrder('yape', chargeResp.cargo.id);
+    //       },
+    //       error: (err) => this.handlePaymentError(err)
+    //     });
+    //   },
+    //   error: (err) => this.handlePaymentError(err)
+    // });
   }
 
   /**
@@ -356,18 +362,18 @@ export default class Payment {
       finalOrder.payment.transaction_id = transactionId;
       finalOrder.payment.payment_status = 'Pagado';
 
-      // console.log('🚀 ENVIANDO AL BACKEND:', finalOrder);
+      console.log('🚀 ENVIANDO AL BACKEND:', finalOrder);
 
       // 4. Send to Backend
-      this.userService.register_order(finalOrder).subscribe({
-        next: (resp) => this.handleSuccess(resp),
-        error: (err) => {
-          this.isProcessing.set(false);
-          const msg = err.error?.message || 'Error al procesar el pedido en el servidor';
-          this.toast.error(msg, 'top-center');
-          console.error(err);
-        },
-      });
+      // this.userService.register_order(finalOrder).subscribe({
+      //   next: (resp) => this.handleSuccess(resp),
+      //   error: (err) => {
+      //     this.isProcessing.set(false);
+      //     const msg = err.error?.message || 'Error al procesar el pedido en el servidor';
+      //     this.toast.error(msg, 'top-center');
+      //     console.error(err);
+      //   },
+      // });
 
     } catch (error) {
       console.error('Error procesando el pedido:', error);

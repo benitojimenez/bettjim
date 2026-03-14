@@ -29,7 +29,7 @@ export class HeroSlider {
     // EFECTO 1: Controlar el retardo de carga (Stabilizer)
     effect(() => {
       const data = this.ads.cleanAds();
-      console.log('Ads para el slider:', data); // Debug: Ver qué datos llegan al efecto
+      // console.log('Ads para el slider:', data); // Debug: Ver qué datos llegan al efecto
 
       // Si llegaron los datos y no están vacíos
       if (data && data.length > 0) {
