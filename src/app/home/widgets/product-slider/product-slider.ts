@@ -82,14 +82,14 @@ async initSwiper() {
       if (typeof swiperEl.initialize === 'function') {
         swiperEl.initialize();
         this.isInitialized = true; // 🔒 CERRAMOS EL CANDADO
-        console.log('✅ Swiper arrancó a la primera');
+        // console.log('✅ Swiper arrancó a la primera');
       } else {
         // Plan B: Reintentar un par de veces por si acaso (Polling suave)
         this.waitForSwiper(swiperEl);
       }
 
     } catch (error) {
-      console.error('Error al cargar Swiper:', error);
+      // console.error('Error al cargar Swiper:', error);
     }
   }
 
@@ -100,7 +100,7 @@ async initSwiper() {
     if (typeof swiperEl.initialize === 'function') {
       swiperEl.initialize();
       this.isInitialized = true; // 🔒 CERRAMOS EL CANDADO
-      console.log('✅ Swiper arrancó tras espera');
+      // console.log('✅ Swiper arrancó tras espera');
     } else {
       setTimeout(() => this.waitForSwiper(swiperEl, attempts + 1), 50);
     }
