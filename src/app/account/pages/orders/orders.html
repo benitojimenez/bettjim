@@ -78,11 +78,10 @@
           <span class="price">{{ order.total | currency : 'PEN ' : 'symbol' }}</span>
         </div>
       </div>
-
       <div class="card-footer">
-        @if(order.status === 'Completado') {
+        @if(order.status === 'completado') {
         <a routerLink="/support" class="btn-secondary">Ayuda</a>
-        } @else if (order.status !== 'Cancelado') {
+        } @else if (order.status !== 'cancelado') {
         <button class="btn-secondary">Rastrear</button>
         }
 

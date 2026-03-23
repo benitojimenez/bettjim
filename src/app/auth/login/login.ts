@@ -69,8 +69,8 @@ export class Login implements OnInit {
 
     this.userService.login(credentials).subscribe({
         next: (resp: any) => {
-          console.log('Respuesta Login:', resp);
-          // TU LÓGICA: 
+          // console.log('Respuesta Login:', resp);
+          // // TU LÓGICA: 
           // true = Verificado (Entra)
           // false = No Verificado (Valida código)
 

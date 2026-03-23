@@ -18,6 +18,7 @@ import { CodeImput } from '../../../shared/components/codeimput/codeimput';
 
 // Environment
 import { environment } from '../../../../environments/environment';
+import { firstValueFrom } from 'rxjs';
 
 
 @Component({
@@ -26,7 +27,7 @@ import { environment } from '../../../../environments/environment';
   templateUrl: './payment.html',
   styleUrl: './payment.scss',
 })
-export default class Payment {
+export default class Payment implements OnInit {
   // ==========================================
   // 1. DEPENDENCY INJECTION
   // ==========================================
@@ -190,123 +191,155 @@ export default class Payment {
     }
     return true;
   }
-
-  /**
-    * Specific logic for processing Card payment via Culqi
-    */
-  private processCardPayment() {
-    const data = {
-      card_number: this.cardForm.value.card_number,
-      cvv: this.cardForm.value.cvv,
-      expiration_month: this.cardForm.value.expiration_month,
-      expiration_year: this.cardForm.value.expiration_year,
-      email: this.formAntifraud.value.email,
-      metadata: { dni: this.formAntifraud.value.document_number },
-      antifraud_details: this.formAntifraud.value
-    };
-
-    const currentItems = this.cartService.cartItems();
-    const finalOrder = this.checkoutService.getFinalOrderPayload(currentItems);
-
-    // Verificamos si ya habíamos creado esta orden en un intento anterior
-    const existingOrderId = this.createdOrderId();
-
-    if (!existingOrderId) {
-      // INTENTO 1: No hay orden previa, llamamos a la API 1 (Crear Orden)
-      this.checkoutService.CreateOrder(finalOrder).subscribe({
-        next: (resp) => {
-          // GUARDAMOS EL ID EN MEMORIA
-          this.createdOrderId.set(resp.orderId);
-
-          // Ahora llamamos a la API 2 (Procesar Pago) con el ID recién creado
-          this.executePaymentAPI(resp.orderId, data, currentItems);
-        },
-        error: (err) => {
-          this.isProcessing.set(false);
-          const msg = err.error?.message || 'Error al registrar la orden.';
-          this.toast.error(msg, 'top-center');
-        }
-      });
-    } else {
-      // REINTENTO: Ya existe la orden en BD, saltamos la API 1 y vamos directo a pagar
-      console.log('Reintentando pago para la orden:', existingOrderId);
-      this.executePaymentAPI(existingOrderId, data, currentItems);
-    }
-  }
-
-  /**
-   * Specific logic for processing Yape payment via Culqi
+    /**
+   * PROCESO CON TARJETA (3 PASOS)
    */
-  private processYapePayment() {
-    const data = {
-      otp: this.YapeForm.value.secretNumber,
-      number_phone: this.YapeForm.value.phone,
-      amount: this.convertToCents(this.checkoutService.orderTotal()),
-      email: this.YapeForm.value.email,
-      metadata: { dni: this.YapeForm.value.document_number }
-    };
+  async processCardPayment() {
+    try {
+      this.isProcessing.set(true);
+      const currentItems = this.cartService.cartItems();
 
-    const currentItems = this.cartService.cartItems();
-    const finalOrder = this.checkoutService.getFinalOrderPayload(currentItems);
+      // ==========================================
+      // PASO 1: CREAR ORDEN EN TU BACKEND
+      // ==========================================
+      let currentOrderId = this.createdOrderId();
 
-    const existingOrderId = this.createdOrderId();
-
-    if (!existingOrderId) {
-      // INTENTO 1: Crear Orden
-      this.checkoutService.CreateOrder(finalOrder).subscribe({
-        next: (resp) => {
-          this.createdOrderId.set(resp.orderId);
-          this.executePaymentAPI(resp.orderId, data, currentItems);
-        },
-        error: (err) => {
-          this.isProcessing.set(false);
-          const msg = err.error?.message || 'Error al registrar la orden.';
-          this.toast.error(msg, 'top-center');
-        }
-      });
-    } else {
-      // REINTENTO: Pago Directo
-      console.log('Reintentando pago Yape para la orden:', existingOrderId);
-      this.executePaymentAPI(existingOrderId, data, currentItems);
-    }
-  }
-
-  // ==========================================
-  // HELPERS 
-  // ==========================================
-
-  /**
-   * Extraemos la lógica de la API 2 para no repetir código entre Card y Yape
-   */
-  private executePaymentAPI(orderId: string, culqiData: any, items: any[]) {
-    const dataBackend = {
-      orderId: orderId,
-      payment_method: this.selectedMethod(),
-      ...this.encryptData(culqiData)
-    };
-
-    this.checkoutService.checkoutPay(dataBackend).subscribe({
-      next: (resp) => {
-        // PAGO EXITOSO
-        this.createdOrderId.set(null); // Limpiamos la memoria
-
-        if (this.selectedMethod() === 'card') this.cardForm.reset();
-        if (this.selectedMethod() === 'yape') this.YapeForm.reset();
-
-        this.toast.success(resp.message || 'Pago registrado con éxito. Estamos procesando tu orden.', 'top-center');
-        this.handleSuccess(resp, items);
-      },
-      error: (err) => {
-        // PAGO RECHAZADO (Ej: Sin fondos, CVV incorrecto)
-        this.isProcessing.set(false);
-        console.error('Payment Error:', err);
-
-        // ¡OJO AQUÍ! No limpiamos createdOrderId. Se queda guardado para que el cliente pueda reintentar.
-        const method = this.selectedMethod() === 'yape' ? 'Yape' : 'Tarjeta';
-        const msg = err.error?.message || `Error al procesar el pago con ${method}.`;
-        this.toast.error(msg, 'top-center');
+      if (!currentOrderId) {
+        const finalOrder = this.checkoutService.getFinalOrderPayload(currentItems);
+        const respOrder = await firstValueFrom(this.checkoutService.CreateOrder(finalOrder));
+        currentOrderId = respOrder.orderId;
+        this.toast.info(respOrder.message || 'Orden creada con éxito.', 'top-center');
+        this.createdOrderId.set(currentOrderId); // Guardamos en memoria
       }
-    });
+
+      // ==========================================
+      // PASO 2: OBTENER TOKEN DIRECTO DE CULQI
+      // ==========================================
+      const cardPayload = {
+        card_number: this.cardForm.value.card_number,
+        cvv: this.cardForm.value.cvv,
+        expiration_month: this.cardForm.value.expiration_month,
+        expiration_year: this.cardForm.value.expiration_year,
+        email: this.formAntifraud.value.email,
+        metadata: { dni: this.formAntifraud.value.document_number },
+      };
+
+      const culqiResponse = await fetch("https://secure.culqi.com/v2/tokens", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${environment.culqiPublicKey}` // Llave PÚBLICA
+        },
+        body: JSON.stringify(cardPayload)
+      });
+
+      const culqiData = await culqiResponse.json();
+
+      if (!culqiResponse.ok) {
+        throw new Error(culqiData.user_message || "Error al validar la tarjeta con el banco.");
+      }
+
+      const culqiTokenId = culqiData.id; // ¡Este es el string seguro: tkn_live_xyz!
+
+      // ==========================================
+      // PASO 3: ENVIAR TOKEN AL BACKEND PARA COBRAR
+      // ==========================================
+      // Fíjate lo limpio y seguro que es este payload ahora
+      const checkoutPayload = {
+        orderId: currentOrderId,
+        payment_method: this.selectedMethod(),
+        culqi_token: culqiTokenId, 
+        email: this.formAntifraud.value.email,
+        // Mandamos el antifraude en texto plano porque Node lo necesita para armar el Charge
+        antifraud_details: this.formAntifraud.value 
+      };
+
+      const respPayment = await firstValueFrom(this.checkoutService.checkoutPay(checkoutPayload));
+
+      // ÉXITO
+      this.createdOrderId.set(null);
+      this.cardForm.reset();
+      this.toast.success(respPayment.message || 'Pago procesado con éxito.', 'top-center');
+      this.handleSuccess(respPayment, currentItems);
+
+    } catch (error: any) {
+      this.handleCheckoutError(error, 'Tarjeta');
+    }
+  }
+    /**
+   * PROCESO CON YAPE (3 PASOS)
+   */
+  async processYapePayment() {
+    try {
+      this.isProcessing.set(true);
+      const currentItems = this.cartService.cartItems();
+
+      // ==========================================
+      // PASO 1: CREAR ORDEN EN TU BACKEND
+      // ==========================================
+      let currentOrderId = this.createdOrderId();
+
+      if (!currentOrderId) {
+        const finalOrder = this.checkoutService.getFinalOrderPayload(currentItems);
+        const respOrder = await firstValueFrom(this.checkoutService.CreateOrder(finalOrder));
+        currentOrderId = respOrder.orderId;
+        this.toast.info(respOrder.message || 'Orden creada con éxito.', 'top-center');
+        this.createdOrderId.set(currentOrderId);
+      }
+
+      // ==========================================
+      // PASO 2: OBTENER TOKEN DE YAPE DESDE CULQI
+      // ==========================================
+      const yapePayload = {
+        otp: this.YapeForm.value.secretNumber,
+        number_phone: this.YapeForm.value.phone,
+        amount: this.convertToCents(this.checkoutService.orderTotal()), 
+        email: this.YapeForm.value.email,
+        metadata: { dni: this.YapeForm.value.document_number }
+      };
+
+      const culqiResponse = await fetch("https://secure.culqi.com/v2/tokens/yape", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${environment.culqiPublicKey}` // Llave PÚBLICA
+        },
+        body: JSON.stringify(yapePayload)
+      });
+
+      const culqiData = await culqiResponse.json();
+
+      if (!culqiResponse.ok) {
+        throw new Error(culqiData.user_message || "Código de Yape inválido o expirado.");
+      }
+
+      const culqiTokenId = culqiData.id;
+
+      // ==========================================
+      // PASO 3: ENVIAR TOKEN AL BACKEND PARA COBRAR
+      // ==========================================
+      const checkoutPayload = {
+        orderId: currentOrderId,
+        payment_method: 'yape',
+        culqi_token: culqiTokenId,
+        email: this.YapeForm.value.email,
+        antifraud_details: {
+          document_number: this.YapeForm.value.document_number,
+          type_document: this.YapeForm.value.type_document
+        }
+      };
+
+      const respPayment = await firstValueFrom(this.checkoutService.checkoutPay(checkoutPayload));
+
+      // ÉXITO
+      this.createdOrderId.set(null);
+      this.YapeForm.reset();
+      this.toast.success(respPayment.message || 'Pago procesado con éxito.', 'top-center');
+      this.handleSuccess(respPayment, currentItems);
+
+    } catch (error: any) {
+      this.handleCheckoutError(error, 'Yape');
+    }
   }
 
   private handleSuccess(resp: any, items: any[]) {
@@ -321,23 +354,24 @@ export default class Payment {
     });
   }
 
-  /**
-   * Handles payment errors from Culqi
-   */
-  private handlePaymentError(err: any) {
-    this.isProcessing.set(false);
-    console.error('Payment Error:', err);
 
-    if (err.error?.code === 'card_declined') {
-      this.toast.error(err.error.message, 'top-center');
-    } else {
-      const msg = err.error?.error || err.error?.user_message || 'Error al procesar el pago.';
-      this.toast.error(msg, 'top-center');
-    }
-  }
   // 5. EVENT HANDLERS
   // ==========================================
-
+  /**
+   * Helper unificado para manejar errores
+   */
+  private handleCheckoutError(error: any, method: string) {
+    this.isProcessing.set(false);
+    console.error(`Error en pago con ${method}:`, error);
+    
+    // Si el error viene de tu backend (HttpClient lanza un HttpErrorResponse)
+    const backendMsg = error.error?.message || error.error?.error;
+    
+    // Si el error lo lanzamos nosotros desde el catch del fetch de Culqi (error.message)
+    const finalMsg = backendMsg || error.message || `Error al procesar el pago con ${method}.`;
+    
+    this.toast.error(finalMsg, 'top-center');
+  }
   /**
    * Handles OTP input changes for Yape
    */
@@ -355,27 +389,6 @@ export default class Payment {
     return Math.round(amount * 100);
   }
 
-  /**
-   * Encrypts data for Culqi
-   */
-  encryptData(data: any) {
-    const iv = CryptoJS.lib.WordArray.random(16);
-    const key = CryptoJS.SHA256(this.secretKey());
-
-    const encrypted = CryptoJS.AES.encrypt(JSON.stringify(data), key, {
-      iv: iv,
-      mode: CryptoJS.mode.CBC,
-      padding: CryptoJS.pad.Pkcs7
-    });
-
-    const hmac = CryptoJS.HmacSHA256(encrypted.toString(), key).toString();
-
-    return {
-      encryptedData: encrypted.toString(),
-      iv: iv.toString(CryptoJS.enc.Hex),
-      hmac: hmac
-    };
-  }
 
   // ==========================================
   // 9. SECURITY & GUARDS (Bunker Mode)
