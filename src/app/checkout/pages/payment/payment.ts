@@ -431,43 +431,43 @@ export default class Payment implements OnInit {
     }
   }
 
-  /**
-   * 2. ANTI-CLICK DERECHO (Evitar "Inspeccionar Elemento" básico)
-   */
-  @HostListener('document:contextmenu', ['$event'])
-  onRightClick(event: MouseEvent) {
-    event.preventDefault(); // Bloquea el menú contextual
-  }
+  // /**
+  //  * 2. ANTI-CLICK DERECHO (Evitar "Inspeccionar Elemento" básico)
+  //  */
+  // @HostListener('document:contextmenu', ['$event'])
+  // onRightClick(event: MouseEvent) {
+  //   event.preventDefault(); // Bloquea el menú contextual
+  // }
 
-  /**
-   * 3. ANTI-DEVTOOLS (Bloquear atajos de teclado F12, Ctrl+U, etc.)
-   */
-  @HostListener('document:keydown', ['$event'])
-  onKeydownHandler(event: KeyboardEvent) {
-    // F12 (DevTools)
-    if (event.key === 'F12') {
-      event.preventDefault();
-      return false;
-    }
+  // /**
+  //  * 3. ANTI-DEVTOOLS (Bloquear atajos de teclado F12, Ctrl+U, etc.)
+  //  */
+  // @HostListener('document:keydown', ['$event'])
+  // onKeydownHandler(event: KeyboardEvent) {
+  //   // F12 (DevTools)
+  //   if (event.key === 'F12') {
+  //     event.preventDefault();
+  //     return false;
+  //   }
 
-    // Ctrl+Shift+I (DevTools), Ctrl+Shift+J (Consola), Ctrl+Shift+C (Inspector)
-    if (event.ctrlKey && event.shiftKey && ['I', 'J', 'C'].includes(event.key.toUpperCase())) {
-      event.preventDefault();
-      return false;
-    }
+  //   // Ctrl+Shift+I (DevTools), Ctrl+Shift+J (Consola), Ctrl+Shift+C (Inspector)
+  //   if (event.ctrlKey && event.shiftKey && ['I', 'J', 'C'].includes(event.key.toUpperCase())) {
+  //     event.preventDefault();
+  //     return false;
+  //   }
 
-    // Ctrl+U (Ver código fuente)
-    if (event.ctrlKey && event.key.toUpperCase() === 'U') {
-      event.preventDefault();
-      return false;
-    }
+  //   // Ctrl+U (Ver código fuente)
+  //   if (event.ctrlKey && event.key.toUpperCase() === 'U') {
+  //     event.preventDefault();
+  //     return false;
+  //   }
 
-    // Ctrl+S (Guardar página)
-    if (event.ctrlKey && event.key.toUpperCase() === 'S') {
-      event.preventDefault();
-      return false;
-    }
+  //   // Ctrl+S (Guardar página)
+  //   if (event.ctrlKey && event.key.toUpperCase() === 'S') {
+  //     event.preventDefault();
+  //     return false;
+  //   }
 
-    return true;
-  }
+  //   return true;
+  // }
 }
