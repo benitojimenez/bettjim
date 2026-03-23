@@ -4,7 +4,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { environment } from '../../../../environments/environment';
 import { Breadcrumbs } from '../../../shared/components/breadcrumbs/breadcrumbs';
 import { Auth } from '../../../services/auth';
-
+import confetti from 'canvas-confetti'; // Importar arriba
 
 @Component({
   selector: 'app-thank-you',
@@ -17,6 +17,9 @@ export default class ThankYou {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   public auth = inject(Auth)
+  // Instancia de confeti (Signal)
+  myConfetti = signal<any>(null);
+
   orderData = signal<any>(null);
   orderDetails = signal<any[]>([]);
   isLoading = signal(true);
@@ -64,8 +67,9 @@ export default class ThankYou {
     const total = this.order()?.total || 0;
     return Math.floor(total * 0.10); // 10% del total
   });
+
   ngOnInit() {
-   
+   this.launchConfetti();
     
   }
   // 1. Puntos Ganados
@@ -80,4 +84,52 @@ export default class ThankYou {
 
   // // 3. Simular si es Guest (para mostrar crear cuenta)
   // isGuest = signal(true);
+
+  // 7. MÉTODOS VISUALES Y AUDIO
+
+  launchConfetti() {
+    const fire = this.myConfetti();
+    if (!fire) return;
+
+    const duration = 5000;
+    const end = Date.now() + duration;
+    const colors = ['#FF2E63', '#FFD700', '#FFFFFF', '#5f138bff'];
+
+    const frame = () => {
+      const timeLeft = end - Date.now();
+      if (timeLeft <= 0) return;
+
+      const particleCount = 7; 
+
+      // Cañón Izquierdo
+      fire({
+        particleCount: particleCount,
+        angle: 60,
+        spread: 80,
+        origin: { x: 0, y: 0.7 },
+        colors: colors,
+        zIndex: 100000,
+        startVelocity: 60,
+        scalar: 1.2,
+        drift: 1,
+      });
+
+      // Cañón Derecho
+      fire({
+        particleCount: particleCount,
+        angle: 120,
+        spread: 80,
+        origin: { x: 1, y: 0.7 },
+        colors: colors,
+        zIndex: 100000,
+        startVelocity: 60,
+        scalar: 1.2,
+        drift: -1,
+      });
+
+      requestAnimationFrame(frame);
+    };
+
+    frame();
+  }
 }

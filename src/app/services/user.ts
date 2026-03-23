@@ -96,18 +96,43 @@ export class User {
   searchOrder = signal('');
 
 
-  public filteredOrders = computed(() => {
+ public filteredOrders = computed(() => {
     const all = this.serverOrdersClean();
-    if (this.searchOrder()) return all.filter(o => o.n_order.includes(this.searchOrder()));
-    if (this.orderFilter() === 'all') return all;
-    if (this.orderFilter() === 'active') return all.filter(o => ['Procesando', 'Enviado'].includes(o.status));
-    if (this.orderFilter() === 'completed') return all.filter(o => o.status === 'Completado');
-    if (this.orderFilter() === 'cancelled') return all.filter(o => o.status === 'Cancelado');
+    
+    // Normalizamos el término de búsqueda (minúsculas y sin espacios extra)
+    const searchTerm = this.searchOrder()?.trim().toLowerCase() || '';
+    const currentFilter = this.orderFilter();
 
-    return all;
+    // Hacemos un solo recorrido (.filter) para evaluar todas las condiciones
+    return all.filter(order => {
+      
+      // 1. EVALUACIÓN DE BÚSQUEDA
+      // Si no hay término, pasa automáticamente. Si hay, comparamos en minúsculas.
+      const matchesSearch = searchTerm === '' || 
+                            order.n_order.toLowerCase().includes(searchTerm);
+
+      // 2. EVALUACIÓN DE ESTADO
+      let matchesStatus = true;
+      
+      if (currentFilter === 'active') {
+        // PRO TIP: Agregamos 'pendiente' porque una orden por pagar sigue siendo una orden activa/abierta
+        matchesStatus = ['pendiente', 'procesando', 'enviado'].includes(order.status);
+      } 
+      else if (currentFilter === 'completed') {
+        matchesStatus = order.status === 'completado';
+      } 
+      else if (currentFilter === 'cancelled') {
+        matchesStatus = order.status === 'cancelado';
+      }
+
+      // 3. RESULTADO FINAL
+      // Retorna el elemento solo si cumple con AMBAS condiciones a la vez
+      return matchesSearch && matchesStatus;
+    });
   });
+
   public ordersActiveCount = computed(() => {
-    return this.serverOrdersClean().filter(o => ['Procesando', 'Enviado'].includes(o.status)).length;
+    return this.serverOrdersClean().filter(o => ['procesando', 'enviado'].includes(o.status)).length;
   });
 
 

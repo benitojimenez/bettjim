@@ -77,6 +77,16 @@
           <label for="lastname">Apellidos</label>
         </div>
       </div>
+       <div class="form-row">
+        <div class="form-floating">
+          <input type="text" id="phone" formControlName="phone" placeholder="Numero telefonico" />
+          <label for="name">Telefono</label>
+        </div>
+        <div class="form-floating">
+          <input type="text" id="dni" formControlName="dni" placeholder="Ingresa tu documento de Identidad" />
+          <label for="lastname">Documento de Identidad</label>
+        </div>
+      </div>
 
       <div class="form-floating">
         <input type="text" id="addr" formControlName="address" placeholder="Dirección" />
@@ -105,22 +115,6 @@
         <div class="form-floating">
           <input type="text" id="zip" formControlName="postalCode" placeholder="Postal" />
           <label for="zip">Código Postal</label>
-        </div>
-      </div>
-
-      <div class="form-floating with-icon">
-        <input type="tel" id="phone" formControlName="phone" placeholder="Celular" />
-        <label for="phone">Teléfono (para novedades del pedido)</label>
-
-        <div class="field-icon" title="Usado para coordinar la entrega">
-          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
         </div>
       </div>
     </form>

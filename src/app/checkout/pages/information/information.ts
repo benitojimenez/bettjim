@@ -35,6 +35,7 @@ export default class Information implements OnInit{
     firstName: ['', Validators.required],
     lastName: ['', Validators.required],
     address: ['', Validators.required],
+    dni: ['', Validators.required],
     apartment: [''],
     city: ['', Validators.required],
     department: ['', Validators.required], // Región/Estado
@@ -85,6 +86,7 @@ export default class Information implements OnInit{
         firstName: currentData.shippingAddress.firstName,
         lastName: currentData.shippingAddress.lastName,
         address: currentData.shippingAddress.address,
+        dni: currentData.shippingAddress.dni,
         apartment: currentData.shippingAddress.apartment,
         city: currentData.shippingAddress.city,
         department: currentData.shippingAddress.department,
@@ -109,6 +111,7 @@ export default class Information implements OnInit{
       firstName: val.firstName!,
       lastName: val.lastName!,
       address: val.address!,
+      dni: val.dni!,
       apartment: val.apartment || '', // Opcional
       city: val.city!,
       department: val.department!,

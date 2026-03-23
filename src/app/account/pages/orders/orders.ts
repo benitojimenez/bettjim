@@ -35,11 +35,11 @@ export default class Orders{
 
   getStatusClass(status: string) {
     switch(status) {
-      case 'Pendiente': return 'badge-yellow';
-      case 'Procesando': return 'badge-orange';
-      case 'Enviado': return 'badge-blue';
-      case 'Completado': return 'badge-green';
-      case 'Cancelado': return 'badge-red';
+      case 'pendiente': return 'badge-yellow';
+      case 'procesando': return 'badge-orange';
+      case 'enviado': return 'badge-blue';
+      case 'completado': return 'badge-green';
+      case 'cancelado': return 'badge-red';
       default: return 'badge-gray';
     }
   }

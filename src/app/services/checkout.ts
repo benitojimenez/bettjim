@@ -169,10 +169,15 @@ export class CheckoutService {
   getFinalOrderPayload(cartItems: any[]) {// <--- Nuevo parámetro
     const state = this._state();
 
-    // Validaciones de seguridad antes de enviar
-    if (!state.email || !state.shippingAddress) throw new Error('Falta información de contacto o dirección');
-    if (!state.shippingMethodId) throw new Error('Falta método de envío');
-    if (!state.paymentMethodId) throw new Error('Falta método de pago');
+   // 1. Validaciones de seguridad para la API 1 (Solo Datos y Envío)
+    if (!state.email || !state.shippingAddress) {
+      throw new Error('Falta información de contacto o dirección');
+    }
+    if (!state.shippingMethodId) {
+      throw new Error('Falta método de envío');
+    }
+    // 🔥 ELIMINAMOS LA VALIDACIÓN DEL MÉTODO DE PAGO AQUÍ 🔥
+    // if (!state.paymentMethodId) throw new Error('Falta método de pago');
     // Mapeamos los items del Front al formato que espera tu Backend Node.js
     // El backend espera: { product: "ID", quantity: 1, variety: "ID", inventory: "ID", price: 100 }
     const formattedItems = cartItems.map(item => ({
@@ -230,10 +235,6 @@ export class CheckoutService {
         addressForm: state.shippingAddress,
         shipping_method: state.shippingMethodId
       },
-      billing: {
-        // Si es igual, mandamos la de envío, si no, la específica
-        address: state.billingSameAsShipping ? state.shippingAddress : state.billingAddress
-      },
       payment: {
         currency: 'PEN',
         payment_type:state.paymentMethodId,
@@ -260,7 +261,14 @@ export class CheckoutService {
     }
   }
 
-  checkoutOrder(data: any): Observable<any> {
-    return this._http.post(environment.API_URL + 'checkout', data);
+  CreateOrder(data: any): Observable<any> {
+    return this._http.post(environment.API_URL + 'v1/create_order', data);
   }
+  // Métodos para crear cargo
+  checkoutPay(data: any): Observable<any> {
+    return this._http.post(environment.API_URL+'v1/checkout',data);
+  }
+
+
+
 }

@@ -1,4 +1,4 @@
-import { Component, computed, HostListener, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, HostListener, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
@@ -37,14 +37,16 @@ export default class Payment {
   public auth = inject(Auth);
   public toast = inject(ToastService);
   public userService = inject(User);
-  private ps = inject(Products); // Assuming Products service is used somewhere, though not visible in snippet
   private cartService = inject(Cart);
 
   // ==========================================
-  // 2. STATE SIGNALS & VARIABLES
+  // STATE SIGNALS (Añadir esto al principio de tu clase)
   // ==========================================
+  // Memoria para evitar duplicar órdenes si el pago falla
+  createdOrderId = signal<string | null>(null);
+
   private secretKey = signal(environment.secretKeyEncript);
-  
+
   // UI State
   selectedMethod = signal<'card' | 'yape' | 'plin'>('card');
   billingSameAsShipping = signal(true);
@@ -52,12 +54,13 @@ export default class Payment {
 
   // Checkout Data (Signals from Service)
   selectedMethodId = this.checkoutService.shippingMethodId;
+
   progress = this.checkoutService.shippingProgress;
   methods = this.checkoutService.availableShippingMethods;
 
   // Review Panel Data (Computed Signals)
   reviewContact = this.checkoutService.email;
-  
+
   reviewAddress = computed(() => {
     const addr = this.checkoutService.shippingAddress();
     if (!addr) return '...';
@@ -89,7 +92,7 @@ export default class Payment {
   // ==========================================
   // 3. FORMS CONFIGURATION
   // ==========================================
-  
+
   // Card Payment Form
   cardForm: FormGroup = this.fb.group({
     card_number: ['', [Validators.required, Validators.pattern(/^\d{16}$/)]],
@@ -99,21 +102,21 @@ export default class Payment {
   });
 
   // User/Antifraud Data Form
-  form: FormGroup = this.fb.group({
+  formAntifraud: FormGroup = this.fb.group({
     // Identity Data
     document_type: ['', Validators.required],
     document_number: ['', [Validators.required, Validators.minLength(8)]],
-    
+
     // Personal Data
     email: ['richard@piedpiper.com', [Validators.required, Validators.email]],
     first_name: ['', Validators.required],
     last_name: ['', Validators.required],
-    
+
     // Contact / Antifraud Data
     phone_number: ['', [Validators.required, Validators.pattern(/^[0-9]{9,15}$/)]],
     address: ['', Validators.required],
     address_city: ['Lima', Validators.required],
-    country_code: ['PE', Validators.required] 
+    country_code: ['PE', Validators.required]
   });
 
   // Yape Payment Form
@@ -137,23 +140,11 @@ export default class Payment {
       this.billingSameAsShipping.set(savedState.billingSameAsShipping);
     }
 
-    this.form.get('email')?.patchValue(this.checkoutService.email());
+    this.formAntifraud.get('email')?.patchValue(this.checkoutService.email());
     this.YapeForm.get('email')?.patchValue(this.checkoutService.email());
+
   }
 
-  // ==========================================
-  // 5. EVENT HANDLERS
-  // ==========================================
-  
-  /**
-   * Handles OTP input changes for Yape
-   */
-  OTPChange(e: any) {
-    this.YapeForm.patchValue({
-      secretNumber: e
-    });
-    console.log(this.YapeForm.value);
-  }
 
   // ==========================================
   // 6. MAIN ACTION: SUBMIT ORDER
@@ -173,7 +164,7 @@ export default class Payment {
       // TODO: Implement Card Tokenization Logic here
       // For now, we simulate success in the final step logic
       this.processCardPayment();
-    } 
+    }
     else if (method === 'yape') {
       this.processYapePayment();
     }
@@ -200,86 +191,47 @@ export default class Payment {
     return true;
   }
 
-  // ==========================================
-  // 7. PAYMENT PROCESSING LOGIC
-  // ==========================================
   /**
-   * Specific logic for processing Card payment via Culqi
-   */
+    * Specific logic for processing Card payment via Culqi
+    */
   private processCardPayment() {
-
     const data = {
-      // eliminar espacios en blanco
       card_number: this.cardForm.value.card_number,
       cvv: this.cardForm.value.cvv,
       expiration_month: this.cardForm.value.expiration_month,
       expiration_year: this.cardForm.value.expiration_year,
-      email: this.form.value.email,
-      metadata: {
-        dni: this.form.value.document_number
-      }
+      email: this.formAntifraud.value.email,
+      metadata: { dni: this.formAntifraud.value.document_number },
+      antifraud_details: this.formAntifraud.value
+    };
+
+    const currentItems = this.cartService.cartItems();
+    const finalOrder = this.checkoutService.getFinalOrderPayload(currentItems);
+
+    // Verificamos si ya habíamos creado esta orden en un intento anterior
+    const existingOrderId = this.createdOrderId();
+
+    if (!existingOrderId) {
+      // INTENTO 1: No hay orden previa, llamamos a la API 1 (Crear Orden)
+      this.checkoutService.CreateOrder(finalOrder).subscribe({
+        next: (resp) => {
+          // GUARDAMOS EL ID EN MEMORIA
+          this.createdOrderId.set(resp.orderId);
+
+          // Ahora llamamos a la API 2 (Procesar Pago) con el ID recién creado
+          this.executePaymentAPI(resp.orderId, data, currentItems);
+        },
+        error: (err) => {
+          this.isProcessing.set(false);
+          const msg = err.error?.message || 'Error al registrar la orden.';
+          this.toast.error(msg, 'top-center');
+        }
+      });
+    } else {
+      // REINTENTO: Ya existe la orden en BD, saltamos la API 1 y vamos directo a pagar
+      console.log('Reintentando pago para la orden:', existingOrderId);
+      this.executePaymentAPI(existingOrderId, data, currentItems);
     }
-
-     // 3. Register Order in Backend
-    this.processBackendOrder('card', 'chargeResp.cargo.id');
-    // console.log(data);
-    // Encriptar los datos de la tarjeta
-    // this._culquiService.createToken(this.encryptData(data)).subscribe({
-    //   next: (resp) => {
-    //     // console.log('resp-1', resp);
-
-    //     const Charge = {
-    //       amount: this.convertToCents(this.checkoutService.orderTotal()),
-    //       currency_code: "PEN", // PEN o USD
-    //       email: this.form.value.email,
-    //       source_id: resp.token.id, //Soporta cargos únicos como recurrencia
-    //       description: "Pago de Orden en Bettjim.com",
-    //       antifraud_details: {
-    //         first_name: this.form.value.first_name,
-    //         last_name: this.form.value.last_name,
-    //         address: this.form.value.address,
-    //         address_city: this.form.value.address_city,
-    //         country_code: "PE",
-    //       },
-    //       metadata: {
-    //         dni: this.form.value.document_number,
-    //         id_user: this.auth.getId() || 'User',
-    //       },
-         
-
-    //     }
-
-    //     this._culquiService.createCharge(this.encryptData(Charge)).subscribe({
-    //       next: (chargeResp) => {
-    //         this.cardForm.reset();
-    //         // console.log('Charge Created:', chargeResp);
-    //         this.toast.success(chargeResp.cargo.outcome.merchant_message, 'top-center');
-    //         // this.checkoutService.transaccionID.set(chargeResp.cargo.id);
-            
-    //         // 3. Register Order in Backend
-    //         this.processBackendOrder('card', chargeResp.cargo.id);
-    //       },
-    //       error: (err) => this.handlePaymentError(err)
-          
-    //     });
-
-    //   },
-    //   error: (err) => {
-    //      this.isProcessing.set(false);
-    //     // console.log('errorr', err);
-    //     // Si el error es de la tarjeta, mostrar el mensaje de error
-    //     if (err.error.code === 'card_declined') {
-    //       this.toast.error(err.error.message, 'top-center');
-    //     } else {
-    //       // Si el error es de otro tipo, mostrar el mensaje de error general
-    //       this.toast.error('Error al procesar el pago.', 'top-center');
-    //     }
-    //     // Si el error es de otro tipo, mostrar el mensaje de error general
-    //     this.toast.error(err.error.error, 'top-center');
-
-    //   }
-
-    // });
   }
 
   /**
@@ -291,118 +243,81 @@ export default class Payment {
       number_phone: this.YapeForm.value.phone,
       amount: this.convertToCents(this.checkoutService.orderTotal()),
       email: this.YapeForm.value.email,
-      metadata: {
-        dni: this.YapeForm.value.document_number
-      }
+      metadata: { dni: this.YapeForm.value.document_number }
     };
-    // 3. Register Order in Backend
-    console.log(data);
-    this.processBackendOrder('yape', 'chargeResp.cargo.id');
 
-    // 1. Create Yape Token
-    // this._culquiService.createTokenYape(this.encryptData(data)).subscribe({
-    //   next: (resp) => {
-    //     // console.log('Token Yape Created:', resp);
-        
-    //     // 2. Create Charge
-    //     const Charge = {
-    //       amount: this.convertToCents(this.checkoutService.orderTotal()),
-    //       currency_code: "PEN",
-    //       email: this.checkoutService.email(),
-    //       source_id: resp.token.id,
-    //       description: "Pago de Orden en Bettjim.com",
-    //       antifraud_details: {
-    //         address: this.checkoutService.shippingAddress()?.address,
-    //         address_city: "Lima",
-    //         country_code: "PE",
-    //         first_name: this.auth.getLastName() || 'Cliente Yape',
-    //         last_name: this.auth.getLastName() || 'Cliente Yape',
-    //         phone_number: this.YapeForm.value.phone
-    //       },
-    //       metadata: {
-    //         dni: this.YapeForm.value.document_number,
-    //         id_user: this.auth.getId() || 'User',
-    //       }
-    //     };
+    const currentItems = this.cartService.cartItems();
+    const finalOrder = this.checkoutService.getFinalOrderPayload(currentItems);
 
-    //     this._culquiService.createCharge(this.encryptData(Charge)).subscribe({
-    //       next: (chargeResp) => {
-    //         // console.log('Charge Created:', chargeResp);
-    //         this.YapeForm.reset();
-    //         this.toast.success(chargeResp.cargo.outcome.merchant_message, 'top-center');
-    //         // this.checkoutService.transaccionID.set(chargeResp.cargo.id);
-            
-    //         // 3. Register Order in Backend
-    //         this.processBackendOrder('yape', chargeResp.cargo.id);
-    //       },
-    //       error: (err) => this.handlePaymentError(err)
-    //     });
-    //   },
-    //   error: (err) => this.handlePaymentError(err)
-    // });
-  }
+    const existingOrderId = this.createdOrderId();
 
-  /**
-   * General logic to register the order in your backend after payment success
-   */
-  private processBackendOrder(method: string, transactionId: string) {
-    try {
-      // 1. Save base state
-      this.checkoutService.setPaymentData(
-        method,
-        this.billingSameAsShipping(),
-        undefined
-      );
-
-      // 2. Get Items & Base Payload
-      const currentItems = this.cartService.cartItems();
-      const finalOrder = this.checkoutService.getFinalOrderPayload(currentItems);
-
-      // 3. Inject Payment Details
-      finalOrder.payment.transaction_id = transactionId;
-      finalOrder.payment.payment_status = 'Pagado';
-
-      console.log('🚀 ENVIANDO AL BACKEND:', finalOrder);
-
-      // 4. Send to Backend
-      // this.userService.register_order(finalOrder).subscribe({
-      //   next: (resp) => this.handleSuccess(resp),
-      //   error: (err) => {
-      //     this.isProcessing.set(false);
-      //     const msg = err.error?.message || 'Error al procesar el pedido en el servidor';
-      //     this.toast.error(msg, 'top-center');
-      //     console.error(err);
-      //   },
-      // });
-
-    } catch (error) {
-      console.error('Error procesando el pedido:', error);
-      this.toast.error('Error inesperado en el cliente', 'bottom-center');
-      this.isProcessing.set(false);
+    if (!existingOrderId) {
+      // INTENTO 1: Crear Orden
+      this.checkoutService.CreateOrder(finalOrder).subscribe({
+        next: (resp) => {
+          this.createdOrderId.set(resp.orderId);
+          this.executePaymentAPI(resp.orderId, data, currentItems);
+        },
+        error: (err) => {
+          this.isProcessing.set(false);
+          const msg = err.error?.message || 'Error al registrar la orden.';
+          this.toast.error(msg, 'top-center');
+        }
+      });
+    } else {
+      // REINTENTO: Pago Directo
+      console.log('Reintentando pago Yape para la orden:', existingOrderId);
+      this.executePaymentAPI(existingOrderId, data, currentItems);
     }
   }
 
   // ==========================================
-  // 8. HELPERS & UTILITIES
+  // HELPERS 
   // ==========================================
 
   /**
-   * Handles successful order creation
+   * Extraemos la lógica de la API 2 para no repetir código entre Card y Yape
    */
-  private handleSuccess(resp: any) {
-    this.isProcessing.set(false);
-    this.toast.success(resp.message || 'Orden creada con éxito', 'top-center');
+  private executePaymentAPI(orderId: string, culqiData: any, items: any[]) {
+    const dataBackend = {
+      orderId: orderId,
+      payment_method: this.selectedMethod(),
+      ...this.encryptData(culqiData)
+    };
 
+    this.checkoutService.checkoutPay(dataBackend).subscribe({
+      next: (resp) => {
+        // PAGO EXITOSO
+        this.createdOrderId.set(null); // Limpiamos la memoria
+
+        if (this.selectedMethod() === 'card') this.cardForm.reset();
+        if (this.selectedMethod() === 'yape') this.YapeForm.reset();
+
+        this.toast.success(resp.message || 'Pago registrado con éxito. Estamos procesando tu orden.', 'top-center');
+        this.handleSuccess(resp, items);
+      },
+      error: (err) => {
+        // PAGO RECHAZADO (Ej: Sin fondos, CVV incorrecto)
+        this.isProcessing.set(false);
+        console.error('Payment Error:', err);
+
+        // ¡OJO AQUÍ! No limpiamos createdOrderId. Se queda guardado para que el cliente pueda reintentar.
+        const method = this.selectedMethod() === 'yape' ? 'Yape' : 'Tarjeta';
+        const msg = err.error?.message || `Error al procesar el pago con ${method}.`;
+        this.toast.error(msg, 'top-center');
+      }
+    });
+  }
+
+  private handleSuccess(resp: any, items: any[]) {
+    this.isProcessing.set(false);
     // Cleanup
     this.checkoutService.clearCheckout();
     this.cartService.clearCart();
 
     // Navigate
     this.router.navigate(['/checkout/thank-you', resp.order._id], {
-      state: {
-        order: resp.order,
-        details: resp.detalles || resp.details
-      }
+      state: { order: resp.order, details: items }
     });
   }
 
@@ -412,13 +327,25 @@ export default class Payment {
   private handlePaymentError(err: any) {
     this.isProcessing.set(false);
     console.error('Payment Error:', err);
-    
+
     if (err.error?.code === 'card_declined') {
       this.toast.error(err.error.message, 'top-center');
     } else {
       const msg = err.error?.error || err.error?.user_message || 'Error al procesar el pago.';
       this.toast.error(msg, 'top-center');
     }
+  }
+  // 5. EVENT HANDLERS
+  // ==========================================
+
+  /**
+   * Handles OTP input changes for Yape
+   */
+  OTPChange(e: any) {
+    this.YapeForm.patchValue({
+      secretNumber: e
+    });
+    console.log(this.YapeForm.value);
   }
 
   /**

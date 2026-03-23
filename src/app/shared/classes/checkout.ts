@@ -2,6 +2,7 @@ export interface Address {
   firstName: string;
   lastName: string;
   address: string;
+  dni: string;
   apartment?: string;
   city: string;
   department: string; // Estado/Región

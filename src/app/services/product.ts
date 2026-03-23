@@ -38,7 +38,7 @@ export class Products {
   // 3. INYECTAMOS EL ID DE LA PLATAFORMA
   private platformId = inject(PLATFORM_ID);
 
-  public apiUrl: string = environment.API_URL;
+  // public apiUrl: string = environment.API_URL;
   public Currency = { name: 'PEN', currency: 'S/ ', price: 1 };
   public OpenCart = signal(false);
   // ==========================================================
@@ -54,9 +54,9 @@ export class Products {
     const term = this.searchTerm().trim();
     let urlTarget = '';
     if (term) {
-      urlTarget = `${this.apiUrl}search_product/${encodeURIComponent(term)}`;
+      urlTarget = `${environment.API_URL}search_product/${encodeURIComponent(term)}`;
     } else {
-      urlTarget = `${this.apiUrl}list_products/`;
+      urlTarget = `${environment.API_URL}list_products/`;
     }
     return { url: urlTarget, method: 'GET' };
   }, { defaultValue: { data: [] } });
@@ -78,7 +78,7 @@ export class Products {
 
     // Si hay slug, lanzamos la petición
     return {
-      url: `${this.apiUrl}get_product_slug/${slug}`,
+      url: `${environment.API_URL}get_product_slug/${slug}`,
       method: 'GET'
     };
   }, { defaultValue: { data: {} as Product } });
@@ -102,7 +102,7 @@ export class Products {
     }
 
     return {
-      url: `${this.apiUrl}get_inventory/${id}`,
+      url: `${environment.API_URL}get_inventory/${id}`,
       method: 'GET'
     };
   }, { defaultValue: { data: [] } });

@@ -16,7 +16,7 @@ export interface Order {
   total: number;
 
   // Estado (Usamos un tipo literal para que coincida con tu enum)
-  status: 'Pendiente' | 'Procesando' | 'Enviado' | 'Completado' | 'Cancelado' | 'Reembolsado';
+  status: 'pendiente' | 'procesando' | 'enviado' | 'completado' | 'cancelado' | 'reembolsado';
 
   note?: string;
   email: string;
