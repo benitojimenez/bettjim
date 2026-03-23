@@ -3,7 +3,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { CheckoutState, INITIAL_CHECKOUT_STATE, Address } from '../shared/classes/checkout';
 import { Products } from './product';
 import { Cart } from './cart';
-import { environment } from '../../environments/environment.development';
+import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 // Interfaces locales para métodos de envío
