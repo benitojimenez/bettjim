@@ -1,23 +1,23 @@
-# Usamos Node Alpine (versión ligera igual que tu entorno)
+# Usamos Node Alpine (versión ligera)
 FROM node:22.12.0-alpine
 
+# Establecemos el directorio de trabajo
 WORKDIR /app
 
-# 1. COPIAMOS LOS ARTIFACTOS YA COMPILADOS
-# GitHub Actions ya creó la carpeta 'dist', aquí solo la metemos a la imagen.
-# La estructura quedará: /app/dist/bettjim
-COPY dist/bettjim ./dist/bettjim
-
-# 2. Copiamos package.json para instalar las dependencias del servidor SSR
+# 1. Copiamos package.json primero (Buena práctica de caché de Docker)
 COPY package*.json ./
 
-# 3. Instalamos solo dependencias de producción (ahorra espacio y tiempo)
+# 2. Instalamos solo dependencias de producción
 RUN npm install --omit=dev
 
+# 3. COPIAMOS EL CONTENIDO DIRECTO
+# Al poner ./ estamos volcando 'browser' y 'server' directamente en /app
+COPY dist/bettjim ./
+
 # 4. Configuración de red
-# IMPORTANTE: Asegúrate de que en tu código (server.mjs) el puerto sea 4200 o use process.env.PORT
 ENV PORT=4200
 EXPOSE 4200
 
 # 5. Arrancamos el servidor SSR
-CMD ["node", "dist/bettjim/server/server.mjs"]
+# Como volcamos todo en /app, ahora la ruta es mucho más directa y limpia
+CMD ["node", "server/server.mjs"]
