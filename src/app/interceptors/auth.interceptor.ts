@@ -1,7 +1,7 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformServer } from '@angular/common';
-import { catchError, switchMap, throwError } from 'rxjs';
+import { catchError, EMPTY, switchMap, throwError } from 'rxjs';
 import { Auth } from '../services/auth'; // Asegúrate de que el nombre coincida con tu archivo
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
@@ -12,7 +12,24 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   // 2. SSR CHECK: Si estamos en el servidor, no hacemos nada.
   // El servidor no tiene localStorage ni tokens de usuario.
+ // ==========================================
+  // 🔥 2. SSR CHECK & ESCUDO ANTI-REDIRECCIONES
+  // ==========================================
   if (isPlatformServer(platformId)) {
+    
+    // ⚠️ ATENCIÓN AQUÍ: Pon las palabras clave de las rutas de TU BACKEND 
+    // que devuelven error si no tienen token.
+    const rutasPrivadas = ['/account', '/cart', '/checkout', '/orders', '/payment'];
+    
+    const esRutaPrivada = rutasPrivadas.some(ruta => req.url.includes(ruta));
+
+    if (esRutaPrivada) {
+      console.log(`🛡️ SSR: Petición privada a ${req.url} bloqueada. Previniendo SSRF.`);
+      // Retornamos EMPTY: La petición muere aquí en paz, no sale a internet.
+      return EMPTY; 
+    }
+
+    // Si es pública (ej. /list_products), que pase normal para hacer el SEO
     return next(req);
   }
 
