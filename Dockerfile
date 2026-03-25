@@ -1,23 +1,27 @@
-# Usamos Node Alpine (versión ligera)
+# Usamos Node Alpine
 FROM node:22.12.0-alpine
 
-# Establecemos el directorio de trabajo
+# 1. Establecemos la raíz para instalar dependencias
 WORKDIR /app
 
-# 1. Copiamos package.json primero (Buena práctica de caché de Docker)
+# 2. Copiamos package.json e instalamos
 COPY package*.json ./
-
-# 2. Instalamos solo dependencias de producción
 RUN npm install --omit=dev
 
-# 3. COPIAMOS EL CONTENIDO DIRECTO
-# Al poner ./ estamos volcando 'browser' y 'server' directamente en /app
-COPY dist/bettjim ./
+# 3. Copiamos tu carpeta dist tal como la escupe GitHub Actions
+COPY dist/bettjim ./dist/bettjim
+
+# ==========================================
+# 🔥 EL TRUCO MÁGICO 🔥
+# Cambiamos el directorio de trabajo JUSTO a donde están tus carpetas
+# 'browser' y 'server'. Así Angular cree que está corriendo localmente.
+# Node.js es inteligente y buscará los 'node_modules' una carpeta más arriba (/app)
+# ==========================================
+WORKDIR /app/dist/bettjim
 
 # 4. Configuración de red
 ENV PORT=4200
 EXPOSE 4200
 
-# 5. Arrancamos el servidor SSR
-# Como volcamos todo en /app, ahora la ruta es mucho más directa y limpia
+# 5. Arrancamos el servidor (ahora sin rutas largas, directo al archivo)
 CMD ["node", "server/server.mjs"]

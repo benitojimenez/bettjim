@@ -8,7 +8,7 @@ import express from 'express';
 import { join } from 'node:path';
 import axios from 'axios';
 const browserDistFolder = join(import.meta.dirname, '../browser');
-
+import fs from 'node:fs'; // 🔥 1. IMPORTAMOS File System (NUEVO)
 const app = express();
 const angularApp = new AngularNodeAppEngine();
 import { environment } from './environments/environment';
@@ -24,6 +24,10 @@ import { environment } from './environments/environment';
  * });
  * ```
  */
+// ==========================================
+// 🔥 2. TRUST PROXY PARA NGINX PROXY MANAGER (NUEVO)
+// ==========================================
+app.set('trust proxy', 1);
 // -------------------------------------------------------------------------
 // 🔥 SOLUCIÓN ROBOTS.TXT Y SITEMAP
 // Servir archivos estáticos específicos ANTES de cualquier otra cosa
@@ -142,6 +146,31 @@ app.use(
   }),
 );
 
+// -------------------------------------------------------------------------
+// 🔥 3. EL ESCUDO PRERENDER (NUEVO)
+// Forzamos la entrega rápida de archivos físicos antes del SSR
+// -------------------------------------------------------------------------
+app.use((req, res, next) => {
+  // Ignoramos llamadas a la API o archivos con extensiones (.css, .js, .png, etc)
+  if (req.originalUrl.startsWith('/api') || req.originalUrl.match(/\.[^\/]+$/)) {
+    return next();
+  }
+
+  // Limpiamos la URL (ej: '/checkout?compra=1' -> '/checkout')
+  const urlPath = req.path === '/' ? '' : req.path;
+  
+  // Buscamos la ruta física exacta del index.html generado por Angular
+  const prerenderedPath = join(browserDistFolder, urlPath, 'index.html');
+
+  // Si existe en el disco duro, lo servimos a la velocidad de la luz
+  if (fs.existsSync(prerenderedPath)) {
+    return res.sendFile(prerenderedPath);
+  }
+
+  // Si no existe (es una ruta dinámica no prerenderizada), pasamos al motor SSR
+  next();
+});
+
 /**
  * Handle all other requests by rendering the Angular application.
  */
@@ -153,6 +182,17 @@ app.use((req, res, next) => {
     )
     .catch(next);
 });
+/**
+ * Handle all other requests by rendering the Angular application.
+ */
+// app.use((req, res, next) => {
+//   angularApp
+//     .handle(req)
+//     .then((response) =>
+//       response ? writeResponseToNodeResponse(response, res) : next(),
+//     )
+//     .catch(next);
+// });
 
 /**
  * Start the server if this module is the main entry point, or it is ran via PM2.
@@ -173,22 +213,4 @@ if (isMainModule(import.meta.url) || process.env['pm_id']) {
 //  * Request handler used by the Angular CLI (for dev-server and during build) or Firebase Cloud Functions.
 //  */
 export const reqHandler = createNodeRequestHandler(app);
-/**
- * ===========================
- *  INICIO DEL SERVIDOR
- * ===========================
- */
-// export function startServer() {
-//   const port = process.env['PORT'] || 4000;
-//   app.listen(port, () => {
-//     console.log(`✅ Bettjim SSR escuchando en http://localhost:${port}`);
-//   });
-// }
 
-// const metaUrl = import.meta.url;
-// const isMain = isMainModule(metaUrl);
-// const isPM2 = process.env['PM2'] === 'true';
-
-// if (isMain || isPM2) {
-//   startServer();
-// }
