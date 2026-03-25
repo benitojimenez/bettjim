@@ -28,6 +28,17 @@ import { environment } from './environments/environment';
 // 🔥 2. TRUST PROXY PARA NGINX PROXY MANAGER (NUEVO)
 // ==========================================
 app.set('trust proxy', 1);
+
+// ==========================================
+// 🔥 EL BLINDAJE ANTI-SSRF (LA SOLUCIÓN AL ERROR DE LOS LOGS)
+// Obligamos a Node a decirle a Angular que todo es HTTPS y legítimo
+// ==========================================
+app.use((req, res, next) => {
+  req.headers['x-forwarded-proto'] = 'https';
+  req.headers['x-forwarded-host'] = 'bettjim.com';
+  req.headers.host = 'bettjim.com';
+  next();
+});
 // -------------------------------------------------------------------------
 // 🔥 SOLUCIÓN ROBOTS.TXT Y SITEMAP
 // Servir archivos estáticos específicos ANTES de cualquier otra cosa
@@ -157,17 +168,6 @@ app.use((req, res, next) => {
     )
     .catch(next);
 });
-/**
- * Handle all other requests by rendering the Angular application.
- */
-// app.use((req, res, next) => {
-//   angularApp
-//     .handle(req)
-//     .then((response) =>
-//       response ? writeResponseToNodeResponse(response, res) : next(),
-//     )
-//     .catch(next);
-// });
 
 /**
  * Start the server if this module is the main entry point, or it is ran via PM2.
