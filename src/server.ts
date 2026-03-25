@@ -146,31 +146,6 @@ app.use(
   }),
 );
 
-// -------------------------------------------------------------------------
-// 🔥 3. EL ESCUDO PRERENDER (NUEVO)
-// Forzamos la entrega rápida de archivos físicos antes del SSR
-// -------------------------------------------------------------------------
-app.use((req, res, next) => {
-  // Ignoramos llamadas a la API o archivos con extensiones (.css, .js, .png, etc)
-  if (req.originalUrl.startsWith('/api') || req.originalUrl.match(/\.[^\/]+$/)) {
-    return next();
-  }
-
-  // Limpiamos la URL (ej: '/checkout?compra=1' -> '/checkout')
-  const urlPath = req.path === '/' ? '' : req.path;
-  
-  // Buscamos la ruta física exacta del index.html generado por Angular
-  const prerenderedPath = join(browserDistFolder, urlPath, 'index.html');
-
-  // Si existe en el disco duro, lo servimos a la velocidad de la luz
-  if (fs.existsSync(prerenderedPath)) {
-    return res.sendFile(prerenderedPath);
-  }
-
-  // Si no existe (es una ruta dinámica no prerenderizada), pasamos al motor SSR
-  next();
-});
-
 /**
  * Handle all other requests by rendering the Angular application.
  */
