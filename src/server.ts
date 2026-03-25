@@ -25,14 +25,12 @@ import { environment } from './environments/environment';
  * ```
  */
 // ==========================================
-// 🔥 2. TRUST PROXY PARA NGINX PROXY MANAGER (NUEVO)
+// 🔥 LA SOLUCIÓN DEFINITIVA: Cambiamos '1' por 'true'
+// Esto obliga a Express a confiar en la red interna de Docker (Nginx)
 // ==========================================
-app.set('trust proxy', 1);
+app.set('trust proxy', true);
 
-// ==========================================
-// 🔥 EL BLINDAJE ANTI-SSRF (LA SOLUCIÓN AL ERROR DE LOS LOGS)
-// Obligamos a Node a decirle a Angular que todo es HTTPS y legítimo
-// ==========================================
+// Mantenemos el blindaje para alinear los astros y evitar dudas de Angular
 app.use((req, res, next) => {
   req.headers['x-forwarded-proto'] = 'https';
   req.headers['x-forwarded-host'] = 'bettjim.com';
