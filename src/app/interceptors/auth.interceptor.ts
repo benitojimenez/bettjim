@@ -14,10 +14,34 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   // El servidor no tiene localStorage ni tokens de usuario.
 
+  // if (isPlatformServer(platformId)) {
+
+  //   return next(req);
+
+  // }
+  // ==========================================
+  // 🛡️ EL FIREWALL ABSOLUTO PARA SSR
+  // ==========================================
   if (isPlatformServer(platformId)) {
+    
+    // 1. Si la petición va dirigida a tu API real, la dejamos pasar.
+    // (Asegúrate de que tus servicios frontend llamen a 'https://api.bettjim.com/...')
+    if (req.url.includes('api.bettjim.com')) {
+      
+      // Bloqueo quirúrgico solo para rutas privadas de la API (para evitar el redirect 302)
+      const rutasPrivadasApi = ['/perfil', '/cart', '/checkout', '/mis-ordenes'];
+      const esRutaPrivada = rutasPrivadasApi.some(ruta => req.url.includes(ruta));
+      
+      if (esRutaPrivada) return EMPTY; 
+      
+      return next(req); // API Pública (Productos): Pasa sin problemas
+    }
 
-    return next(req);
-
+    // 2. 🔥 LA MAGIA: Si Angular intenta pedir archivos locales, la misma página actual,
+    // o cualquier otra cosa que no sea la API, lo DESTRUIMOS en silencio.
+    // Esto erradica por completo el error de SSRF que tienes en los logs.
+    console.log(`🚫 Firewall SSR: Bloqueando petición innecesaria a -> ${req.url}`);
+    return EMPTY; 
   }
 
   // 3. OBTENER TOKEN (Desde la Signal)
