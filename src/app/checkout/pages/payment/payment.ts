@@ -46,7 +46,6 @@ export default class Payment implements OnInit {
   // Memoria para evitar duplicar órdenes si el pago falla
   createdOrderId = signal<string | null>(null);
 
-  private secretKey = signal(environment.secretKeyEncript);
 
   // UI State
   selectedMethod = signal<'card' | 'yape' | 'plin'>('card');
