@@ -12,10 +12,10 @@ const platformId = inject(PLATFORM_ID); // 🔥 Inyectamos el detector de plataf
   // 🛡️ MODO SERVIDOR (SSR)
   // ==========================================
   if (!isPlatformBrowser(platformId)) {
-    // Si estamos en Node.js, simplemente retornamos 'false'.
-    // No hacemos redirecciones (evita el error SSRF).
-    // El servidor enviará el cascarón vacío y no gastará recursos.
-    return false;
+    // 🔥 EL CAMBIO ESTÁ AQUÍ: Devolvemos TRUE.
+    // Dejamos que el servidor dibuje la página para que el Router no se bloquee.
+    // (Como las peticiones privadas ya están bloqueadas por tu Interceptor con 'EMPTY', no hay peligro).
+    return true; 
   }
 
   // ==========================================
