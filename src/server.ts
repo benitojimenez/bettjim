@@ -10,7 +10,9 @@ import axios from 'axios';
 const browserDistFolder = join(import.meta.dirname, '../browser');
 import fs from 'node:fs'; // 🔥 1. IMPORTAMOS File System (NUEVO)
 const app = express();
-const angularApp = new AngularNodeAppEngine();
+const angularApp = new AngularNodeAppEngine({
+  allowedHosts: ['bettjim.com', 'www.bettjim.com', 'api.bettjim.com', 'localhost']
+});
 import { environment } from './environments/environment';
 
 /**
@@ -24,6 +26,11 @@ import { environment } from './environments/environment';
  * });
  * ```
  */
+// ==========================================
+// 🔥 LA SOLUCIÓN DEFINITIVA: LISTA BLANCA DE DOMINIOS
+// Le decimos a Angular que bettjim.com es un dominio seguro y propio.
+// ==========================================
+
 // ==========================================
 // 🔥 LA SOLUCIÓN DEFINITIVA: Cambiamos '1' por 'true'
 // Esto obliga a Express a confiar en la red interna de Docker (Nginx)
