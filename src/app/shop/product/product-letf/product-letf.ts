@@ -128,6 +128,8 @@ export default class ProductLetf implements OnInit, OnDestroy {
     effect(() => {
       const product = this.ps.cleanProductSlug();
       const inventories = this.ps.cleanInvetoryProduct();
+      console.log('Producto cargado en efecto:', product);
+      console.log('Inventarios cargados en efecto:', inventories);
       if (product && product.images?.length > 0) {
         // Seteamos la primera imagen automáticamente
         this.activeImage.set(product.images[0].src);
@@ -369,7 +371,7 @@ export default class ProductLetf implements OnInit, OnDestroy {
   Size(e: any, i: number) {
     this.indexSize.set(i);
     const filteredInventory = this.Inventory().filter((item: any) => {
-      return item.variant.color === this.color() && item.variant.size === e;
+      return item.color === this.color() && item.size === e;
     });
 
     if (filteredInventory.length > 0) {
@@ -378,7 +380,7 @@ export default class ProductLetf implements OnInit, OnDestroy {
 
       this.productStock.set(filteredInventory[0].stock);
       this.stockLeft.set(filteredInventory[0].stock)
-      this.size.set(filteredInventory[0].variant.size);
+      this.size.set(filteredInventory[0].size);
       this.inventory_id.set(filteredInventory[0]._id);
       // console.log(this.size());
     } else {

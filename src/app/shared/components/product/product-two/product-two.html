@@ -9,7 +9,9 @@
     />
 
     <div class="tags-wrapper">
-      @if(product().discount) {<span class="p-tag new">Nuevo</span> } @if(isDiscountActive()) {
+      @if(product().new) {
+        <span class="p-tag new">Nuevo</span> } 
+      @if(isDiscountActive()) {
       <span class="p-tag">% {{ product().discount }} </span> }
     </div>
   </div>
@@ -19,7 +21,7 @@
 
     <div class="p-rating">
       <span class="stars">★★★★★</span>
-      <span class="count">({{ product().t_reviews }})</span>
+      <!-- <span class="count">({{ product().t_reviews }})</span> -->
     </div>
 
     <div class="p-price-row">
@@ -72,8 +74,10 @@
       <!-- @if(product().shipping === 'free') {
       <span class="shipping-tag">Envío Gratis</span>
       } -->
-      <span class="shipping-tag">Envío Gratis</span>
+      <!-- <span class="shipping-tag">Envío Gratis</span> -->
+      @if(product().sale) {
       <span class="hot-tag">🔥 Hot</span>
+      }
     </div>
   </div>
 </div>
