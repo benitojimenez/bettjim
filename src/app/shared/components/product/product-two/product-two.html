@@ -1,6 +1,13 @@
 <div class="product-card reveal" #animateItem>
+  
   <div class="p-image" [routerLink]="['/product', product().slug]">
-    <button class="wishlist-btn">♡</button>
+    
+    <button class="wishlist-btn" aria-label="Agregar a lista de deseos">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+      </svg>
+    </button>
+
     <img
       [src]="url_img + ImageSrc()"
       [alt]="product().title + ' BettJim.com'"
@@ -10,74 +17,75 @@
 
     <div class="tags-wrapper">
       @if(product().new) {
-        <span class="p-tag new">Nuevo</span> } 
+        <span class="p-tag new">Nuevo</span> 
+      } 
       @if(isDiscountActive()) {
-      <span class="p-tag">% {{ product().discount }} </span> }
+        <span class="p-tag discount">-{{ product().discount }}%</span> 
+      }
     </div>
   </div>
 
-  <div class="p-details" [title]="[product().summary]">
+  <div class="p-details" [title]="product().summary">
     <h4 class="p-title" [routerLink]="['/product', product().slug]">{{ product().title }}</h4>
 
     <div class="p-rating">
-      <span class="stars">★★★★★</span>
-      <!-- <span class="count">({{ product().t_reviews }})</span> -->
-    </div>
+      <div class="stars-svg">
+        @for (i of [1,2,3,4,5]; track $index) {
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+          </svg>
+        }
+      </div>
+      </div>
 
     <div class="p-price-row">
       <div class="price-box">
-        <span class="current">{{
-          product().price | appDiscount : product() | currency : ps.Currency.currency
-        }}</span>
+        <span class="current">{{ product().price | appDiscount : product() | currency : ps.Currency.currency }}</span>
         @if (isDiscountActive()) {
-        <span class="old">{{ product().price | currency : ps.Currency.currency }}</span>
-
+          <span class="old">{{ product().price | currency : ps.Currency.currency }}</span>
         }
       </div>
-      @if (product().type_inventory ===1) {
-      <button
-        class="btn-add-cart"
-         [title]="['Añadir al Carrito ', product().title]"
-        (click)="cartService.addToCart(product())"
-        [disabled]="ps.productsResource.isLoading()"
-      >
-        <span class="icon">
-          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-            ></path>
-          </svg>
-        </span>
-      </button>
-      }@else {
-      <button
-        [title]="['Ver mas de ', product().title]"
-        class="btn-add-cart"
-        [routerLink]="['/product', product().slug]"
-      >
-        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M12 4v16m8-8H4"
-          />
-        </svg>
-      </button>
+      
+      @if (product().type_inventory === 1) {
+        <button
+          class="btn-add-cart"
+          [title]="'Añadir al Carrito ' + product().title"
+          aria-label="Añadir al Carrito"
+          (click)="cartService.addToCart(product())"
+          [disabled]="ps.productsResource.isLoading()"
+        >
+          <span class="icon flex-center">
+            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+            </svg>
+          </span>
+        </button>
+      } @else {
+        <button
+          class="btn-add-cart outline"
+          [title]="'Ver más de ' + product().title"
+          aria-label="Ver detalles"
+          [routerLink]="['/product', product().slug]"
+        >
+          <span class="icon flex-center">
+            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+          </span>
+        </button>
       }
     </div>
 
     <div class="p-badges">
-      <!-- @if(product().shipping === 'free') {
-      <span class="shipping-tag">Envío Gratis</span>
-      } -->
-      <!-- <span class="shipping-tag">Envío Gratis</span> -->
       @if(product().sale) {
-      <span class="hot-tag">🔥 Hot</span>
+        <span class="hot-tag">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path>
+          </svg>
+          Hot
+        </span>
       }
     </div>
+    
   </div>
 </div>

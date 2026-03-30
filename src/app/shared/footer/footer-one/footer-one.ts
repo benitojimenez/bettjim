@@ -10,29 +10,41 @@ import { RouterLink } from '@angular/router';
 })
 export class FooterOne {
 
-  showScrollBtn = false;
+ showScrollBtn = false;
   dateYear: number = new Date().getFullYear();
+  
+  // Variable para controlar si los acordeones nacen abiertos o cerrados
+  // Por defecto lo dejamos en true para que el SEO del servidor lea los enlaces
+  isDesktop: boolean = true; 
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
-  // Escuchar el scroll de la ventana
+  ngOnInit() {
+    // Solo revisamos el tamaño si estamos en el navegador
+    this.checkScreenSize();
+  }
+
+  // --- ESCUCHAS DE EVENTOS (SCROLL Y RESIZE) ---
+
   @HostListener('window:scroll', [])
   onWindowScroll() {
-    // Verificamos SSR para que no rompa el servidor
     if (isPlatformBrowser(this.platformId)) {
       const scrollPosition = window.scrollY || this.document.documentElement.scrollTop || this.document.body.scrollTop || 0;
       
-      // Mostrar si bajamos más de 400px
-      if (scrollPosition > 400) {
-        this.showScrollBtn = true;
-      } else {
-        this.showScrollBtn = false;
-      }
+      // Mostrar si bajamos más de 400px (Lógica simplificada)
+      this.showScrollBtn = scrollPosition > 400;
     }
   }
+
+  @HostListener('window:resize')
+  onWindowResize() {
+    this.checkScreenSize();
+  }
+
+  // --- MÉTODOS DE ACCIÓN ---
 
   scrollToTop() {
     if (isPlatformBrowser(this.platformId)) {
@@ -40,6 +52,14 @@ export class FooterOne {
         top: 0,
         behavior: 'smooth' // Subida suave
       });
+    }
+  }
+
+  private checkScreenSize() {
+    // ¡AQUÍ ESTÁ LA MAGIA SSR!
+    // Protegemos el uso de 'window.innerWidth' para que el servidor Node.js no colapse
+    if (isPlatformBrowser(this.platformId)) {
+      this.isDesktop = window.innerWidth > 991;
     }
   }
 

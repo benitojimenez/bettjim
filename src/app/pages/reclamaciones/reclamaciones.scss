@@ -246,7 +246,7 @@ $input-bg: #ffffff; // Fondo de inputs (Blanco puro)
     .header { margin-bottom: 10px; color: $text-main; font-size: 1.1rem; }
     p { margin: 0; font-size: 0.85rem; color: $text-muted; line-height: 1.5; }
 
-    &:hover { border-color: darken($border-color, 10%); }
+    &:hover { border-color: $border-color }
 
     &.selected {
       border-color: $primary;
@@ -336,7 +336,7 @@ $input-bg: #ffffff; // Fondo de inputs (Blanco puro)
   .document-wrapper { border: none; box-shadow: none; border-radius: 0; }
   
   .doc-header { flex-direction: column; gap: 20px; padding: 20px; }
-  .meta-data { width: 100%; align-items: flex-start; flexDirection: row; justify-content: space-between; }
+  .meta-data { width: 100%; align-items: flex-start; flex-direction: row; justify-content: space-between; }
   
   // Colapsar Grids a 1 columna
   .grid-2, .type-selector, .radio-cards, .doc-group { grid-template-columns: 1fr; }
@@ -411,7 +411,7 @@ $input-bg: #ffffff; // Fondo de inputs (Blanco puro)
   margin: 0 auto 24px;
   color: $primary;
   
-  svg {
+  .svg {
     width: 40px; height: 40px;
     stroke-dasharray: 100;
     stroke-dashoffset: 100;
@@ -466,7 +466,7 @@ h2 { margin: 0 0 8px; color: $text-main; font-size: 1.8rem; letter-spacing: -0.5
   transition: 0.2s;
   
   &:hover {
-    background: darken($primary, 5%);
+    background: $primary;
     transform: translateY(-2px);
     box-shadow: 0 10px 20px rgba($primary, 0.3);
   }

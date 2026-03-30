@@ -6,17 +6,34 @@
       <p class="subtitle">Ingresa tu número de orden para ver el estado en tiempo real.</p>
       
       <form [formGroup]="trackForm" (ngSubmit)="searchOrder()" class="search-box">
+        
         <div class="input-group">
-          <span class="icon">#</span>
+          <span class="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+              <line x1="12" y1="22.08" x2="12" y2="12"></line>
+            </svg>
+          </span>
           <input type="text" formControlName="orderId" placeholder="N° Orden (ej. BJM-1234)">
         </div>
+
         <div class="input-group">
-          <span class="icon">@</span>
+          <span class="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+          </span>
           <input type="email" formControlName="email" placeholder="Correo electrónico">
         </div>
+
         <button type="submit" [disabled]="trackForm.invalid || isLoading()">
-          @if(isLoading()) { <span class="loader"></span> }
-          @else { RASTREAR }
+          @if(isLoading()) { 
+            <span class="loader"></span> 
+          } @else { 
+            RASTREAR 
+          }
         </button>
       </form>
     </div>
@@ -26,6 +43,7 @@
     <div class="results-container fade-in-up">
       
       <div class="status-card">
+        
         <div class="card-header">
           <div class="shipment-info">
             <span class="label">Orden {{ data.id }}</span>
@@ -35,7 +53,12 @@
             </p>
           </div>
           <div class="carrier-logo">
-            <img src="assets/icons/delivery-truck.svg" alt="Courier">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="1" y="3" width="15" height="13"></rect>
+              <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+              <circle cx="5.5" cy="18.5" r="2.5"></circle>
+              <circle cx="18.5" cy="18.5" r="2.5"></circle>
+            </svg>
           </div>
         </div>
 
@@ -46,22 +69,38 @@
           
           <div class="milestones">
             <div class="milestone completed">
-              <div class="dot">✓</div>
+              <div class="dot">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </div>
               <span>Confirmado</span>
             </div>
             
             <div class="milestone" [class.completed]="data.step >= 2" [class.active]="data.step === 2">
-              <div class="dot">{{ data.step > 2 ? '✓' : '📦' }}</div>
+              <div class="dot">
+                @if (data.step > 2) {
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                } @else {
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+                }
+              </div>
               <span>Preparado</span>
             </div>
 
             <div class="milestone" [class.completed]="data.step >= 3" [class.active]="data.step === 3">
-              <div class="dot">{{ data.step > 3 ? '✓' : '🚚' }}</div>
+              <div class="dot">
+                @if (data.step > 3) {
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                } @else {
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon></svg>
+                }
+              </div>
               <span>En Camino</span>
             </div>
 
             <div class="milestone" [class.completed]="data.step >= 4" [class.active]="data.step === 4">
-              <div class="dot">🏠</div>
+              <div class="dot">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+              </div>
               <span>Entregado</span>
             </div>
           </div>
@@ -69,8 +108,12 @@
 
         @if (data.step === 3) {
           <div class="reassurance-box">
-            <span class="icon">✨</span>
-            <p>Tu paquete está en ruta con nuestro repartidor <strong>Carlos</strong>. ¡Llegará pronto!</p>
+            <span class="icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+              </svg>
+            </span>
+            <p>Tu paquete está en ruta con nuestro repartidor asignado. ¡Llegará pronto!</p>
           </div>
         }
       </div>
@@ -114,8 +157,13 @@
           </div>
           
           <div class="help-section">
-            <p>¿Tienes algún problema?</p>
-            <button class="btn-outline">Contactar Soporte</button>
+            <p>¿Tienes algún problema con tu orden?</p>
+            <button class="btn-outline">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              </svg>
+              Contactar Soporte
+            </button>
           </div>
         </div>
 

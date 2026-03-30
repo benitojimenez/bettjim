@@ -6,7 +6,7 @@
 /* ========================================= */
 /* 2. ROOT VARIABLES (DESIGN TOKENS)         */
 /* ========================================= */
-:root {
+:root { 
   /* --- BRANDING & COLORES --- */
   --primary:        #FF2E63;  /* Neon Red (Acción Principal) */
   --primary-hover:  #E01A4F;  /* Hover */
@@ -14,6 +14,15 @@
   
   --secondary:      #6366f1;  /* Indigo (Nebula Context) */
   --accent:         #6366f1;  /* Definido para links y detalles */
+  --border-color:   #ced3db;  /* Gris claro para bordes y separadores */
+  //colores adicionales para futuras expansiones:
+  --green :         #22c55e;  /* Verde para éxito */
+  --blue:           #3b82f6;  /* Azul para información */
+  --yellow:         #f59e0b;  /* Amarillo para advertencias */
+  --red:            #ef4444;  /* Rojo para errores */
+  --white:          #ffffff;  /* Blanco puro */
+  --black:          #000000;  /* Negro puro */
+
 
   /* --- SEMÁNTICA --- */
   --success:        #10b981;  /* Emerald */

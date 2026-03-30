@@ -1,114 +1,318 @@
-/* --- VARS --- */
-$primary-color: #FF2E63;
+/* --- VARIABLES --- */
+$primary: #FF2E63;
+$primary-light: rgba(255, 46, 99, 0.1);
 $bg-page: #F9FAFB;
+$bg-surface: #ffffff;
+$border-color: #E5E7EB;
 $text-main: #1F2937;
 $text-muted: #6B7280;
-$radius: 16px;
+$radius: 12px;
 
+/* Aseguramos que los paddings no rompan los anchos */
+.legal-page * {
+  box-sizing: border-box;
+}
+
+/* --- CONTENEDOR PRINCIPAL --- */
 .legal-page {
-  background: $bg-page;
+  background-color: $bg-page;
   min-height: 100vh;
-  font-family: 'Inter', sans-serif;
   color: $text-main;
+  font-family: 'Inter', system-ui, sans-serif;
+  padding-bottom: 4rem;
+  width: 100%;
 }
 
-/* --- HEADER --- */
+/* --- CABECERA --- */
 .legal-header {
-  background: white;
-  padding: 60px 20px 40px;
+  background: $bg-surface;
+  padding: 4rem 1.5rem 3rem;
   text-align: center;
-  border-bottom: 1px solid #E5E7EB;
+  border-bottom: 1px solid $border-color;
+  width: 100%;
 
-  h1 { font-size: 2.5rem; margin: 0 0 10px; font-weight: 800; letter-spacing: -1px; }
-  p { color: $text-muted; margin-bottom: 30px; }
-
-  .search-bar {
-    max-width: 500px; margin: 0 auto; position: relative;
-    input {
-      width: 100%; padding: 15px 20px 15px 45px;
-      border: 1px solid #E5E7EB; border-radius: 50px;
-      background: #F3F4F6; font-size: 1rem; outline: none; transition: 0.3s;
-      &:focus { background: white; border-color: $primary-color; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
-    }
-    .icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); opacity: 0.5; }
+  @media (max-width: 768px) {
+    padding: 2.5rem 1rem 1.5rem;
   }
-}
 
-/* --- LAYOUT GRID --- */
-.legal-container {
-  max-width: 1000px; margin: 0 auto; padding: 40px 20px;
-  display: grid; grid-template-columns: 250px 1fr; gap: 50px;
-  
-  @media(max-width: 900px) { grid-template-columns: 1fr; gap: 30px; }
-}
+  .header-content {
+    max-width: 800px;
+    margin: 0 auto;
+    width: 100%;
 
-/* --- SIDEBAR STICKY --- */
-.sidebar {
-  position: sticky; top: 100px; height: fit-content;
-  
-  nav {
-    display: flex; flex-direction: column; gap: 5px;
-    
-    button {
-      background: none; border: none; text-align: left; padding: 12px 15px;
-      font-size: 0.95rem; color: $text-muted; cursor: pointer; border-radius: 8px; transition: 0.2s; font-weight: 500;
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin: 0 0 0.5rem;
+      letter-spacing: -0.5px;
+
+      @media (max-width: 768px) { 
+        font-size: 1.6rem; 
+      }
+    }
+
+    p {
+      color: $text-muted;
+      margin: 0 0 2rem;
+      font-size: 1rem;
       
-      &:hover { background: #F3F4F6; color: $text-main; }
-      &.active { 
-        background: white; color: $primary-color; font-weight: 700; 
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
-        border-left: 3px solid $primary-color; /* Acento visual */
+      @media (max-width: 768px) { 
+        font-size: 0.9rem; 
+        margin-bottom: 1.5rem; 
       }
     }
   }
 
-  /* Móvil: Scroll horizontal arriba */
-  @media(max-width: 900px) {
-    position: static; margin-bottom: 20px;
-    nav { 
-      flex-direction: row; overflow-x: auto; padding-bottom: 10px; 
-      button { white-space: nowrap; background: white; border: 1px solid #EEE; &.active { border-color: $primary-color; } }
+  .search-bar {
+    max-width: 500px;
+    margin: 0 auto;
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+
+    .search-icon {
+      position: absolute;
+      left: 1.2rem;
+      color: $text-muted;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      svg {
+        width: 18px;
+        height: 18px;
+      }
+    }
+
+    input {
+      width: 100%;
+      padding: 1rem 1rem 1rem 3rem;
+      border: 1px solid $border-color;
+      border-radius: 99px;
+      background: $bg-page;
+      font-size: 0.95rem;
+      color: $text-main;
+      outline: none;
+      transition: all 0.3s ease;
+
+      &::placeholder { color: #9ca3af; }
+
+      &:focus {
+        background: $bg-surface;
+        border-color: $primary;
+        box-shadow: 0 0 0 3px $primary-light;
+      }
     }
   }
 }
 
-/* --- CONTENT AREA --- */
+/* --- GRID PRINCIPAL --- */
+.legal-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+  display: grid;
+  grid-template-columns: 260px 1fr; 
+  gap: 3rem;
+  width: 100%;
+
+  @media (max-width: 992px) {
+    /* minmax(0, 1fr) evita que el grid se desborde en móviles */
+    grid-template-columns: minmax(0, 1fr); 
+    gap: 1.5rem;
+    padding: 2rem 1.5rem;
+  }
+  
+  @media (max-width: 576px) {
+    padding: 1.5rem 1rem;
+  }
+}
+
+/* --- SIDEBAR Y MENÚ DESLIZABLE (STICKY) --- */
+.sidebar {
+  position: sticky;
+  top: 5rem;
+  height: max-content;
+  width: 100%; // En desktop ocupa el 100% de su columna
+  z-index: 100;
+
+  @media (max-width: 992px) {
+    top: 0; 
+    background: rgba(249, 250, 251, 0.90); 
+    backdrop-filter: blur(10px); 
+    border-bottom: 1px solid $border-color;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03); 
+    
+    // ¡LA CLAVE AQUÍ! "auto" permite que los márgenes negativos funcionen en ambos lados
+    width: auto; 
+    margin: -2rem -1.5rem 1.5rem -1.5rem; 
+    padding: 1rem 1.5rem;
+  }
+
+  @media (max-width: 576px) {
+    margin: -1.5rem -1rem 1.5rem -1rem; 
+    padding: 1rem;
+  }
+
+  nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+
+    @media (max-width: 992px) {
+      flex-direction: row;
+      overflow-x: auto;
+      padding-bottom: 0.2rem;
+      -webkit-overflow-scrolling: touch;
+      flex-wrap: nowrap; 
+      
+      scrollbar-width: none;
+      &::-webkit-scrollbar { display: none; }
+    }
+
+    button {
+      background: transparent;
+      border: none;
+      text-align: left;
+      padding: 0.8rem 1rem;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: $text-muted;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      
+      @media (max-width: 992px) {
+        flex-shrink: 0; 
+        white-space: nowrap; 
+        border: 1px solid $border-color;
+        background: $bg-surface;
+      }
+
+      @media (min-width: 993px) {
+        border-left: 3px solid transparent; 
+        border-radius: 0 8px 8px 0;
+      }
+
+      &:hover {
+        background: $border-color;
+        color: $text-main;
+      }
+
+      &.active {
+        background: $bg-surface;
+        color: $primary;
+        font-weight: 700;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+
+        @media (min-width: 993px) {
+          border-left-color: $primary; 
+        }
+        @media (max-width: 992px) {
+          border-color: $primary; 
+          background: $primary-light;
+        }
+      }
+    }
+  }
+}
+
+/* --- ÁREA DE CONTENIDO (TARJETAS) --- */
 .content-area {
-  display: flex; flex-direction: column; gap: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: 100%;
 }
 
 .term-card {
-  background: white; border-radius: $radius; padding: 30px;
+  background: $bg-surface;
+  border-radius: $radius;
+  padding: 2.5rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-  border: 1px solid transparent; transition: 0.3s;
-  position: relative; overflow: hidden;
-  scroll-margin-top: 100px; /* Para que el sticky header no tape el título al hacer scroll */
+  border: 1px solid $border-color;
+  scroll-margin-top: 100px; 
+  width: 100%; 
+  word-wrap: break-word; 
 
-  &:hover { border-color: rgba($primary-color, 0.2); transform: translateY(-2px); }
+  @media (max-width: 576px) {
+    padding: 1.5rem;
+  }
 
   .card-icon {
-    font-size: 2rem; margin-bottom: 15px; background: #FFF0F3; width: 50px; height: 50px;
-    display: flex; align-items: center; justify-content: center; border-radius: 12px;
+    width: 48px;
+    height: 48px;
+    background: $primary-light;
+    color: $primary;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+
+    svg {
+      width: 24px;
+      height: 24px;
+    }
   }
 
-  h2 { font-size: 1.5rem; margin: 0 0 15px; color: $text-main; }
-  
-  p, ul li { 
-    color: #4B5563; line-height: 1.7; font-size: 1rem; margin-bottom: 15px; 
+  h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 0 0 1rem;
+    color: $text-main;
   }
 
-  ul { padding-left: 20px; li { margin-bottom: 8px; } }
+  p {
+    color: $text-muted;
+    line-height: 1.6;
+    margin: 0 0 1rem;
+    font-size: 0.95rem;
+  }
 
-  /* CAJAS DE ÉNFASIS */
+  ul {
+    padding-left: 1.5rem;
+    margin: 0 0 1rem;
+    color: $text-muted;
+    
+    li {
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      
+      strong { color: $text-main; }
+    }
+  }
+
   .highlight-box {
-    background: #EFF6FF; border-left: 4px solid #3B82F6; color: #1E40AF;
-    padding: 15px; border-radius: 6px; font-size: 0.95rem; line-height: 1.5;
+    background: #EFF6FF; 
+    border-left: 4px solid #3B82F6; 
+    color: #1E40AF; 
+    padding: 1rem 1.2rem;
+    border-radius: 0 8px 8px 0;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-top: 1.5rem;
+
+    strong { color: #1E3A8A; }
   }
 
   .payment-icons {
-    display: flex; gap: 10px; flex-wrap: wrap;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+
     span {
-      background: #F3F4F6; padding: 5px 12px; border-radius: 4px; font-weight: 600; font-size: 0.8rem; color: #374151;
+      background: $bg-page;
+      border: 1px solid $border-color;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      color: $text-main;
     }
   }
 }

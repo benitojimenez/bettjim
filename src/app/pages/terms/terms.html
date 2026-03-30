@@ -1,25 +1,34 @@
 <div class="legal-page">
-
   <div class="legal-header">
     <div class="header-content">
       <h1>Términos y Condiciones</h1>
       <p>Última actualización: <strong>12 de Diciembre, 2025</strong></p>
-      
+
       <div class="search-bar">
-        <span class="icon">🔍</span>
-        <input type="text" placeholder="Buscar un tema (ej. devoluciones, pagos)...">
+        <span class="search-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </span>
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          placeholder="Buscar un tema (ej. devoluciones, pagos)..."
+        />
       </div>
     </div>
   </div>
 
   <div class="legal-container">
-    
     <aside class="sidebar">
       <nav>
         @for (item of sections; track $index) {
-          <button 
-            [class.active]="activeSection() === item.id"
-            (click)="scrollTo(item.id)">
+          <button
+            [hidden]="!isVisible(item.id)"
+            [class.active]="activeSectionId === item.id"
+            (click)="scrollTo(item.id)"
+          >
             {{ item.title }}
           </button>
         }
@@ -27,18 +36,37 @@
     </aside>
 
     <main class="content-area">
-      
-      <section id="intro" class="term-card">
-        <div class="card-icon">👋</div>
+      <section id="intro" class="term-card" [hidden]="!isVisible('intro')">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+        </div>
         <h2>1. Introducción</h2>
-        <p>Bienvenido a <strong>Bettjim Collection</strong>. Al acceder a nuestro sitio web y realizar compras, aceptas estar vinculado por estos términos. Queremos asegurarnos de que tu experiencia sea segura y transparente.</p>
+        <p>
+          Bienvenido a <strong>Bettjim.com</strong>. Al acceder a nuestro sitio web y
+          realizar compras, aceptas estar vinculado por estos términos. Queremos asegurarnos de que
+          tu experiencia sea segura y transparente.
+        </p>
         <div class="highlight-box">
-          <strong>Nota importante:</strong> Nos reservamos el derecho de modificar estos términos en cualquier momento. Te notificaremos sobre cambios significativos.
+          <strong>Nota importante:</strong> Nos reservamos el derecho de modificar estos términos en
+          cualquier momento. Te notificaremos sobre cambios significativos.
         </div>
       </section>
 
-      <section id="shipping" class="term-card">
-        <div class="card-icon">🚚</div>
+      <section id="shipping" class="term-card" [hidden]="!isVisible('shipping')">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="3" width="15" height="13"></rect>
+            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+            <circle cx="5.5" cy="18.5" r="2.5"></circle>
+            <circle cx="18.5" cy="18.5" r="2.5"></circle>
+          </svg>
+        </div>
         <h2>2. Envíos y Entregas</h2>
         <p>Realizamos envíos a todo el Perú. Los tiempos de entrega estimados son:</p>
         <ul>
@@ -48,9 +76,30 @@
         <p>El costo del envío se calcula en el checkout dependiendo de tu ubicación.</p>
       </section>
 
-      <section id="payments" class="term-card">
-        <div class="card-icon">💳</div>
-        <h2>3. Métodos de Pago</h2>
+      <section id="pricing" class="term-card" [hidden]="!isVisible('pricing')">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <circle cx="10" cy="13" r="1"></circle>
+            <circle cx="10" cy="17" r="1"></circle>
+          </svg>
+        </div>
+        <h2>3. Precios y Facturación</h2>
+        <p>Todos los precios mostrados en nuestra tienda están expresados en Soles (S/) e incluyen el Impuesto General a las Ventas (IGV).</p>
+        <p>Emitimos Boleta de Venta Electrónica por defecto. Si requieres Factura, por favor ingresa tu número de RUC y Razón Social durante el proceso de pago (Checkout).</p>
+      </section>
+
+      <section id="payments" class="term-card" [hidden]="!isVisible('payments')">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+            <line x1="1" y1="10" x2="23" y2="10"></line>
+          </svg>
+        </div>
+        <h2>4. Métodos de Pago</h2>
         <p>Aceptamos los siguientes métodos de pago procesados de forma segura:</p>
         <div class="payment-icons">
           <span>Visa</span>
@@ -61,24 +110,77 @@
         <p>Toda la información financiera es encriptada mediante SSL de 256 bits.</p>
       </section>
 
-      <section id="returns" class="term-card">
-        <div class="card-icon">↺</div>
-        <h2>4. Cambios y Devoluciones</h2>
-        <p>Queremos que ames tu compra. Si no estás satisfecho, tienes <strong>7 días calendario</strong> desde la recepción para solicitar un cambio.</p>
-        <p>El producto debe estar:</p>
+      <section id="stock" class="term-card" [hidden]="!isVisible('stock')">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+          </svg>
+        </div>
+        <h2>5. Disponibilidad de Productos</h2>
+        <p>Trabajamos constantemente para mantener nuestro inventario actualizado. Sin embargo, en el caso excepcional de que compres un artículo que quede fuera de stock simultáneamente, nos comunicaremos contigo a la brevedad para ofrecerte:</p>
         <ul>
-          <li>Sin uso y en su empaque original.</li>
-          <li>Con todas las etiquetas adheridas.</li>
+          <li>Un producto alternativo de igual o similar valor.</li>
+          <li>El reembolso total de tu dinero a la cuenta de origen.</li>
         </ul>
-        <p>No aceptamos devoluciones en productos de liquidación (Sale).</p>
+        <div class="highlight-box">
+          <strong>Sobre los reembolsos:</strong> Los procesos de devolución de dinero están sujetos a validaciones internas y a los tiempos operativos de las pasarelas de pago y tu entidad bancaria. Por lo tanto, el extorno <strong>no es inmediato</strong> y puede tardar entre 3 a 15 días hábiles en verse reflejado en tu estado de cuenta.
+        </div>
       </section>
 
-      <section id="privacy" class="term-card">
-        <div class="card-icon">🔒</div>
-        <h2>5. Privacidad de Datos</h2>
-        <p>Tus datos personales (nombre, teléfono, dirección) son utilizados únicamente para procesar tus pedidos y mejorar tu experiencia. Nunca vendemos tu información a terceros.</p>
+      <section id="returns" class="term-card" [hidden]="!isVisible('returns')">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+            <path d="M3 3v5h5"></path>
+          </svg>
+        </div>
+        <h2>6. Cambios y Devoluciones</h2>
+        <p>
+          Queremos que ames tu compra. Si necesitas realizar un cambio por talla o modelo, tienes
+          <strong>7 días calendario</strong> desde la recepción del pedido para solicitarlo.
+        </p>
+        <p>Para que el cambio proceda, el producto debe cumplir obligatoriamente con lo siguiente:</p>
+        <ul>
+          <li>Estar sin uso, en perfectas condiciones y en su empaque original intacto.</li>
+          <li>Contar con todas las etiquetas, plásticos y sellos de seguridad adheridos.</li>
+        </ul>
+        <p><strong>Excepciones (Artículos no retornables):</strong></p>
+        <ul>
+          <li>Por estrictas políticas de higiene, salud y seguridad, <strong>no aceptamos cambios ni devoluciones en artículos de joyería, accesorios de uso personal, perfumería y fragancias</strong> (a menos que presenten un defecto de fábrica comprobable al momento de abrir el empaque).</li>
+          <li>No aceptamos devoluciones ni cambios en productos adquiridos en liquidación (Sale), promociones especiales o con cupones de descuento.</li>
+        </ul>
       </section>
 
+      <section id="privacy" class="term-card" [hidden]="!isVisible('privacy')">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+        </div>
+        <h2>7. Privacidad de Datos</h2>
+        <p>
+          Tus datos personales (nombre, teléfono, dirección) son utilizados únicamente para procesar
+          tus pedidos y mejorar tu experiencia. Nunca vendemos tu información a terceros.
+        </p>
+      </section>
+
+      @if (!hasResults) {
+        <div class="no-results fade-in">
+          <div class="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </div>
+          <h3>No encontramos resultados</h3>
+          <p>
+            No hay coincidencias para "<strong>{{ searchTerm }}</strong>". Intenta con otra palabra clave.
+          </p>
+        </div>
+      }
     </main>
   </div>
 </div>

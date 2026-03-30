@@ -21,11 +21,11 @@ export const routes: Routes = [
     },
 
     {
-        path: 'product/:slug',
+        path: 'product1/:slug',
         loadComponent: () => import('./shop/product/product-letf/product-letf').then(c => c.default),
     },
     {
-        path: 'product1/:slug',
+        path: 'product/:slug',
         loadComponent: () => import('./shop/product/product-detail-one/product-detail-one').then(c => c.default),
     },
     {

@@ -86,52 +86,38 @@
 </section> -->
 <section class="slider-section">
   <div class="header">
-    <h2>{{ title() }}</h2>
+    <h2 class="section-title">{{ title() }}</h2>
 
-    @if (products().length > 0) {
-    <div class="swiper-nav-btns">
-      <button class="custom-prev" aria-label="Anterior">
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <path d="M15 18l-6-6 6-6" />
-        </svg>
-      </button>
-      <button class="custom-next" aria-label="Siguiente">
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <path d="M9 18l6-6-6-6" />
-        </svg>
-      </button>
-    </div>
-    }
-  </div>
-
-  @if (products().length === 0) {
-  <div class="sk-swiper-simulation">
-    @for (dummy of [1,2,3,4]; track $index) {
-      <div class="sk-card">
-        <div class="sk-square"></div>
-        <div>
-          <div class="skeleton sk-text w-75"></div>
-          <div class="skeleton sk-text w-50 title"></div>
-        </div>
+    @if (products() && products().length > 0) {
+      <div class="swiper-nav-btns">
+        <button class="custom-prev" aria-label="Anterior">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M15 18l-6-6 6-6" />
+          </svg>
+        </button>
+        <button class="custom-next" aria-label="Siguiente">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 18l6-6-6-6" />
+          </svg>
+        </button>
       </div>
     }
   </div>
-  }
 
+  @if (!products() || products().length === 0) {
+    <div class="sk-swiper-simulation">
+      @for (dummy of [1,2,3,4]; track $index) {
+        <div class="sk-card">
+          <div class="sk-image-placeholder skeleton"></div> 
+          <div class="sk-details">
+            <div class="skeleton sk-text w-75"></div>
+            <div class="skeleton sk-text w-50 title"></div>
+          </div>
+        </div>
+      }
+    </div>
+  } 
+  
   @else {
     <swiper-container #swiperRef init="false" class="my-swiper">
       @for (prod of products(); track prod._id ; let i = $index) {

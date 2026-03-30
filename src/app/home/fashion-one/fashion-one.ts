@@ -14,7 +14,7 @@ import { Skeleton } from "../../shared/components/skeleton/skeleton";
 
 @Component({
   selector: 'app-fashion-one',
-  imports: [CommonModule, ProductSlider, HeroSlider, TrustBadges, CategoryGrid, Brand, Skeleton],
+  imports: [CommonModule, ProductSlider, HeroSlider, TrustBadges],
   templateUrl: './fashion-one.html',
   styleUrl: './fashion-one.scss',
 })
