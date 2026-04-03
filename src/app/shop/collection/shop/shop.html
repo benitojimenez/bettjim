@@ -81,23 +81,22 @@
           </div>
         </div>
       </div>
-
       <div class="filter-group">
         <h3>Color</h3>
         <ul class="filter-list">
-          @for (color of colors; track $index) {
+          @for (color of ps.filterByColor(); track $index) {
           <li>
             <label>
               <input
                 type="checkbox"
-                [checked]="activeColors().includes(color.name)"
-                (change)="onColorChange(color.name)"
+                [checked]="activeColors().includes(color.color)"
+                (change)="onColorChange(color.color)"
               /><span
-                [style.background-color]="color.code"
+                [style.background-color]="color.color_code"
                 style="height: 15px; width: 15px; display: inline-block; border-radius: 50%"
                 class="color-swatch"
               ></span>
-              {{ color.name }}
+              {{ color.color }}
             </label>
           </li>
           }
@@ -107,7 +106,7 @@
       <div class="filter-group">
         <h3>Talla</h3>
         <div class="size-chips">
-          @for (size of sizes; track size) {
+          @for (size of ps.filterBySizes(); track size) {
           <button
             class="chip"
             [class.active]="activeSizes().includes(size)"

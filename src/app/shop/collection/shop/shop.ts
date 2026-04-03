@@ -10,6 +10,7 @@ import { Categories} from '../../../services/categories';
 import { ProductOne } from '../../../shared/components/product/product-one/product-one';
 import { ProductTwo } from '../../../shared/components/product/product-two/product-two';
 import { Seo } from '../../../services/seo';
+
 @Component({
   selector: 'app-shop',
   imports: [CommonModule, ProductTwo],
@@ -38,22 +39,8 @@ export default class Shop implements OnInit {
 
   // 1. CAMBIO: La señal ahora es un ARRAY de strings, no un string suelto
   activeColors = signal<string[]>([]);
-  colors = [
-    { name: 'Rojo', code: '#FF0000' },
-    { name: 'Azul', code: '#0000FF' },
-    { name: 'Verde', code: '#008000' },
-    { name: 'Amarillo', code: '#FFFF00' },
-    { name: 'Negro', code: '#000000' },
-    { name: 'Blanco', code: '#FFFFFF' },
-    { name: 'Morado', code: '#800080' },
-    { name: 'Gris', code: '#808080' },
-    { name: 'Naranja', code: '#FFA500' },
-    { name: 'Rosa', code: '#FFC0CB' }
-  ];
-
   //Sizes 
   activeSizes = signal<string[]>([]);
-  sizes = ['S', 'M', 'L', 'XL', 'XXL', 'XS', '4', '6', '8', '10', '12', '14'];
   // Configuración de Precios
   maxLimit = 1000; // El precio más alto posible en tu tienda
   minVal = signal(0);

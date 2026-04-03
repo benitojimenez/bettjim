@@ -178,4 +178,55 @@ export class Products {
     }
   }
 
+  // Creamos una señal computada en lugar de un 'get'
+filterByColor = computed(() => {
+  const colorMap = new Map<string, string>();
+
+  // AQUÍ ESTÁ LA CORRECCIÓN: Le decimos explícitamente que es un arreglo de Productos (Product[])
+  const products: Product[] = this.cleanProducts(); 
+
+  for (const product of products) {
+    if (!product.variants) continue; 
+
+    for (const variant of product.variants) {
+      if (variant.color && variant.color_code) {
+        if (!colorMap.has(variant.color)) {
+          colorMap.set(variant.color, variant.color_code);
+        }
+      }
+    }
+  }
+
+  return Array.from(colorMap, ([color, color_code]) => ({ color, color_code }));
+});
+
+filterBySizes = computed(() => {
+  // Usamos Set para almacenar valores únicos (elimina duplicados mágicamente)
+  const uniqueSizes = new Set<string>(); 
+
+  const products: Product[] = this.cleanProducts(); 
+
+  for (const product of products) {
+    if (!product.variants) continue;
+
+    for (const variant of product.variants) {
+      // Verificamos si existe el arreglo de 'sizes' dentro de la variante
+      if (variant.sizes && Array.isArray(variant.sizes)) {
+        // Recorremos el arreglo de tallas y las agregamos al Set
+        for (const size of variant.sizes) {
+          uniqueSizes.add(size);
+        }
+      } 
+      // (Opcional) Por si en algún momento guardas la talla como string único 'variant.size'
+      else if (variant.size) {
+        uniqueSizes.add(variant.size);
+      }
+    }
+  }
+
+  // Convertimos el Set final en un arreglo normal para usarlo en el HTML
+  return Array.from(uniqueSizes);
+})
+
+
 }
