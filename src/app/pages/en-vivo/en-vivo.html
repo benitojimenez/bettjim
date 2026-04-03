@@ -1,0 +1,141 @@
+<div class="live-wrapper">
+  <section class="video-container">
+    <div class="video-wrapper">
+      <iframe
+        class="youtube-iframe"
+        src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1&controls=0&modestbranding=1&showinfo=0&rel=0&playsinline=1&loop=1"
+        title="Bettjim Live"
+        frameborder="0"
+        allow="
+          accelerometer;
+          autoplay;
+          clipboard-write;
+          encrypted-media;
+          gyroscope;
+          picture-in-picture;
+        "
+        allowfullscreen
+      ></iframe>
+      <div class="overlay-gradient"></div>
+    </div>
+
+    <div class="top-badges">
+      <div class="badge-live"><span class="pulse-dot"></span> EN VIVO</div>
+      <div class="badge-viewers">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+        1.2K
+      </div>
+    </div>
+
+    @if (stickyProduct(); as product) {
+      <div class="featured-product-float fade-in-up">
+        <div class="fp-image">
+          <img [src]="product.img" [alt]="product.name" />
+        </div>
+        <div class="fp-details">
+          <span class="fp-tag">Mencionado ahora</span>
+          <h4 class="fp-title">{{ product.name }}</h4>
+          <div class="fp-price">
+            <span class="current">S/ {{ product.price | number: '1.2-2' }}</span>
+            <span class="old">S/ {{ product.oldPrice | number: '1.2-2' }}</span>
+          </div>
+        </div>
+        <button class="btn-buy-now primary-glow">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          </svg>
+        </button>
+      </div>
+    }
+  </section>
+
+  <section class="interaction-container">
+    <div class="interaction-tabs">
+      <button [class.active]="activeTab() === 'chat'" (click)="setTab('chat')">Chat en vivo</button>
+      <button [class.active]="activeTab() === 'products'" (click)="setTab('products')">
+        Productos ({{ liveProducts().length }})
+      </button>
+    </div>
+
+    @if (activeTab() === 'chat') {
+      <div class="chat-box fade-in">
+        <div class="messages-list" #scrollMe>
+          @for (msg of messages(); track $index) {
+            <div class="msg-row" [class.brand]="msg.brand">
+              <span class="user">{{ msg.user }}</span>
+              <span class="text">{{ msg.text }}</span>
+            </div>
+          }
+        </div>
+
+        <div class="chat-input-area">
+          <input
+            type="text"
+            [(ngModel)]="newMessage"
+            (keyup.enter)="sendMessage()"
+            placeholder="Escribe un mensaje..."
+          />
+          <button class="btn-send" (click)="sendMessage()">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+          </button>
+        </div>
+      </div>
+    } @else {
+      <div class="live-products-list fade-in">
+        <div class="lp-grid">
+          @for (product of liveProducts(); track product.id) {
+            <div
+              class="lp-card"
+              [class.is-highlighted]="product.isSticky"
+              (click)="setSticky(product.id)"
+            >
+              <img [src]="product.img" class="lp-img" />
+              <div class="lp-info">
+                <h4>{{ product.name }}</h4>
+                <div class="price-row">
+                  <span class="price">S/ {{ product.price | number: '1.2-2' }}</span>
+                  <button class="btn-add" [class.is-active]="product.isSticky">
+                    {{ product.isSticky ? '✕' : '+' }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </section>
+</div>

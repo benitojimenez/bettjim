@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { guestGuard } from './guards/guest-guard';
 import { authGuard } from './guards/auth-guard';
+import { title } from 'process';
 export const routes: Routes = [
     {
         path: '',
@@ -40,6 +41,7 @@ export const routes: Routes = [
         path: 'devolucion',
         loadComponent: () => import('./pages/returns/returns'),
     },
+    
     {
         path: 'privacidad',
         loadComponent: () => import('./pages/privacy/privacy'),
@@ -60,6 +62,17 @@ export const routes: Routes = [
         path: '404',
         loadComponent: () => import('./pages/error404/error404')
     },
+    // {
+    //     path: 'envivo',
+    //     title: 'Transmisión en Vivo | Bettjim.com',
+    //     loadComponent: () => import('./pages/en-vivo/en-vivo'),
+
+    // },
+    // {
+    //     path: 'live',
+    //     redirectTo: '/envivo',
+    //     pathMatch: 'full'
+    // }, // Redirige automáticamente
     // 🔒 RUTAS PRIVADAS (Solo Logueados)
     // Aquí sí obligamos a tener cuenta
     {
