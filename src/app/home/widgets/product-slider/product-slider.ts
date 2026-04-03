@@ -1,5 +1,6 @@
-import { Component, effect, ElementRef, Inject, input, PLATFORM_ID, ViewChild, ViewEncapsulation } from '@angular/core';
+import { afterNextRender, Component, effect, ElementRef, Inject, input, PLATFORM_ID, ViewChild, ViewEncapsulation } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+
 import { ProductTwo } from '../../../shared/components/product/product-two/product-two';
 import { Product } from '../../../shared/classes/product';
 
@@ -21,51 +22,50 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 })
 export class ProductSlider {
   title = input.required<string>();
-  products = input.required<Product[]>();
-  // 🔒 EL CANDADO: Evita que se inicialice múltiples veces
-  private isInitialized = false;
+  products = input.required<any[]>();
+  
+  // 1. Capturamos el Swiper y los nuevos controles
   @ViewChild('swiperRef') swiperRef!: ElementRef;
+  @ViewChild('prevBtn') prevBtn?: ElementRef;
+  @ViewChild('nextBtn') nextBtn?: ElementRef;
+  @ViewChild('paginationEl') paginationEl?: ElementRef;
+
+  private isInitialized = false;
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {
-    
-   effect(async () => {
-      const items = this.products();
-
-      // CONDICIONES ESTRICTAS:
-      // 1. Hay productos
-      // 2. Es navegador (no servidor)
-      // 3. 🔒 NO se ha inicializado antes (!this.isInitialized)
-      if (items.length > 0 && isPlatformBrowser(this.platformId) && !this.isInitialized) {
-        
-        // Esperamos un momento a que el HTML exista
-        await new Promise(resolve => setTimeout(resolve, 0));
-        this.initSwiper();
+    afterNextRender(async () => {
+      if (this.products().length > 0 && !this.isInitialized) {
+        await this.initSwiper();
       }
     });
   }
 
-async initSwiper() {
-    // Doble chequeo de seguridad
-    if (this.isInitialized) return;
-
+  async initSwiper() {
     try {
-      // 1. Cargar Swiper
       const { register } = await import('swiper/element/bundle');
       register();
 
-      // 2. Esperar a que el navegador reconozca la etiqueta
       await customElements.whenDefined('swiper-container');
 
-      const swiperEl = this.swiperRef.nativeElement as any;
+      const swiperEl = this.swiperRef?.nativeElement;
+      if (!swiperEl) return;
 
-      // 3. Configuración
+      // 2. Configuración usando nativeElement en lugar de clases CSS
       const params = {
         slidesPerView: 2,
         spaceBetween: 15,
         loop: true,
         speed: 800,
-        navigation: { nextEl: '.custom-next', prevEl: '.custom-prev' },
-        pagination: { el: '.custom-pagination', clickable: true },
+        navigation: { 
+          // Pasamos el elemento HTML directo
+          nextEl: this.nextBtn?.nativeElement, 
+          prevEl: this.prevBtn?.nativeElement 
+        },
+        pagination: { 
+          // Pasamos el elemento HTML directo
+          el: this.paginationEl?.nativeElement, 
+          clickable: true 
+        },
         autoplay: { delay: 4000, disableOnInteraction: false, pauseOnMouseEnter: true },
         breakpoints: {
           640: { slidesPerView: 2, spaceBetween: 20 },
@@ -74,37 +74,13 @@ async initSwiper() {
         },
       };
 
-      // 4. Asignar parámetros
       Object.assign(swiperEl, params);
-
-      // 5. INTENTO DE INICIALIZACIÓN SEGURO
-      // Preguntamos: "¿Ya tienes el método initialize?"
-      if (typeof swiperEl.initialize === 'function') {
-        swiperEl.initialize();
-        this.isInitialized = true; // 🔒 CERRAMOS EL CANDADO
-        // console.log('✅ Swiper arrancó a la primera');
-      } else {
-        // Plan B: Reintentar un par de veces por si acaso (Polling suave)
-        this.waitForSwiper(swiperEl);
-      }
+      swiperEl.initialize();
+      
+      this.isInitialized = true;
 
     } catch (error) {
-      // console.error('Error al cargar Swiper:', error);
+      console.error('Bettjim: Error iniciando Swiper del Carrusel', error);
     }
   }
-
-  // Función auxiliar para esperar si el navegador es lento
-  waitForSwiper(swiperEl: any, attempts = 0) {
-    if (attempts > 10) return; // Rendirse después de 500ms (evita bucles infinitos)
-
-    if (typeof swiperEl.initialize === 'function') {
-      swiperEl.initialize();
-      this.isInitialized = true; // 🔒 CERRAMOS EL CANDADO
-      // console.log('✅ Swiper arrancó tras espera');
-    } else {
-      setTimeout(() => this.waitForSwiper(swiperEl, attempts + 1), 50);
-    }
-  }
-
-  
 }

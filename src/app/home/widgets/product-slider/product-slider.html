@@ -90,12 +90,12 @@
 
     @if (products() && products().length > 0) {
       <div class="swiper-nav-btns">
-        <button class="custom-prev" aria-label="Anterior">
+        <button #prevBtn class="custom-prev" aria-label="Anterior">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M15 18l-6-6 6-6" />
           </svg>
         </button>
-        <button class="custom-next" aria-label="Siguiente">
+        <button #nextBtn class="custom-next" aria-label="Siguiente">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M9 18l6-6-6-6" />
           </svg>
@@ -127,6 +127,6 @@
       }
     </swiper-container>
 
-    <div class="custom-pagination"></div>
+    <div #paginationEl class="custom-pagination"></div>
   }
 </section>

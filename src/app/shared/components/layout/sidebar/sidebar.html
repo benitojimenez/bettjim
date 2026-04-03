@@ -1,15 +1,26 @@
 <div class="overlay" [class.active]="layout.sidebarOpen()" (click)="layout.closeSidebar()"></div>
 
 <aside class="sidebar" [class.active]="layout.sidebarOpen()">
+  
   <div class="sidebar-header">
     <div class="user-info">
-      <div class="avatar">👤</div>
-      <div>
-        <p>Hola, {{auth.getLastName()}}</p>
+      <div class="avatar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+      </div>
+      <div class="user-text">
+        <p>Hola, {{auth.getLastName() || 'Invitado'}}</p>
         <strong>Mi Cuenta</strong>
       </div>
     </div>
-    <button class="btn-close" (click)="layout.closeSidebar()">✕</button>
+    <button class="btn-close" (click)="layout.closeSidebar()" aria-label="Cerrar menú">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
   </div>
 
   <div class="sidebar-content">
@@ -17,45 +28,49 @@
 
     <ul class="menu-level-1">
       @for (cat of categories.cleanCategories(); track $index) {
-      <li class="menu-item">
-        <div class="menu-row" (click)="toggle(cat, categories.cleanCategories())">
-          <span>{{ cat.title }}</span>
-          @if(cat.lis_title) {
-          <span class="arrow" [class.rotated]="cat.expanded">▼</span>
-          }
-        </div>
+        <li class="menu-item">
+          <div class="menu-row" (click)="toggle(cat, categories.cleanCategories())" [class.active]="cat.expanded">
+            <span>{{ cat.title }}</span>
+            @if(cat.lis_title) {
+              <span class="arrow" [class.rotated]="cat.expanded">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </span>
+            }
+          </div>
 
-        @if (cat.expanded && cat.lis_title) {
-        <ul class="menu-level-2 dropdown-anim">
-          @for (sub of cat.lis_title; track $index) {
-          <li class="sub-item">
-            <div class="menu-row sub" (click)="toggle(sub, cat.lis_title)">
-              <span>{{ sub.title }}</span>
-              @if(sub.subcategories) {
-              <span class="arrow" [class.rotated]="sub.expanded">▼</span>
-              }
-            </div>
+          <div class="submenu-wrapper" [class.open]="cat.expanded">
+            <ul class="menu-level-2">
+              @for (sub of cat.lis_title; track $index) {
+                <li class="sub-item">
+                  <div class="menu-row sub" (click)="toggle(sub, cat.lis_title)" [class.active]="sub.expanded">
+                    <span>{{ sub.title }}</span>
+                    @if(sub.subcategories) {
+                      <span class="arrow" [class.rotated]="sub.expanded">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                      </span>
+                    }
+                  </div>
 
-            @if (sub.expanded && sub.subcategories) {
-            <ul class="menu-level-3 dropdown-anim">
-              @for (item of sub.subcategories; track item.title) {
-              <li class="last-item">
-                <a
-                  (click)="layout.closeSidebar()"
-                  [routerLink]="['/shop']"
-                  [queryParams]="{ cat: cat.title, sub: sub.title }"
-                >
-                  {{ item.title }}
-                </a>
-              </li>
+                  <div class="submenu-wrapper" [class.open]="sub.expanded">
+                    <ul class="menu-level-3">
+                      @for (item of sub.subcategories; track item.title) {
+                        <li class="last-item">
+                          <a
+                            (click)="layout.closeSidebar()"
+                            [routerLink]="['/shop']"
+                            [queryParams]="{ cat: cat.title, sub: item.title }"
+                          >
+                            {{ item.title }}
+                          </a>
+                        </li>
+                      }
+                    </ul>
+                  </div>
+                </li>
               }
             </ul>
-            }
-          </li>
-          }
-        </ul>
-        }
-      </li>
+          </div>
+        </li>
       }
     </ul>
   </div>

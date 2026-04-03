@@ -1,5 +1,5 @@
 /* --- VARIABLES LOCALES --- */
-$brand-color: #FF2E63; /* Tu rosa principal */
+$brand-color: #FF2E63;
 $text-dark: #1E293B;
 $text-light: #64748B;
 $bg-skeleton: #F1F5F9;
@@ -11,19 +11,14 @@ $bg-skeleton: #F1F5F9;
   padding-left: 5%;
   padding-right: 5%;
   font-family: 'Inter', system-ui, sans-serif;
-  
-  /* UX: Al pasar el mouse por toda la sección, mostramos las flechas */
-  &:hover .swiper-nav-btns button {
-    opacity: 1;
-    transform: translateX(0);
-  }
+  /* Eliminé el hover que ocultaba los botones */
 }
 
 /* --- HEADER DE SECCIÓN --- */
 .header {
   display: flex; 
   justify-content: space-between; 
-  align-items: flex-end; /* Alinea los botones con la base del texto */
+  align-items: flex-end;
   margin-bottom: 30px;
   
   .section-title { 
@@ -41,23 +36,23 @@ $bg-skeleton: #F1F5F9;
 /* --- SWIPER LAYOUT --- */
 swiper-container {
   width: 100%;
-  padding-bottom: 24px; /* Espacio para que no se corten las sombras de las cards */
-  /* padding-top: 10px; */ /* Descomentar si las cards tienen sombra superior */
+  padding-bottom: 24px;
 }
 
 swiper-slide {
-  height: auto; /* IMPORTANTE: Para que todas las cards tengan misma altura */
+  height: auto;
   display: flex; 
   justify-content: center;
+  align-items: stretch; /* Estira todas las tarjetas por igual */
 }
 
 app-product-two {
   width: 100%;
   display: block;
-  height: 100%; /* Para que la tarjeta ocupe toda la altura del slide */
+  height: 100%;
 }
 
-/* --- CONTROLES DE NAVEGACIÓN (Flechas Pro) --- */
+/* --- CONTROLES DE NAVEGACIÓN (Flechas VISIBLES SIEMPRE) --- */
 .swiper-nav-btns {
   display: flex; 
   gap: 12px;
@@ -70,17 +65,14 @@ app-product-two {
     color: $text-dark;
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Efecto rebote suave */
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     
-    /* Estado inicial: Ocultos y desplazados hacia afuera */
-    opacity: 0; 
-    &.custom-prev { transform: translateX(15px); }
-    &.custom-next { transform: translateX(-15px); }
+    /* ¡CORRECCIÓN AQUÍ! Ahora son 100% visibles y están en su posición original */
+    opacity: 1; 
+    transform: translateX(0);
 
-    svg {
-      transition: transform 0.2s;
-    }
+    svg { transition: transform 0.2s; }
 
     &:hover {
       background: $brand-color;
@@ -94,54 +86,43 @@ app-product-two {
     }
 
     &:active { transform: scale(0.9); }
+    
+    /* Estado deshabilitado (cuando estás en el primer o último slide y no hay loop) */
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      &:hover {
+        background: white; border-color: #E2E8F0; color: $text-dark; box-shadow: none;
+        svg { transform: none; }
+      }
+    }
   }
 }
 
-/* --- PAGINACIÓN (Puntitos Dinámicos) --- */
+/* --- PAGINACIÓN --- */
 .custom-pagination {
   display: flex; justify-content: center; margin-top: 5px;
   
-  /* Estilizando elementos internos que inyecta Swiper JS */
   ::ng-deep .swiper-pagination-bullet {
-    width: 8px; 
-    height: 8px;
-    background: #CBD5E1;
-    opacity: 1;
-    margin: 0 6px !important;
-    border-radius: 50%;
-    transition: all 0.3s ease;
+    width: 8px; height: 8px; background: #CBD5E1; opacity: 1;
+    margin: 0 6px !important; border-radius: 50%; transition: all 0.3s ease;
     
-    &-active {
-      background: $brand-color;
-      width: 24px; /* Se estira el activo formando una píldora */
-      border-radius: 4px;
-    }
+    &-active { background: $brand-color; width: 24px; border-radius: 4px; }
   }
 }
 
-/* =========================================
-   SKELETON LOADING (Efecto Fantasma Pro)
-   ========================================= */
+/* --- SKELETON LOADING --- */
 .sk-swiper-simulation {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* Simula 4 tarjetas en PC */
-  gap: 20px;
-  overflow: hidden;
-  margin-bottom: 24px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px; overflow: hidden; margin-bottom: 24px;
   
   .sk-card {
-    background: white;
-    border-radius: 16px;
-    border: 1px solid #F1F5F9;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+    background: white; border-radius: 16px; border: 1px solid #F1F5F9;
+    overflow: hidden; display: flex; flex-direction: column;
     
-    .sk-details {
-      padding: 16px;
-    }
+    .sk-details { padding: 16px; }
 
-    /* Base de la animación de brillo */
     .skeleton {
       background: #F1F5F9;
       background-image: linear-gradient(90deg, #F1F5F9 0px, #E2E8F0 40px, #F1F5F9 80px);
@@ -149,18 +130,10 @@ app-product-two {
       animation: shimmer 1.5s infinite linear;
     }
     
-    /* El contenedor de imagen (Rectangular 3:4 para ropa) */
-    .sk-image-placeholder { 
-      width: 100%;
-      aspect-ratio: 3 / 4; 
-    }
+    .sk-image-placeholder { width: 100%; aspect-ratio: 3 / 4; }
     
-    /* Líneas de texto simuladas */
     .sk-text { 
-      height: 14px; 
-      border-radius: 4px; 
-      margin-bottom: 12px; 
-      
+      height: 14px; border-radius: 4px; margin-bottom: 12px; 
       &.title { height: 20px; margin-bottom: 0; margin-top: 20px; }
       &.w-75 { width: 75%; }
       &.w-50 { width: 50%; }
@@ -168,31 +141,15 @@ app-product-two {
   }
 }
 
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-/* =========================================
-   📱 RESPONSIVE (Móviles y Tablets)
-   ========================================= */
+/* --- RESPONSIVE --- */
 @media (max-width: 900px) {
-  .slider-section {
-    padding-left: 16px;
-    padding-right: 16px;
-  }
-  
-  .sk-swiper-simulation {
-    grid-template-columns: repeat(2, 1fr); /* Simula 2 tarjetas en móvil */
-    gap: 12px;
-  }
+  .slider-section { padding-left: 16px; padding-right: 16px; }
+  .sk-swiper-simulation { grid-template-columns: repeat(2, 1fr); gap: 12px; }
 }
 
 @media (max-width: 600px) {
-  /* En móvil, el usuario usa su dedo (swipe), ocultamos las flechas para ahorrar espacio */
   .swiper-nav-btns { display: none; } 
-  
-  .sk-swiper-simulation {
-    grid-template-columns: 85% 15%; /* Muestra 1 tarjeta casi completa y asoma la siguiente */
-  }
+  .sk-swiper-simulation { grid-template-columns: 85% 15%; }
 }

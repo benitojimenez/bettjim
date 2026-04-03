@@ -1,39 +1,44 @@
-<!-- <div
-  class="filter-overlay"
-  [class.active]="layout.filterOpen()"
-  (click)="layout.closeFilter()"
-></div> -->
-
 <div class="shop-wrapper">
+  <div class="filter-overlay" [class.active-mobile]="layout.filterOpen()" (click)="layout.closeFilter()"></div>
   <aside class="filters-sidebar" [class.active-mobile]="layout.filterOpen()">
     <div class="mobile-filter-header">
       <h3>Filtros</h3>
-      <button class="btn-close-filter" (click)="layout.closeFilter()">✕</button>
+      <button class="btn-close-filter" (click)="layout.closeFilter()" aria-label="Cerrar filtros">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
     </div>
 
     <div class="filter-content-scroll">
-      @if (activeCategory() || ps.searchTerm() || activeColors().length > 0 || activeSizes().length
-      > 0) {
-      <div class="reset-section">
-        <button class="btn-reset" (click)="resetFilters()">
-          <span class="icon">🗑️</span> Limpiar Filtros
-        </button>
-      </div>
+      
+      @if (activeCategory() || ps.searchTerm() || activeColors().length > 0 || activeSizes().length > 0) {
+        <div class="reset-section">
+          <button class="btn-reset" (click)="resetFilters()">
+            <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 6h18"></path>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+            Limpiar Filtros
+          </button>
+        </div>
       }
+
       <div class="filter-group">
         <h3>Categorías</h3>
         <ul class="filter-list">
           @for (cat of categories.cleanCategories(); track $index) {
-          <li>
-            <label>
-              <input
-                type="checkbox"
-                [checked]="activeCategory() === cat.title"
-                (change)="onCategoryChange(cat.title)"
-              />
-              {{ cat.title }}
-            </label>
-          </li>
+            <li>
+              <label>
+                <input
+                  type="checkbox"
+                  [checked]="activeCategory() === cat.title"
+                  (change)="onCategoryChange(cat.title)"
+                />
+                {{ cat.title }}
+              </label>
+            </li>
           }
         </ul>
       </div>
@@ -49,7 +54,6 @@
 
           <div class="multi-range-slider">
             <div class="slider-track-bg"></div>
-
             <div
               class="slider-track-active"
               [style.left.%]="(minVal() / maxLimit) * 100"
@@ -64,7 +68,6 @@
               (input)="updateMin($event)"
               (change)="applyPriceFilter()"
             />
-
             <input
               type="range"
               [min]="0"
@@ -81,24 +84,26 @@
           </div>
         </div>
       </div>
+
       <div class="filter-group">
         <h3>Color</h3>
         <ul class="filter-list">
           @for (color of ps.filterByColor(); track $index) {
-          <li>
-            <label>
-              <input
-                type="checkbox"
-                [checked]="activeColors().includes(color.color)"
-                (change)="onColorChange(color.color)"
-              /><span
-                [style.background-color]="color.color_code"
-                style="height: 15px; width: 15px; display: inline-block; border-radius: 50%"
-                class="color-swatch"
-              ></span>
-              {{ color.color }}
-            </label>
-          </li>
+            <li>
+              <label>
+                <input
+                  type="checkbox"
+                  [checked]="activeColors().includes(color.color)"
+                  (change)="onColorChange(color.color)"
+                />
+                <span
+                  [style.background-color]="color.color_code"
+                  style="height: 18px; width: 18px; display: inline-block; border-radius: 50%"
+                  class="color-swatch"
+                ></span>
+                {{ color.color }}
+              </label>
+            </li>
           }
         </ul>
       </div>
@@ -107,13 +112,13 @@
         <h3>Talla</h3>
         <div class="size-chips">
           @for (size of ps.filterBySizes(); track size) {
-          <button
-            class="chip"
-            [class.active]="activeSizes().includes(size)"
-            (click)="onSizeChange(size)"
-          >
-            {{ size }}
-          </button>
+            <button
+              class="chip"
+              [class.active]="activeSizes().includes(size)"
+              (click)="onSizeChange(size)"
+            >
+              {{ size }}
+            </button>
           }
         </div>
       </div>
@@ -125,62 +130,83 @@
   </aside>
 
   <main class="main-content">
+    
     <div class="shop-toolbar">
-      <div class="toolbar-left">
+      
+      <div class="toolbar-main-row">
+        
         <button class="btn-filter-mobile" (click)="layout.toggleFilter()">
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-          >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"></path>
           </svg>
           Filtrar
         </button>
 
+        <span class="result-count desktop-count">Mostrando {{ ps.displayProducts().length }} productos</span>
+
+        <div class="sort-wrapper">
+          <select (change)="onSort($event)" class="modern-select">
+            <option value="">Recomendados</option>
+            <option value="low">Precio: Bajo a Alto</option>
+            <option value="high">Precio: Alto a Bajo</option>
+            <option value="a-z">Nombre: A-Z</option>
+          </select>
+        </div>
+
+      </div>
+
+      <div class="mobile-count">
         <span class="result-count">Mostrando {{ ps.displayProducts().length }} productos</span>
       </div>
 
-      <div class="sort-wrapper">
-        <select (change)="onSort($event)" class="modern-select">
-          <option value="">Recomendados</option>
-          <option value="low">Precio: Bajo a Alto</option>
-          <option value="high">Precio: Alto a Bajo</option>
-          <option value="a-z">Nombre: A-Z</option>
-        </select>
-      </div>
     </div>
 
     @if (ps.productsResource.isLoading()) {
-    <div class="state-container">
-      <div class="spinner"></div>
-      <p>Buscando las mejores ofertas...</p>
-    </div>
-    } @if (ps.productsResource.error()) {
-    <div class="state-container error">
-      <p>⚠️ No pudimos cargar los productos.</p>
-      <button (click)="ps.productsResource.reload()">Reintentar</button>
-    </div>
+      <div class="state-container">
+        <div class="spinner"></div>
+        <p>Buscando las mejores ofertas...</p>
+      </div>
+    } 
+    
+    @if (ps.productsResource.error()) {
+      <div class="state-container error">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 15px;">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+          <line x1="12" y1="9" x2="12" y2="13"></line>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+        <p>No pudimos cargar los productos.</p>
+        <button (click)="ps.productsResource.reload()">Reintentar</button>
+      </div>
     }
 
     <div class="product-grid">
       @for (product of ps.displayProducts(); track product._id ; let i = $index) {
-        <!-- <app-product-one [product]="product" [index]="i"/> -->
         <app-product-two [product]="product" [index]="i"/>
-      } @empty { @if (!ps.productsResource.isLoading()) {
-      <div class="empty-results">
-        <p>No encontramos productos con esos filtros.</p>
+      } @empty { 
+        @if (!ps.productsResource.isLoading()) {
+          <div class="empty-results">
+            <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-muted); margin-bottom: 15px;">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              <line x1="11" y1="8" x2="11" y2="14"></line>
+              <line x1="8" y1="11" x2="14" y2="11"></line>
+            </svg>
+            <p>No encontramos productos con esos filtros.</p>
 
-        <div class="reset-section0">
-          <button class="btn-reset" (click)="resetFilters()">
-            <span class="icon">🗑️</span> Limpiar Filtros
-          </button>
-        </div>
-      </div>
-      } }
+            <div class="reset-section">
+              <button class="btn-reset" (click)="resetFilters()">
+                <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 6h18"></path>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+                Limpiar Filtros
+              </button>
+            </div>
+          </div>
+        } 
+      }
     </div>
+    
   </main>
 </div>
