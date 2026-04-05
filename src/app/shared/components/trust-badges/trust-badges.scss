@@ -78,7 +78,6 @@
       display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
     }
   }
-
   /* =========================================
      INTERACCIÓN HOVER (Desktop)
      ========================================= */
@@ -100,11 +99,10 @@
     }
   }
 }
-
 /* =========================================
    AJUSTE SWIPER WEB COMPONENT
    ========================================= */
 swiper-container {
   width: 100%;
-  padding: 15px 0 25px 0; /* Padding superior e inferior crucial para no cortar sombras */
+  // padding: 15px 0 25px 0; /* Padding superior e inferior crucial para no cortar sombras */
 }
