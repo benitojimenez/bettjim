@@ -3,24 +3,20 @@
   <swiper-container
     [breakpoints]="breakpoints"
     [loop]="true"
-    
     autoplay="true"
     autoplay-delay="2500"
     autoplay-disable-on-interaction="false"
-    
     [freeMode]="true"
     speed="1000"
     class="mySwiper">
 
     @for (item of items(); track item.id) {
-      
       <swiper-slide>
         <div class="trust-card">
+          <div class="shine-layer"></div>
           
           <div class="icon-wrapper" [class]="item.colorClass">
-            
             @switch (item.iconName) {
-              
               @case ('shield') {
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
               }
@@ -42,7 +38,6 @@
               @case ('medal') {
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>
               }
-
             }
           </div>
 
@@ -56,15 +51,4 @@
     }
     
   </swiper-container>
-<!-- 
-  <div class="payment-methods">
-    <span class="label">Pagos aceptados</span>
-    <div class="icons">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" width="35">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" width="35">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/d/d1/Yape_text_app_icon.png" alt="Yape" width="28" style="border-radius: 6px;">
-      <img src="https://plin.pe/assets/images/logo.png" alt="Plin" width="28">
-    </div>
-  </div> -->
-
 </div>

@@ -1,182 +1,840 @@
-/* --- VARS --- */
-$temu-orange: #FF7700;
-$temu-yellow: #FFD700;
-$primary: #FF2E63;
+// /* --- VARIABLES --- */
+// $brand-orange: #FF7700;
+// $brand-yellow: #FFD700;
+// $primary: #FF2E63;
+// $text-dark: #1E293B;
+// $white: #FFF;
+
+// /* =========================================
+//    OVERLAY CRISTALINO (GLASSMORPHISM)
+//    ========================================= */
+// .overlay-glass {
+//   position: fixed; inset: 0; z-index: 99999;
+//   display: flex; align-items: center; justify-content: center;
+//   backdrop-filter: blur(12px);
+//   -webkit-backdrop-filter: blur(12px);
+//   background: radial-gradient(
+//     circle at 50% 40%, 
+//     rgba($brand-yellow, 0.15) 0%, 
+//     rgba($primary, 0.15) 30%, 
+//     rgba(15, 23, 42, 0.7) 100%
+//   );
+// }
+
+// /* =========================================
+//    MODAL PRINCIPAL
+//    ========================================= */
+// .modal-container {
+//   width: 90%; max-width: 420px;
+//   border-radius: 24px; padding: 35px 25px; text-align: center;
+//   position: relative; overflow: hidden;
+//   box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5), 0 0 0 2px rgba(255, 215, 0, 0.3);
+//   background: radial-gradient(circle at top, #FFFFFF 0%, #FDF2F4 100%);
+// }
+
+// .btn-close {
+//   position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.05); border: none;
+//   width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+//   cursor: pointer; z-index: 10; color: #64748B; transition: 0.2s;
+  
+//   svg { width: 18px; height: 18px; }
+//   &:hover { background: rgba(0,0,0,0.1); color: $text-dark; transform: scale(1.05); }
+// }
+
+// .header-text {
+//   margin-bottom: 25px;
+//   h2 { margin: 0; color: $primary; font-weight: 900; font-size: 1.6rem; letter-spacing: -0.5px; }
+//   p { margin: 6px 0 0; color: #64748B; font-size: 0.95rem; font-weight: 500; }
+// }
+
+// /* =========================================
+//    CARRUSEL DE GANADORES (TICKER)
+//    ========================================= */
+// .winners-ticker {
+//   background: rgba($primary, 0.05); border-radius: 12px; padding: 6px 12px; margin-bottom: 25px;
+//   overflow: hidden; height: 38px; position: relative; width: 100%;
+//   border: 1px solid rgba($primary, 0.15);
+  
+//   .ticker-content {
+//     display: flex; gap: 30px; position: absolute; white-space: nowrap; top: 6px;
+//     animation: tickerMove 20s linear infinite;
+    
+//     .winner-item { 
+//       font-size: 0.8rem; color: #64748B; display: flex; align-items: center; gap: 8px; 
+//       strong { color: $text-dark; font-weight: 700; }
+//     }
+
+//     .micro-avatar {
+//       width: 24px; height: 24px; border-radius: 50%;
+//       display: flex; align-items: center; justify-content: center;
+//       color: white; font-weight: 800; font-size: 0.65rem;
+//       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+//     }
+//   }
+// }
+
+// /* =========================================
+//    LA RULETA
+//    ========================================= */
+// .wheel-wrapper { position: relative; width: 300px; height: 300px; margin: 0 auto; }
+
+// .pointer-svg {
+//   position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
+//   width: 36px; height: 36px; z-index: 5;
+//   filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+//   svg { width: 100%; height: 100%; }
+// }
+
+// .wheel {
+//   width: 100%; height: 100%; border-radius: 50%;
+//   border: 6px solid #FFF; 
+//   box-shadow: 0 0 0 8px $brand-orange, 0 10px 30px rgba(0,0,0,0.2); 
+//   position: relative;
+//   transition: transform 4.5s cubic-bezier(0.15, 0.85, 0.15, 1);
+//   background: conic-gradient(
+//     $primary 0% 16.66%, $brand-yellow 16.66% 33.33%,
+//     $primary 33.33% 50%, $brand-yellow 50% 66.66%,
+//     $primary 66.66% 83.33%, $brand-yellow 83.33% 100%
+//   );
+
+//   /* Luces de Casino (Borde punteado transparente) */
+//   &::after {
+//     content: '';
+//     position: absolute;
+//     top: -4px; left: -4px; right: -4px; bottom: -4px;
+//     border-radius: 50%;
+//     border: 4px dotted rgba(255, 255, 255, 0.9);
+//     z-index: 2; pointer-events: none;
+//   }
+// }
+
+// .segment {
+//   position: absolute; top: 0; left: 50%; width: 2px; height: 50%;
+//   transform-origin: bottom center; 
+//   display: flex; justify-content: center; padding-top: 25px;
+  
+//   span {
+//     color: $white; font-weight: 800; font-size: 0.8rem; 
+//     text-shadow: 0 1px 3px rgba(0,0,0,0.4); text-align: center; line-height: 1.2;
+//     display: inline-block; letter-spacing: 0.5px;
+//   }
+//   &.dark-text span { color: $primary; text-shadow: none; font-weight: 900; }
+// }
+
+// /* =========================================
+//    BOTÓN 3D TÁCTIL (GIRAR)
+//    ========================================= */
+// .spin-btn {
+//   position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+//   width: 75px; height: 75px; border-radius: 50%; 
+//   background: radial-gradient(circle at 30% 30%, #FFFFFF, #E2E8F0); 
+//   border: 5px solid #FFFFFF;
+//   box-shadow: 
+//     0 8px 15px rgba(0,0,0,0.3), 
+//     inset 0 -6px 10px rgba(15,23,42,0.1),
+//     inset 0 4px 6px rgba(255,255,255,0.8);
+//   font-weight: 900; color: $primary; font-size: 1rem; cursor: pointer; z-index: 6; 
+//   transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+//   text-shadow: 0 1px 1px rgba(255,255,255,0.8);
+  
+//   &:active:not(:disabled) { 
+//     transform: translate(-50%, -46%);
+//     box-shadow: 0 2px 5px rgba(0,0,0,0.3), inset 0 4px 10px rgba(15,23,42,0.15); 
+//   }
+
+//   &:disabled { 
+//     background: #E2E8F0; color: #94A3B8; cursor: not-allowed; 
+//     box-shadow: 0 2px 5px rgba(0,0,0,0.1); transform: translate(-50%, -50%);
+//   }
+// }
+
+// /* =========================================
+//    ESTADO: PREMIO GANADO
+//    ========================================= */
+// .prize-stage {
+//   .prize-icon-svg {
+//     width: 60px; height: 60px; margin: 0 auto 15px;
+//     animation: pulseGlow 2s infinite;
+//     svg { width: 100%; height: 100%; }
+//   }
+
+//   h2 { font-size: 1.8rem; color: $text-dark; margin-bottom: 15px; font-weight: 900; }
+  
+//   .prize-box {
+//     background: #FFFBEB; border: 2px dashed $brand-yellow; padding: 25px; margin-bottom: 20px; border-radius: 16px;
+//     box-shadow: 0 10px 20px rgba($brand-yellow, 0.1);
+//     .huge-text { font-size: 2.2rem; font-weight: 900; color: $primary; display: block; letter-spacing: -1px; }
+//   }
+  
+//   p { font-size: 0.9rem; color: #64748B; margin-bottom: 15px; }
+  
+//   .input-group {
+//     display: flex; gap: 8px; margin-top: 15px;
+//     input { 
+//       flex: 1; padding: 14px 16px; border: 1px solid #CBD5E1; border-radius: 12px; font-size: 0.95rem; outline: none; transition: 0.2s;
+//       &:focus { border-color: $primary; box-shadow: 0 0 0 3px rgba($primary, 0.1); }
+//     }
+//     .btn-claim { 
+//       background: $primary; color: $white; border: none; padding: 0 20px; border-radius: 12px; font-weight: 800; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 15px rgba($primary, 0.3);
+//       &:hover { background: darken($primary, 5%); transform: translateY(-2px); }
+//     }
+//   }
+//   .timer { font-size: 0.8rem; color: $primary; margin-top: 20px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 5px; }
+//   .timer::before { content: '⏱'; font-size: 1rem; filter: grayscale(1); }
+// }
+
+// /* =========================================
+//    BOTÓN FLOTANTE (MINIMIZADO)
+//    ========================================= */
+// .floating-trigger {
+//   position: fixed; bottom: 100px; right: 20px; z-index: 9990;
+//   width: 65px; height: 65px; background: $brand-yellow; border-radius: 50%;
+//   display: flex; flex-direction: column; align-items: center; justify-content: center;
+//   box-shadow: 0 10px 25px rgba(0,0,0,0.25); cursor: pointer; border: 3px solid $white; color: $text-dark;
+//   transition: 0.3s;
+  
+//   .gift-icon { width: 28px; height: 28px; margin-bottom: 4px; }
+//   .tag { font-size: 0.65rem; font-weight: 900; color: $white; background: $primary; padding: 2px 8px; border-radius: 10px; position: absolute; bottom: -12px; box-shadow: 0 4px 10px rgba($primary, 0.4); }
+  
+//   &:hover { transform: scale(1.1) rotate(5deg); }
+// }
+
+// /* =========================================
+//    ANIMACIONES GLOBALES
+//    ========================================= */
+// .fade-in { animation: fadeIn 0.4s ease; }
+// .bounce-in { animation: bounceIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+// .fade-in-up { animation: fadeInUp 0.5s ease; }
+// .bounce { animation: floatBounce 3s infinite ease-in-out; }
+
+// /* Mensaje de Error / Feedback */
+// .feedback-error {
+//   color: $primary; font-weight: 700; background: rgba($primary, 0.05); padding: 6px 12px; border-radius: 8px; display: inline-block; border: 1px solid rgba($primary, 0.2);
+// }
+// .shake-animation { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+
+// @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+// @keyframes bounceIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+// @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+// @keyframes floatBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+// @keyframes tickerMove { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+// @keyframes pulseGlow { 0%, 100% { filter: drop-shadow(0 0 5px rgba($brand-yellow, 0.2)); transform: scale(1); } 50% { filter: drop-shadow(0 0 15px rgba($brand-yellow, 0.6)); transform: scale(1.1); } }
+// @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-3px, 0, 0); } 40%, 60% { transform: translate3d(3px, 0, 0); } }
+
+// /* =========================================
+//    RESPONSIVE
+//    ========================================= */
+// @media (max-width: 480px) {
+//   .wheel-wrapper { width: 260px; height: 260px; }
+//   .modal-container { padding: 30px 20px; }
+//   .prize-stage .input-group { flex-direction: column; .btn-claim { padding: 14px; } }
+// }
+
+// oPtimize the CSS for the Lucky Wheel component, ensuring it has a cohesive cyber-casino aesthetic with vibrant colors, glowing effects, and smooth animations. Use variables for colors and consistent styling for buttons and text.
+
+/* --- VARIABLES CYBER-CASINO --- */
+// $casino-gold: #FFD700;
+// $casino-gold-dark: #B8860B;
+// $primary: #FF2E63; // Magenta Bettjim
+// $neon-cyan: #00E5FF; // Azul eléctrico para anillos
+// $wheel-dark: #2D0A45; // Morado profundo ruleta
+// $wheel-magenta: #7A083E; // Magenta oscuro ruleta
+// $white: #FFF;
+
+// /* =========================================
+//    OVERLAY & FONDO MÁGICO
+//    ========================================= */
+// .overlay-casino {
+//   position: fixed; inset: 0; z-index: 99999;
+//   display: flex; align-items: center; justify-content: center;
+//   backdrop-filter: blur(10px);
+//   -webkit-backdrop-filter: blur(10px);
+//   /* Fondo oscuro profundo cyberpunk */
+//   background: radial-gradient(circle at 50% 50%, rgba(26, 11, 46, 0.85) 0%, rgba(0, 0, 0, 0.95) 100%);
+//   overflow: hidden;
+// }
+
+// .sparkles {
+//   position: absolute; inset: 0; pointer-events: none;
+//   background-image: radial-gradient(circle at 20% 30%, rgba($casino-gold, 0.4) 1px, transparent 2px),
+//                     radial-gradient(circle at 80% 20%, rgba($primary, 0.4) 1px, transparent 2px),
+//                     radial-gradient(circle at 40% 80%, rgba($casino-gold, 0.6) 2px, transparent 3px),
+//                     radial-gradient(circle at 70% 60%, rgba($white, 0.5) 1px, transparent 2px);
+//   background-size: 150px 150px;
+//   animation: twinkle 4s infinite linear;
+// }
+
+// /* =========================================
+//    MODAL TIPO PANEL DE CONTROL
+//    ========================================= */
+// .modal-container.casino-style {
+//   width: 95%; max-width: 500px;
+//   border-radius: 30px; padding: 40px 25px; text-align: center;
+//   position: relative; 
+//   /* Cristal oscuro */
+//   background: rgba(20, 8, 36, 0.7);
+//   border: 1px solid rgba(255, 255, 255, 0.1);
+//   box-shadow: 0 0 50px rgba(0, 0, 0, 0.9), inset 0 0 30px rgba($primary, 0.15);
+// }
+
+// .btn-close {
+//   position: absolute; top: 15px; right: 15px; background: transparent; border: 1px solid rgba($white, 0.2);
+//   width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+//   cursor: pointer; z-index: 10; color: $white; transition: 0.3s;
+//   svg { width: 18px; height: 18px; }
+//   &:hover { border-color: $neon-cyan; color: $neon-cyan; transform: rotate(90deg); box-shadow: 0 0 15px rgba($neon-cyan, 0.5); }
+// }
+
+// /* =========================================
+//    CABECERA: TEXTO HUECO CON NEÓN
+//    ========================================= */
+// .header-text {
+//   margin-bottom: 35px;
+  
+//   .neon-title { 
+//     margin: 0; font-weight: 900; font-size: 2.5rem; letter-spacing: 2px; 
+//     text-transform: uppercase;
+//     /* Efecto de texto hueco con borde brillante */
+//     color: transparent;
+//     -webkit-text-stroke: 1.5px $white;
+//     text-shadow: 
+//       0 0 10px rgba($primary, 0.8),
+//       0 0 20px rgba($casino-gold, 0.6),
+//       0 0 40px rgba($primary, 0.4);
+//     animation: neonPulse 2s infinite alternate;
+//   }
+  
+//   .golden-subtitle { margin: 10px 0 0; color: $casino-gold; font-size: 1.05rem; font-weight: 700; letter-spacing: 1px; text-shadow: 0 0 10px rgba($casino-gold, 0.5); }
+// }
+
+// /* =========================================
+//    CARRUSEL DE GANADORES (Con línea neón)
+//    ========================================= */
+// .winners-ticker {
+//   background: rgba(0, 0, 0, 0.5); padding: 8px 12px; margin-bottom: 35px;
+//   overflow: hidden; height: 42px; position: relative; width: 100%;
+//   border-radius: 12px;
+//   border-bottom: 2px solid $primary; /* Línea de base neón */
+//   box-shadow: 0 10px 20px -10px $primary;
+  
+//   .ticker-content {
+//     display: flex; gap: 40px; position: absolute; white-space: nowrap; top: 8px;
+//     animation: tickerMove 20s linear infinite;
+    
+//     .winner-item { 
+//       font-size: 0.85rem; color: #94A3B8; display: flex; align-items: center; gap: 8px; 
+//       strong { color: $white; font-weight: 700; }
+//       .win-text { color: $casino-gold; font-weight: 800; text-shadow: 0 0 5px rgba($casino-gold, 0.8); }
+//     }
+//     .micro-avatar {
+//       width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+//       color: white; font-weight: 800; font-size: 0.65rem; box-shadow: 0 2px 5px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.5);
+//     }
+//   }
+// }
+
+// /* =========================================
+//    LA RULETA Y LUCES DE CASINO
+//    ========================================= */
+// .wheel-wrapper { position: relative; width: 340px; height: 340px; margin: 0 auto; z-index: 5; }
+
+// .pointer-svg {
+//   position: absolute; top: -20px; left: 50%; transform: translateX(-50%);
+//   width: 45px; height: 45px; z-index: 15;
+//   filter: drop-shadow(0 5px 5px rgba(0,0,0,0.9)) drop-shadow(0 0 15px $casino-gold);
+//   svg { width: 100%; height: 100%; }
+// }
+
+// .wheel-frame {
+//   position: absolute; inset: -15px; border-radius: 50%;
+//   background: transparent; 
+//   box-shadow: 0 0 40px rgba($primary, 0.4), inset 0 0 20px rgba($casino-gold, 0.2);
+//   border: 4px solid $casino-gold;
+//   filter: drop-shadow(0 0 10px $casino-gold);
+//   z-index: 1;
+
+//   .casino-lights {
+//     position: absolute; inset: 6px; border-radius: 50%;
+//     border: 8px dotted rgba($white, 0.9); 
+//     filter: drop-shadow(0 0 8px $white) drop-shadow(0 0 15px $casino-gold);
+//     animation: flashLights 0.6s infinite alternate;
+//   }
+// }
+
+// .wheel {
+//   position: absolute; inset: 0; border-radius: 50%;
+//   box-shadow: inset 0 0 40px rgba(0,0,0,0.9); 
+//   z-index: 3; overflow: hidden;
+//   transition: transform 5s cubic-bezier(0.15, 0.85, 0.15, 1);
+//   /* Tonos morados y magentas basados en la imagen */
+//   background: conic-gradient(
+//     $wheel-dark 0% 16.66%, $wheel-magenta 16.66% 33.33%,
+//     $wheel-dark 33.33% 50%, $wheel-magenta 50% 66.66%,
+//     $wheel-dark 66.66% 83.33%, $wheel-magenta 83.33% 100%
+//   );
+
+//   &::before {
+//     content: ''; position: absolute; inset: 40px; border-radius: 50%;
+//     border: 1px solid rgba(255,255,255,0.1); pointer-events: none;
+//   }
+// }
+
+// .segment {
+//   position: absolute; top: 0; left: 50%; width: 2px; height: 50%;
+//   transform-origin: bottom center; 
+//   display: flex; justify-content: center; padding-top: 35px; z-index: 4;
+  
+//   span {
+//     color: $white; font-weight: 900; font-size: 1rem; 
+//     text-shadow: 0 2px 5px rgba(0,0,0,1); text-align: center; line-height: 1.1;
+//   }
+//   &.dark-text span { color: $casino-gold; text-shadow: 0 2px 5px rgba(0,0,0,1), 0 0 10px rgba($casino-gold, 0.5); }
+// }
+
+// /* =========================================
+//    ANILLOS DE ENERGÍA CYAN
+//    ========================================= */
+// .energy-rings {
+//   position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+//   width: 150px; height: 150px; z-index: 5; pointer-events: none;
+  
+//   .ring {
+//     position: absolute; inset: 0; border-radius: 50%;
+//     border: 2px solid $neon-cyan;
+//     box-shadow: 0 0 15px $neon-cyan, inset 0 0 15px $neon-cyan;
+//     opacity: 0;
+//   }
+//   .ring-1 { animation: pulseCyanRing 2s infinite ease-out; }
+//   .ring-2 { animation: pulseCyanRing 2s infinite ease-out 1s; }
+// }
+
+// /* =========================================
+//    BOTÓN CENTRAL 3D (Estilo Metálico/Turbina)
+//    ========================================= */
+// .spin-btn {
+//   position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+//   width: 90px; height: 90px; border-radius: 50%; padding: 0;
+//   background: radial-gradient(circle at 30% 30%, #5A5A5A, #1A1A1A); 
+//   border: none;
+//   box-shadow: 
+//     0 15px 30px rgba(0,0,0,0.9), 
+//     0 0 20px rgba($neon-cyan, 0.4),
+//     inset 0 0 0 6px $casino-gold-dark, 
+//     inset 0 0 10px 8px $casino-gold; 
+//   cursor: pointer; z-index: 10; transition: 0.1s;
+  
+//   .inner-btn {
+//     display: flex; align-items: center; justify-content: center;
+//     width: 100%; height: 100%; border-radius: 50%;
+//     font-weight: 900; color: $white; font-size: 1.1rem; letter-spacing: 1px;
+//     text-shadow: 0 0 10px rgba($white, 0.8);
+//   }
+
+//   &:active:not(:disabled) { 
+//     transform: translate(-50%, -46%);
+//     box-shadow: 0 5px 10px rgba(0,0,0,0.9), inset 0 0 0 6px #8B6508, inset 0 0 15px 10px $casino-gold-dark; 
+//   }
+
+//   &:disabled { filter: grayscale(1); cursor: not-allowed; }
+// }
+
+// /* =========================================
+//    ESTADO: PREMIO GANADO (BIG WIN)
+//    ========================================= */
+// .prize-stage {
+//   .prize-icon-svg {
+//     width: 80px; height: 80px; margin: 0 auto 15px;
+//     animation: pulseGlow 1.5s infinite; filter: drop-shadow(0 0 20px rgba($casino-gold, 0.6));
+//     svg { width: 100%; height: 100%; }
+//   }
+  
+//   .prize-box {
+//     background: rgba(0, 0, 0, 0.6); border: 2px solid $casino-gold; padding: 25px; margin-bottom: 25px; border-radius: 16px;
+//     box-shadow: inset 0 0 20px rgba($casino-gold, 0.3), 0 0 40px rgba($casino-gold, 0.4);
+//     .huge-text { font-size: 3rem; font-weight: 900; color: $white; display: block; letter-spacing: -1px; text-shadow: 0 0 15px $primary, 0 0 30px $primary; }
+//   }
+  
+//   .input-group {
+//     display: flex; gap: 8px; margin-top: 15px;
+//     input { 
+//       flex: 1; padding: 14px 16px; border: 2px solid $primary; border-radius: 12px; font-size: 0.95rem; outline: none; transition: 0.2s;
+//       background: rgba(255, 255, 255, 0.9); color: #0F172A; font-weight: 600;
+//       &:focus { border-color: $neon-cyan; box-shadow: 0 0 15px rgba($neon-cyan, 0.5); }
+//     }
+//     .btn-claim { 
+//       background: linear-gradient(180deg, #FFE55C, $casino-gold-dark); color: #150824; border: none; padding: 0 25px; border-radius: 12px; font-weight: 900; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 15px rgba($casino-gold, 0.4);
+//       &:hover { transform: translateY(-2px); filter: brightness(1.2); box-shadow: 0 6px 20px rgba($casino-gold, 0.8); }
+//     }
+//   }
+//   .timer { font-size: 0.85rem; color: $neon-cyan; margin-top: 20px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 5px; text-shadow: 0 0 5px rgba($neon-cyan, 0.8); }
+// }
+
+// /* =========================================
+//    ANIMACIONES
+//    ========================================= */
+// @keyframes neonPulse {
+//   0% { text-shadow: 0 0 10px rgba($primary, 0.8), 0 0 20px rgba($casino-gold, 0.6), 0 0 40px rgba($primary, 0.4); }
+//   100% { text-shadow: 0 0 20px rgba($primary, 1), 0 0 40px rgba($casino-gold, 0.8), 0 0 60px rgba($primary, 0.8); }
+// }
+
+// @keyframes pulseCyanRing {
+//   0% { transform: scale(0.6); opacity: 1; border-width: 4px; }
+//   100% { transform: scale(1.4); opacity: 0; border-width: 1px; }
+// }
+
+// @keyframes flashLights { 
+//   0% { opacity: 0.4; filter: drop-shadow(0 0 2px $white); } 
+//   100% { opacity: 1; filter: drop-shadow(0 0 10px $white) drop-shadow(0 0 20px $casino-gold); } 
+// }
+
+// @keyframes twinkle { 0% { background-position: 0 0; } 100% { background-position: -150px -150px; } }
+// @keyframes tickerMove { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+// @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+// @keyframes bounceIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+// @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+// @keyframes pulseGlow { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+// @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-3px, 0, 0); } 40%, 60% { transform: translate3d(3px, 0, 0); } }
+
+// /* Botón flotante minimizado */
+// .floating-trigger {
+//   position: fixed; bottom: 100px; right: 20px; z-index: 9990;
+//   width: 65px; height: 65px; background: linear-gradient(180deg, #ffffff, $casino-gold-dark); border-radius: 50%;
+//   display: flex; flex-direction: column; align-items: center; justify-content: center;
+//   box-shadow: 0 10px 25px rgba(0,0,0,0.8), inset 0 0 0 3px #150824; cursor: pointer; color: #150824;
+//   transition: 0.3s;
+//   .gift-icon { width: 26px; height: 26px; margin-bottom: 4px; }
+//   .tag { font-size: 0.65rem; font-weight: 900; color: $white; background: $primary; padding: 2px 8px; border-radius: 10px; position: absolute; bottom: -12px; box-shadow: 0 4px 10px rgba($primary, 0.4); border: 2px solid #150824; }
+//   &:hover { transform: scale(1.1) rotate(5deg); box-shadow: 0 0 20px $casino-gold; }
+// }
+// .bounce { animation: floatBounce 3s infinite ease-in-out; }
+// @keyframes floatBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+
+// /* =========================================
+//    RESPONSIVE
+//    ========================================= */
+// @media (max-width: 480px) {
+//   .wheel-wrapper { width: 280px; height: 280px; }
+//   .modal-container.casino-style { padding: 30px 15px; }
+//   .header-text .neon-title { font-size: 2rem; }
+//   .energy-rings { width: 120px; height: 120px; }
+//   .prize-stage .input-group { flex-direction: column; gap: 10px; .btn-claim { padding: 14px; } }
+// }
+
+
+// OPCIONES DE COLOR PARA LA RULETA (CON TONOS MÁS VIBRANTES Y NEÓN):
+
+/* --- VARIABLES CYBER-CASINO --- */
+/* =========================================
+   VARIABLES CYBER-CASINO
+   ========================================= */
+$casino-gold: #FFD700;
+$casino-gold-dark: #B8860B;
+$primary: #FF2E63; // Magenta Neón Bettjim
+$neon-cyan: #00E5FF; // Azul eléctrico para aros
+$wheel-dark: #1E0A3C; // Morado profundo
+$wheel-light: #4A154B; // Magenta oscuro
 $white: #FFF;
 
-.overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 99999;
+/* =========================================
+   1. OVERLAY Y FONDO (POLVO DE ESTRELLAS)
+   ========================================= */
+.overlay-casino {
+  position: fixed; inset: 0; z-index: 99999;
   display: flex; align-items: center; justify-content: center;
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  /* Degradado profundo cyberpunk */
+  background: radial-gradient(circle at 50% 50%, rgba(30, 15, 50, 0.75) 0%, rgba(0, 0, 0, 0.95) 100%);
+  overflow: hidden;
 }
 
-.modal-container {
-  background: white; width: 90%; max-width: 400px;
-  border-radius: 20px; padding: 30px 20px; text-align: center;
-  position: relative; overflow: hidden;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-  border: 4px solid $temu-yellow; /* Borde dorado tipo casino */
+.sparkles {
+  position: absolute; inset: 0; pointer-events: none; z-index: 1;
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba($casino-gold, 0.4) 1px, transparent 2px),
+    radial-gradient(circle at 80% 20%, rgba($primary, 0.4) 1px, transparent 2px),
+    radial-gradient(circle at 40% 80%, rgba($casino-gold, 0.6) 2px, transparent 3px),
+    radial-gradient(circle at 70% 60%, rgba($white, 0.5) 1px, transparent 2px);
+  background-size: 150px 150px; 
+  animation: twinkle 4s infinite linear;
+}
 
-  /* Fondo decorativo */
-  background: radial-gradient(circle, #FFF 20%, #FFF0F3 100%);
+/* =========================================
+   2. ELEMENTOS FLOTANTES (FULL SCREEN GLASS)
+   ========================================= */
+.floating-glass-items {
+  position: absolute; inset: 0; pointer-events: none; z-index: 5; overflow: hidden;
+
+  .glass-float {
+    position: absolute;
+    width: 75px; height: 75px; border-radius: 18px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.02) 100%);
+    border: 1px solid rgba(255,255,255,0.25);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 0 12px rgba(255,255,255,0.1);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    animation: floatAnim 6s ease-in-out infinite alternate;
+    
+    svg { width: 32px; height: 32px; margin-bottom: 5px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.8)); opacity: 0.9; }
+    span { font-size: 0.6rem; color: $white; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.8;}
+  }
+
+  /* Bonos de descuento (Estilo Magenta Neón) */
+  .item-bono {
+    width: 65px; height: 65px; border-radius: 14px;
+    background: rgba($primary, 0.2); border-color: rgba($primary, 0.5);
+    box-shadow: 0 10px 30px rgba($primary, 0.3), inset 0 0 15px rgba($primary, 0.3);
+    span { font-size: 0.85rem; text-align: center; line-height: 1.1; color: $white; text-shadow: 0 0 8px $primary; font-weight: 900;}
+  }
+
+  /* Posiciones por todo el viewport */
+  .item-1 { top: 15vh; left: 10vw; animation-duration: 7s; }
+  .item-2 { top: 45vh; left: 5vw; animation-duration: 5s; transform: scale(1.1); }
+  .item-3 { top: 75vh; left: 12vw; animation-duration: 8s; }
+  .b-1    { top: 25vh; left: 22vw; animation-duration: 6s; transform: rotate(-15deg); }
+  .b-3    { bottom: 10vh; left: 25vw; animation-duration: 7.5s; transform: rotate(10deg); }
+  
+  .item-4 { top: 12vh; right: 12vw; animation-duration: 6.5s; }
+  .item-5 { top: 40vh; right: 6vw; animation-duration: 8s; transform: scale(1.15); }
+  .item-6 { top: 70vh; right: 15vw; animation-duration: 5.5s; }
+  .b-2    { top: 30vh; right: 20vw; animation-duration: 7s; transform: rotate(15deg); }
+
+  @media (max-width: 1024px) { .b-1, .b-3, .item-3, .item-6 { display: none; } }
+  @media (max-width: 768px) { display: none; } /* Oculto en móviles */
+}
+
+/* =========================================
+   3. MODAL PRINCIPAL (CRISTAL CYBER)
+   ========================================= */
+.modal-container.cyber-glass {
+  width: 95%; max-width: 540px;
+  border-radius: 30px; padding: 40px 25px 25px; text-align: center;
+  position: relative; z-index: 20;
+  background: rgba(20, 8, 36, 0.6);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 60px rgba(0, 0, 0, 0.9), inset 0 0 30px rgba($primary, 0.15);
 }
 
 .btn-close {
-  position: absolute; top: 10px; right: 10px; background: #EEE; border: none;
-  width: 30px; height: 30px; border-radius: 50%; font-weight: bold; cursor: pointer;
-  z-index: 10; &:hover { background: #DDD; }
+  position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.05); border: 1px solid rgba($white, 0.2);
+  width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; z-index: 50; color: #94A3B8; transition: 0.3s;
+  svg { width: 18px; height: 18px; }
+  &:hover { background: rgba(255,255,255,0.1); border-color: $neon-cyan; color: $neon-cyan; transform: rotate(90deg); box-shadow: 0 0 15px rgba($neon-cyan, 0.5); }
 }
 
+/* =========================================
+   4. CABECERA NEÓN (PRUEBA TU SUERTE)
+   ========================================= */
 .header-text {
-  margin-bottom: 20px;
-  h2 { margin: 0; color: $primary; font-weight: 900; font-size: 1.5rem; text-transform: uppercase; }
-  p { margin: 5px 0 0; color: #666; font-size: 0.9rem; }
+  margin-bottom: 35px; position: relative; z-index: 10;
+  
+  .neon-title { 
+    margin: 0; font-weight: 900; font-size: 2.5rem; letter-spacing: 2px; text-transform: uppercase;
+    position: relative; display: inline-block;
+    color: transparent; -webkit-text-stroke: 1px $white;
+    text-shadow: 0 0 10px rgba($primary, 0.8), 0 0 20px rgba($casino-gold, 0.5), 0 0 40px rgba($primary, 0.4);
+    animation: neonPulse 2s infinite alternate;
+    
+    .title-swish {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 150%; height: 150%; pointer-events: none; z-index: -1;
+      opacity: 0.6; filter: drop-shadow(0 0 10px $casino-gold);
+    }
+  }
+  .golden-subtitle { margin: 10px 0 0; color: #CBD5E1; font-size: 1.05rem; font-weight: 500; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
 }
 
-/* --- RULETA --- */
-.wheel-wrapper {
-  position: relative; width: 280px; height: 280px; margin: 0 auto;
+/* =========================================
+   5. LA RULETA GIGANTE (380px)
+   ========================================= */
+.wheel-wrapper { position: relative; width: 380px; height: 380px; margin: 0 auto; z-index: 10; }
+
+.pointer-svg {
+  position: absolute; top: -25px; left: 50%; transform: translateX(-50%);
+  width: 55px; height: 55px; z-index: 20;
+  filter: drop-shadow(0 8px 10px rgba(0,0,0,0.9)) drop-shadow(0 0 20px $casino-gold);
+  svg { width: 100%; height: 100%; }
 }
 
-.pointer {
-  position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
-  width: 0; height: 0; 
-  border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid $primary;
-  z-index: 5; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));
+/* Resplandor dorado intenso detrás */
+.wheel-frame {
+  position: absolute; inset: -8px; border-radius: 50%;
+  border: 4px solid $casino-gold;
+  box-shadow: 0 0 30px rgba($casino-gold, 0.4), 0 0 60px rgba($primary, 0.2), inset 0 0 20px rgba($casino-gold, 0.5);
+  z-index: 1; pointer-events: none;
+
+  .casino-lights {
+    position: absolute; inset: 6px; border-radius: 50%;
+    border: 8px dotted rgba($white, 0.9); 
+    filter: drop-shadow(0 0 8px $white) drop-shadow(0 0 15px $casino-gold);
+    animation: flashLights 0.6s infinite alternate;
+  }
 }
 
 .wheel {
-  width: 100%; height: 100%; border-radius: 50%;
-  border: 8px solid $temu-orange;
-  position: relative;
-  transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); /* Efecto de frenado realista */
-  
-  /* Dibujamos los segmentos con gradiente cónico */
+  position: absolute; inset: 0; border-radius: 50%;
+  box-shadow: inset 0 0 30px rgba(0,0,0,0.9); z-index: 3; overflow: hidden;
+  transition: transform 5s cubic-bezier(0.15, 0.85, 0.15, 1);
   background: conic-gradient(
-    $primary 0% 16.66%,
-    $temu-yellow 16.66% 33.33%,
-    $primary 33.33% 50%,
-    $temu-yellow 50% 66.66%,
-    $primary 66.66% 83.33%,
-    $temu-yellow 83.33% 100%
+    $wheel-dark 0% 16.66%, $wheel-light 16.66% 33.33%,
+    $wheel-dark 33.33% 50%, $wheel-light 50% 66.66%,
+    $wheel-dark 66.66% 83.33%, $wheel-light 83.33% 100%
   );
-  box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
+  
+  &::after {
+    content: ''; position: absolute; inset: 50px; border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.1); pointer-events: none;
+  }
 }
 
-/* TEXTOS DENTRO DE LA RULETA */
 .segment {
   position: absolute; top: 0; left: 50%; width: 2px; height: 50%;
-  transform-origin: bottom center; /* Clave para que giren desde el centro */
-  display: flex; justify-content: center; padding-top: 20px;
-  
-  span {
-    color: white; /* Color por defecto (fondo rojo/oscuro) */
-    font-weight: 800; font-size: 0.75rem; 
-    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-    text-align: center;
-    line-height: 1.2;
-    /* Importante: para que el texto no se voltee si rota mucho */
-    display: inline-block; 
-  }
-
-  /* Color alternativo para los gajos amarillos (si usas patrón alternado) */
-  &.dark-text span {
-    color: #FF2E63; /* El color primario (rojo) sobre fondo amarillo */
-    text-shadow: none;
-  }
+  transform-origin: bottom center; display: flex; justify-content: center; padding-top: 40px; z-index: 4;
+  span { color: $white; font-weight: 800; font-size: 1.15rem; text-shadow: 0 2px 8px rgba(0,0,0,1); text-align: center; line-height: 1.1; }
+  &.dark-text span { color: $casino-gold; text-shadow: 0 2px 8px rgba(0,0,0,1), 0 0 10px rgba($casino-gold, 0.3); }
 }
 
-/* Rotamos cada texto para que quede en su gajo */
-
+/* =========================================
+   6. ANILLOS CYAN Y BOTÓN TURBINA
+   ========================================= */
+.energy-rings {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 170px; height: 170px; z-index: 5; pointer-events: none;
+  .ring { position: absolute; inset: 0; border-radius: 50%; border: 2px solid $neon-cyan; box-shadow: 0 0 15px $neon-cyan, inset 0 0 15px $neon-cyan; opacity: 0; }
+  .ring-1 { animation: rippleCyan 2s infinite ease-out; }
+  .ring-2 { animation: rippleCyan 2s infinite ease-out 1s; }
+}
 
 .spin-btn {
   position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-  width: 70px; height: 70px; border-radius: 50%; background: white; border: 4px solid white;
-  box-shadow: 0 0 15px rgba(0,0,0,0.2); font-weight: 800; color: $primary; cursor: pointer;
-  z-index: 4; font-size: 0.9rem;
-  &:active { transform: translate(-50%, -50%) scale(0.95); }
-  &:disabled { background: #EEE; color: #999; cursor: not-allowed; }
-}
-
-/* --- ESTADO DE GANADOR --- */
-.prize-stage {
-  h2 { font-size: 2rem; color: $temu-orange; margin-bottom: 20px; }
-  .prize-box {
-    background: #FFFBEB; border: 2px dashed $temu-orange; padding: 20px; margin-bottom: 20px; border-radius: 10px;
-    .huge-text { font-size: 2.5rem; font-weight: 900; color: $primary; display: block; }
-  }
+  width: 105px; height: 105px; border-radius: 50%; padding: 0;
+  background: radial-gradient(circle at 50% 50%, #B8860B 0%, #3B2A05 60%, #111 100%); 
+  border: 4px solid #111;
+  box-shadow: 0 20px 30px rgba(0,0,0,0.9), inset 0 0 0 6px #8B6508, inset 0 0 20px rgba($casino-gold, 0.5);
+  cursor: pointer; z-index: 20; transition: 0.1s;
   
-  .input-group {
-    display: flex; gap: 10px; margin-top: 20px;
-    input { flex: 1; padding: 12px; border: 1px solid #CCC; border-radius: 8px; }
-    .btn-claim { background: $primary; color: white; border: none; padding: 0 20px; border-radius: 8px; font-weight: 700; cursor: pointer; animation: pulse 1.5s infinite; }
-  }
-  .timer { font-size: 0.8rem; color: red; margin-top: 15px; }
+  .inner-btn { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; font-weight: 900; color: $white; font-size: 1.2rem; letter-spacing: 1px; text-shadow: 0 0 10px rgba($white, 0.8); }
+  &:active:not(:disabled) { transform: translate(-50%, -46%); box-shadow: 0 5px 15px rgba(0,0,0,0.9), inset 0 0 0 6px #5A4205; }
+  &:disabled { filter: grayscale(1); cursor: not-allowed; }
 }
 
-/* Animaciones */
-.fade-in { animation: fadeIn 0.3s ease; }
-.bounce-in { animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
-.fade-in-up { animation: fadeInUp 0.5s ease; }
-@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-@keyframes bounceIn { 0% { transform: scale(0.3); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-@keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-//Winers
+/* =========================================
+   7. TICKER (GANADORES Y LÍNEA NEÓN)
+   ========================================= */
 .winners-ticker {
-  background: #FFF0F3; border-radius: 20px; padding: 5px 10px; margin-bottom: 15px;
-  overflow: hidden; height: 30px; position: relative; width: 100%;
-  border: 1px solid #FF2E63;
+  background: transparent; margin-top: 45px; padding-bottom: 10px;
+  overflow: hidden; height: 40px; position: relative; width: 100%; z-index: 10;
   
   .ticker-content {
-    display: flex; gap: 20px; position: absolute; white-space: nowrap;
-    animation: tickerMove 15s linear infinite;
+    display: flex; gap: 40px; position: absolute; white-space: nowrap; top: 0;
+    animation: tickerMove 20s linear infinite;
     
-    span { font-size: 0.8rem; color: #FF2E63; font-weight: 700; display: flex; align-items: center; gap: 5px; }
+    .winner-item { font-size: 0.85rem; color: #94A3B8; display: flex; align-items: center; gap: 8px; strong { color: $white; } .win-text { color: $casino-gold; text-shadow: 0 0 5px rgba($casino-gold, 0.5); } }
+    .micro-avatar { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 0.6rem; }
+  }
+
+  .neon-bottom-line {
+    position: absolute; bottom: 0; left: 10%; right: 10%; height: 2px;
+    background: $primary; box-shadow: 0 0 10px $primary, 0 0 20px $primary; border-radius: 50%;
+    &::after { content: ''; position: absolute; right: 0; top: -3px; width: 8px; height: 8px; border-radius: 50%; background: #fff; box-shadow: 0 0 15px #fff; }
   }
 }
 
-@keyframes tickerMove {
-  0% { transform: translateX(100%); }
-  100% { transform: translateX(-100%); } /* Ajusta según el largo del texto */
+/* =========================================
+   8. ESTADO: PREMIO GANADO (TICKET DORADO)
+   ========================================= */
+.prize-stage {
+  position: relative; z-index: 20; display: flex; flex-direction: column; align-items: center;
+  
+  .light-burst {
+    position: absolute; top: -40px; left: 50%; transform: translateX(-50%);
+    width: 250px; height: 250px; z-index: -1; pointer-events: none;
+    background: radial-gradient(circle, rgba($casino-gold, 0.3) 0%, rgba($primary, 0.1) 40%, transparent 70%);
+    animation: pulseGlow 3s infinite alternate;
+  }
+
+  .prize-icon-svg { 
+    width: 95px; height: 95px; margin: 0 auto 10px; 
+    animation: dropBounce 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; 
+    filter: drop-shadow(0 10px 25px rgba($casino-gold, 0.8)); 
+    svg { width: 100%; height: 100%; } 
+  }
+  
+  .prize-box { 
+    background: linear-gradient(135deg, rgba($wheel-dark, 0.9) 0%, rgba(0, 0, 0, 0.9) 100%); 
+    border: 2px solid $casino-gold; padding: 25px; margin-bottom: 25px; border-radius: 20px; 
+    box-shadow: 0 15px 40px rgba(0,0,0,0.8), 0 0 30px rgba($casino-gold, 0.3), inset 0 0 30px rgba($primary, 0.2); 
+    width: 100%; position: relative; overflow: hidden;
+
+    .huge-text { font-size: 3.5rem; font-weight: 900; color: $white; display: block; letter-spacing: -2px; line-height: 1; text-shadow: 0 0 15px $primary, 0 0 30px $primary, 0 0 45px $casino-gold; }
+    .confetti-text { display: block; font-size: 0.85rem; color: $casino-gold; font-weight: 800; margin-top: 10px; letter-spacing: 2px; }
+    
+    &.shine-effect::after {
+      content: ''; position: absolute; top: 0; left: -150%; width: 50%; height: 100%;
+      background: linear-gradient(to right, transparent, rgba(255,255,255,0.4), transparent);
+      transform: skewX(-25deg); animation: shinePass 3s infinite;
+    }
+  }
+  
+  .input-group { 
+    display: flex; gap: 8px; margin-top: 20px; width: 100%;
+    input { flex: 1; padding: 16px 18px; border: 2px solid $primary; border-radius: 12px; font-size: 1rem; outline: none; transition: 0.2s; background: rgba(255, 255, 255, 0.95); color: #0F172A; font-weight: 700; box-shadow: inset 0 2px 5px rgba(0,0,0,0.1); &:focus { border-color: $neon-cyan; box-shadow: 0 0 20px rgba($neon-cyan, 0.6), inset 0 2px 5px rgba(0,0,0,0.1); } } 
+    .btn-claim { background: linear-gradient(180deg, #FFE55C, $casino-gold-dark); color: #150824; border: none; padding: 0 30px; border-radius: 12px; font-weight: 900; font-size: 1.05rem; cursor: pointer; transition: 0.2s; box-shadow: 0 5px 20px rgba($casino-gold, 0.5); &:hover { transform: translateY(-3px); filter: brightness(1.2); box-shadow: 0 8px 25px rgba($casino-gold, 0.8); } } 
+  }
+  
+  .timer { font-size: 0.9rem; color: $neon-cyan; margin-top: 25px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 6px; text-shadow: 0 0 8px rgba($neon-cyan, 0.8); }
 }
 
+/* =========================================
+   9. TRIGGER FLOTANTE (CERRADO)
+   ========================================= */
 .floating-trigger {
-  position: fixed; bottom: 100px; right: 20px; z-index: 9990;
-  width: 60px; height: 60px; background: #FFD700; border-radius: 50%;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.3); cursor: pointer; border: 3px solid white;
-  
-  .emoji { font-size: 1.8rem; line-height: 1; }
-  .tag { font-size: 0.7rem; font-weight: 900; color: #FF2E63; background: white; padding: 2px 5px; border-radius: 5px; position: absolute; bottom: -10px; }
-  
-  &:hover { transform: scale(1.1); }
+  position: fixed; bottom: 100px; right: 20px; z-index: 9990; width: 65px; height: 65px; background: linear-gradient(180deg, #ffffff, $casino-gold-dark); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(0,0,0,0.8), inset 0 0 0 3px #150824; cursor: pointer; color: #150824; transition: 0.3s;
+  .gift-icon { width: 26px; height: 26px; margin-bottom: 4px; }
+  .tag { font-size: 0.65rem; font-weight: 900; color: $white; background: $primary; padding: 2px 8px; border-radius: 10px; position: absolute; bottom: -12px; box-shadow: 0 4px 10px rgba($primary, 0.4); border: 2px solid #150824; }
+  &:hover { transform: scale(1.1) rotate(5deg); box-shadow: 0 0 20px $casino-gold; }
 }
 
-/* Animación de latido para llamar la atención */
-.bounce { animation: bounce 2s infinite; }
-@keyframes bounce {
-  0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
-  40% {transform: translateY(-10px);}
-  60% {transform: translateY(-5px);}
-}
-.feedback-error {
-  color: #FF2E63; /* Rojo Bettjim */
-  font-weight: 800;
-  background: #FFF0F3;
-  padding: 5px 10px;
-  border-radius: 10px;
-  display: inline-block;
-}
+/* =========================================
+   10. ANIMACIONES (KEYFRAMES)
+   ========================================= */
+@keyframes neonPulse { 0% { text-shadow: 0 0 10px rgba($primary, 0.8), 0 0 20px rgba($casino-gold, 0.6), 0 0 40px rgba($primary, 0.4); } 100% { text-shadow: 0 0 20px rgba($primary, 1), 0 0 40px rgba($casino-gold, 0.8), 0 0 60px rgba($primary, 0.8); } }
+@keyframes rippleCyan { 0% { transform: scale(0.5); opacity: 1; border-width: 3px; } 100% { transform: scale(1.5); opacity: 0; border-width: 1px; } }
+@keyframes flashLights { 0% { opacity: 0.4; filter: drop-shadow(0 0 2px $white); } 100% { opacity: 1; filter: drop-shadow(0 0 10px $white) drop-shadow(0 0 20px $casino-gold); } }
+@keyframes floatAnim { 0% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-15px) rotate(3deg); } 100% { transform: translateY(5px) rotate(-3deg); } }
+@keyframes twinkle { 0% { background-position: 0 0; } 100% { background-position: -150px -150px; } }
+@keyframes tickerMove { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+@keyframes dropBounce { 0% { transform: translateY(-100px) scale(0.5); opacity: 0; } 60% { transform: translateY(15px) scale(1.1); opacity: 1; } 80% { transform: translateY(-5px) scale(0.95); } 100% { transform: translateY(0) scale(1); opacity: 1; } }
+@keyframes shinePass { 0% { left: -150%; } 20% { left: 200%; } 100% { left: 200%; } }
+@keyframes text-focus-in { 0% { filter: blur(12px); opacity: 0; } 100% { filter: blur(0px); opacity: 1; } }
+@keyframes floatBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes bounceIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulseGlow { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+@keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-3px, 0, 0); } 40%, 60% { transform: translate3d(3px, 0, 0); } }
 
-/* Animación de vibración (Shake) para indicar "Error" */
-.shake-animation {
-  animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
-}
+/* Clases de Utilidad de Animación */
+.fade-in { animation: fadeIn 0.4s ease; }
+.bounce-in { animation: bounceIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.fade-in-up { animation: fadeInUp 0.5s ease; }
+.text-focus-in { animation: text-focus-in 0.8s cubic-bezier(0.550, 0.085, 0.680, 0.530) both; }
+.pulse-cta { animation: pulseGlow 2s infinite alternate; }
+.bounce { animation: floatBounce 3s infinite ease-in-out; }
+.shake-animation { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
 
-@keyframes shake {
-  10%, 90% { transform: translate3d(-1px, 0, 0); }
-  20%, 80% { transform: translate3d(2px, 0, 0); }
-  30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
-  40%, 60% { transform: translate3d(4px, 0, 0); }
+/* =========================================
+   11. MEDIA QUERIES (RESPONSIVE)
+   ========================================= */
+@media (max-width: 480px) {
+  /* En móvil escalamos todo proporcionalmente */
+  .wheel-wrapper { width: 310px; height: 310px; }
+  .modal-container.cyber-glass { padding: 30px 15px; }
+  .header-text .neon-title { font-size: 2rem; }
+  .energy-rings { width: 140px; height: 140px; }
+  .spin-btn { width: 85px; height: 85px; .inner-btn { font-size: 1rem; } }
+  .segment { padding-top: 30px; span { font-size: 0.9rem; } }
+  .prize-stage .input-group { flex-direction: column; gap: 10px; .btn-claim { padding: 16px; width: 100%; } }
+  .prize-stage .prize-box .huge-text { font-size: 2.8rem; }
 }

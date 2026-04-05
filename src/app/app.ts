@@ -10,7 +10,7 @@ import { CookieBanner } from './shared/components/cookie-banner/cookie-banner';
 import { LuckyWheel } from './shared/components/lucky-wheel/lucky-wheel';
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Toast, HeaderOne, Sidebar, FooterOne, CartSidebar,ProgressBar, CookieBanner],
+  imports: [RouterOutlet, Toast, HeaderOne, Sidebar, FooterOne, CartSidebar,ProgressBar, CookieBanner, LuckyWheel],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })

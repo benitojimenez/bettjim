@@ -1,248 +1,208 @@
-/* --- VARS --- */
+/* --- VARS GLOBALES --- */
 $primary: #FF2E63;
-$text-dark: #111;
-$bg-light: #F9FAFB;
+$primary-glow: rgba(255, 46, 99, 0.2);
+$text-dark: #0F172A;
+$text-muted: #64748B;
+$bg-light: #F8FAFC;
+$white: #FFFFFF;
 
+/* FUENTES UNIFICADAS PARA TODO EL COMPONENTE */
 :host {
   display: block;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
   color: $text-dark;
   overflow-x: hidden;
+  background: $white;
 }
 
-/* --- 1. HERO SECTION PREMIUM (PARALLAX REAL) --- */
+/* CLASES DE UTILIDAD (Tipografía Pro) */
+.section-badge { font-size: 0.85rem; text-transform: uppercase; color: $primary; letter-spacing: 3px; font-weight: 800; margin-bottom: 15px; display: inline-block; }
+.section-title { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900; line-height: 1.1; margin: 0 0 20px; letter-spacing: -1px; color: $text-dark; }
+.lead-text { font-size: 1.2rem; line-height: 1.7; color: $text-muted; max-width: 700px; margin: 0 auto; }
+.text-center { text-align: center; }
+
+/* =========================================
+   1. HERO MANIFESTO
+   ========================================= */
 .hero-manifesto {
-  height: 90vh; /* Un poco más alto */
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  color: white;
-  overflow: hidden;
-
-  /* FONDO CON EFECTO PARALLAX (CSS PURO) */
-  .hero-bg-parallax {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    // background-image se define en el HTML
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed; /* EL TRUCO DEL PARALLAX */
-    z-index: 1;
-    filter: brightness(0.6); /* Un poco más oscuro para contraste */
-  }
-
-  /* OVERLAY GRADIENTE */
-  .hero-overlay {
-    position: absolute;
-    inset: 0; /* Ocupa todo */
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.1) 60%);
-    z-index: 2;
-  }
-
+  height: 85vh; min-height: 600px; position: relative; display: flex; align-items: center; justify-content: center; text-align: center; color: $white; overflow: hidden;
+  .hero-bg-parallax { position: absolute; inset: 0; background-size: cover; background-position: center; background-attachment: fixed; z-index: 1; filter: brightness(0.65); transform: scale(1.05); }
+  .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(15,23,42, 0.8) 0%, rgba(15,23,42, 0.2) 100%); z-index: 2; }
   .hero-content {
-    position: relative;
-    z-index: 3; /* Por encima de todo */
-    max-width: 900px;
-    padding: 20px;
-
-    .subtitle {
-      display: block;
-      font-size: 1rem;
-      letter-spacing: 4px;
-      margin-bottom: 25px;
-      color: $primary; /* Color de acento */
-      font-weight: 700;
-      text-transform: uppercase;
-    }
-
-    h1 {
-      /* TIPOGRAFÍA GIGANTE ESTILO NIKE/APPLE */
-      font-size: clamp(3rem, 10vw, 6.5rem); 
-      font-weight: 900;
-      line-height: 1;
-      margin-bottom: 30px;
-      letter-spacing: -2px; /* Letras pegadas */
-      text-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    }
-
-    p {
-      font-size: 1.3rem;
-      max-width: 650px;
-      margin: 0 auto;
-      opacity: 0.95;
-      line-height: 1.6;
-      font-weight: 400;
-    }
+    position: relative; z-index: 3; max-width: 900px; padding: 0 20px;
+    .subtitle { display: block; font-size: 0.9rem; letter-spacing: 5px; margin-bottom: 25px; color: $primary; font-weight: 800; text-transform: uppercase; }
+    h1 { font-size: clamp(3rem, 8vw, 6rem); font-weight: 900; line-height: 1.05; margin-bottom: 30px; letter-spacing: -2px; text-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    p { font-size: 1.25rem; max-width: 600px; margin: 0 auto; color: rgba(255,255,255,0.9); line-height: 1.6; font-weight: 400; }
   }
 }
 
-/* --- 2. KINETIC BANNER (Marquee) --- */
+/* =========================================
+   2. KINETIC BANNER
+   ========================================= */
 .kinetic-banner {
-  background: $text-dark; color: white; padding: 25px 0; overflow: hidden; white-space: nowrap; border-top: 1px solid rgba(255,255,255,0.1);
+  background: $text-dark; color: $white; padding: 25px 0; overflow: hidden; white-space: nowrap; border-top: 1px solid rgba(255,255,255,0.05);
   .scrolling-text {
-    display: inline-block; animation: scrollText 25s linear infinite; /* Más lento y suave */
-    span { font-size: 1.2rem; font-weight: 700; text-transform: uppercase; margin-right: 60px; letter-spacing: 2px; opacity: 0.9; }
+    display: inline-block; animation: scrollText 30s linear infinite;
+    span { font-size: 1.1rem; font-weight: 700; text-transform: uppercase; margin-right: 50px; letter-spacing: 2px; color: rgba(255,255,255,0.7); }
   }
 }
-@keyframes scrollText {
-  from { transform: translateX(0%); }
-  to { transform: translateX(-50%); }
-}
+@keyframes scrollText { from { transform: translateX(0%); } to { transform: translateX(-50%); } }
 
-/* --- 3. STORY SECTION --- */
+/* =========================================
+   3. STORY SECTION
+   ========================================= */
 .story-section {
-  padding: 120px 20px; max-width: 1200px; margin: 0 auto; /* Más padding */
-
+  padding: 140px 20px; max-width: 1200px; margin: 0 auto;
   .story-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 100px; align-items: center;
-    @media(max-width: 900px) { grid-template-columns: 1fr; gap: 50px; }
-
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+    @media(max-width: 992px) { grid-template-columns: 1fr; gap: 60px; text-align: center; }
     .story-img-wrapper {
       position: relative;
-      /* Sombra más suave y difuminada */
-      img { width: 100%; border-radius: 20px; box-shadow: 0 30px 60px -15px rgba(0,0,0,0.2); }
-      
+      img { width: 100%; border-radius: 24px; box-shadow: 0 20px 50px rgba(15,23,42,0.1); }
       .floating-box {
-        position: absolute; bottom: -40px; right: -40px;
-        background: white; padding: 35px; border-radius: 16px;
-        box-shadow: 0 15px 40px rgba(0,0,0,0.1); max-width: 280px;
-        border-left: 4px solid $primary; /* Detalle de acento */
-        strong { display: block; font-size: 1.2rem; margin-bottom: 12px; color: $text-dark; }
-        p { margin: 0; font-size: 0.95rem; font-style: italic; color: #666; line-height: 1.5; }
-        @media(max-width: 600px) { right: 10px; bottom: -30px; max-width: 220px; padding: 25px; }
+        position: absolute; bottom: -30px; right: -30px; background: $white; padding: 30px; border-radius: 16px; box-shadow: 0 15px 40px rgba(0,0,0,0.08); max-width: 300px; border-left: 4px solid $primary; text-align: left;
+        @media(max-width: 600px) { right: 10px; bottom: -20px; max-width: 250px; padding: 20px; }
+        strong { display: block; font-size: 1.1rem; margin-bottom: 10px; color: $text-dark; font-weight: 800; }
+        p { margin: 0; font-size: 0.95rem; font-style: italic; color: $text-muted; line-height: 1.6; }
       }
     }
-
     .story-text {
-      h2 { font-size: 0.9rem; text-transform: uppercase; color: $primary; letter-spacing: 3px; margin-bottom: 15px; font-weight: 700; }
-      h3 { font-size: 2.8rem; margin: 0 0 35px; font-weight: 900; line-height: 1.2; }
-      p { font-size: 1.15rem; line-height: 1.8; color: #555; margin-bottom: 25px; }
-      .signature { margin-top: 50px; font-family: cursive; font-size: 1.3rem; color: $text-dark; font-weight: 600; }
+      p { font-size: 1.1rem; line-height: 1.8; color: $text-muted; margin-bottom: 25px; }
+      strong { color: $text-dark; font-weight: 700; }
+      .signature { margin-top: 40px; font-family: 'Georgia', serif; font-style: italic; font-size: 1.3rem; color: $text-dark; }
     }
   }
 }
 
-/* --- 4. PILLARS SECTION --- */
+/* =========================================
+   4. METRICS SECTION
+   ========================================= */
+.metrics-section {
+  background: $text-dark; padding: 100px 20px; position: relative;
+  .metrics-container {
+    max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;
+    @media(max-width: 900px) { justify-content: center; gap: 50px; }
+  }
+  .metric-item {
+    text-align: center; flex: 1; min-width: 160px;
+    .count { display: block; font-size: clamp(3rem, 5vw, 4.5rem); font-weight: 900; margin-bottom: 10px; color: $white; line-height: 1; letter-spacing: -2px; }
+    .label { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px; color: $primary; font-weight: 700; }
+  }
+  .separator { width: 1px; height: 80px; background: rgba(255,255,255,0.1); transform: rotate(15deg); @media(max-width: 900px) { display: none; } }
+}
+
+/* =========================================
+   5. PILLARS SECTION
+   ========================================= */
 .pillars-section {
-  background: $bg-light; padding: 120px 20px;
-  .section-header { margin-bottom: 70px; h2 { font-size: 3rem; font-weight: 900; margin-bottom: 15px; } p { font-size: 1.2rem; color: #666; } }
-
+  background: $white; padding: 140px 20px;
+  .section-header { margin-bottom: 80px; }
   .pillars-grid {
-    max-width: 1200px; margin: 0 auto;
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px;
-    @media(max-width: 768px) { grid-template-columns: 1fr; gap: 60px; /* Más espacio en móvil */ }
-
+    max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px;
+    @media(max-width: 992px) { grid-template-columns: 1fr; gap: 40px; }
     .pillar-card {
-      background: white; padding: 50px 40px; border-radius: 24px; position: relative; overflow: hidden; transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-      border: 1px solid rgba(0,0,0,0.05);
-      /* Sombra al hacer hover más elegante */
-      &:hover { transform: translateY(-15px); box-shadow: 0 30px 60px rgba(0,0,0,0.1); border-color: transparent; }
-
-      .big-number {
-        /* Número gigante pero sutil */
-        font-size: 8rem; font-weight: 900; color: #F5F5F5; position: absolute; top: -30px; right: 20px; z-index: 0; line-height: 1;
-      }
-      h3 { font-size: 1.6rem; margin: 20px 0 15px; position: relative; z-index: 1; font-weight: 800; }
-      p { color: #666; line-height: 1.7; position: relative; z-index: 1; margin: 0; font-size: 1.05rem; }
+      background: $bg-light; padding: 60px 40px; border-radius: 24px; position: relative; overflow: hidden; transition: all 0.4s ease; border: 1px solid rgba(15,23,42,0.05);
+      &:hover { transform: translateY(-10px); box-shadow: 0 30px 60px rgba(15,23,42,0.08); border-color: transparent; background: $white; }
+      .big-number { font-size: 10rem; font-weight: 900; color: rgba(15,23,42,0.03); position: absolute; top: -40px; right: 10px; z-index: 0; line-height: 1; letter-spacing: -5px; }
+      h3 { font-size: 1.5rem; margin: 0 0 15px; position: relative; z-index: 1; font-weight: 800; color: $text-dark; }
+      p { color: $text-muted; line-height: 1.7; position: relative; z-index: 1; margin: 0; font-size: 1rem; }
     }
   }
 }
 
-/* --- 5. COMMUNITY GRID --- */
-.community-section {
-  padding: 120px 20px; max-width: 1200px; margin: 0 auto;
-  .community-header { text-align: center; margin-bottom: 60px; h2 { font-size: 3.5rem; font-weight: 900; margin-bottom: 15px; } }
+/* =========================================
+   6. TESTIMONIALS SECTION (Prueba Social)
+   ========================================= */
+.testimonials-section {
+  background: $bg-light; padding: 120px 20px;
+  .section-header { margin-bottom: 60px; }
+  .testimonials-grid {
+    max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px;
+    @media(max-width: 992px) { grid-template-columns: 1fr; gap: 30px; }
+    
+    .testimonial-card {
+      background: $white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02);
+      .stars { color: #F59E0B; margin-bottom: 20px; display: flex; gap: 2px; }
+      p { font-size: 1.1rem; line-height: 1.6; color: $text-dark; font-style: italic; margin-bottom: 30px; }
+      .user-info {
+        display: flex; flex-direction: column;
+        strong { font-weight: 800; color: $text-dark; }
+        span { font-size: 0.85rem; color: $text-muted; margin-top: 4px; }
+      }
+    }
+  }
+}
 
+/* =========================================
+   7. B2B SECTION (Proveedores)
+   ========================================= */
+.b2b-section {
+  padding: 80px 20px;
+  .b2b-content {
+    max-width: 1000px; margin: 0 auto; background: linear-gradient(135deg, $text-dark 0%, #1e293b 100%); padding: 60px 40px; border-radius: 24px; text-align: center; color: $white; box-shadow: 0 20px 40px rgba(15,23,42,0.2);
+    h2 { font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 900; margin-bottom: 20px; }
+    p { font-size: 1.1rem; line-height: 1.6; color: rgba(255,255,255,0.8); max-width: 600px; margin: 0 auto 30px; }
+    .btn-supplier {
+      background: $primary; color: $white; border: none; padding: 16px 32px; font-size: 1.1rem; font-weight: 700; border-radius: 50px; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 20px $primary-glow;
+      &:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(255,46,99,0.4); }
+    }
+  }
+}
+
+/* =========================================
+   8. COMMUNITY GRID
+   ========================================= */
+.community-section {
+  padding: 80px 20px 140px; max-width: 1200px; margin: 0 auto;
+  .section-header { margin-bottom: 60px; }
   .community-grid {
-    display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: 320px 320px; gap: 25px;
-    @media(max-width: 768px) { grid-template-columns: 1fr 1fr; grid-template-rows: auto; gap: 15px; }
+    display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: 300px 300px; gap: 20px;
+    @media(max-width: 992px) { grid-template-columns: 1fr 1fr; grid-template-rows: auto; gap: 15px; }
+    @media(max-width: 600px) { grid-template-columns: 1fr; }
 
     .grid-item {
-      position: relative; overflow: hidden; border-radius: 20px; cursor: pointer;
-      img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s cubic-bezier(0.165, 0.84, 0.44, 1); }
-      /* Efecto zoom lento y elegante */
-      &:hover img { transform: scale(1.08); }
+      position: relative; overflow: hidden; border-radius: 24px; cursor: pointer; background: $bg-light;
+      img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
+      &:hover img { transform: scale(1.05); }
 
       &.item-1 { grid-column: span 2; }
       &.item-2 { grid-row: span 2; }
-      @media(max-width: 768px) { &.item-1, &.item-2 { grid-column: span 1; grid-row: span 1; height: 280px;} }
+      @media(max-width: 992px) { &.item-1, &.item-2 { grid-column: span 1; grid-row: span 1; height: 250px;} }
+      @media(max-width: 600px) { &.item-1, &.item-2, &.item-3, &.item-4, &.item-5 { grid-column: span 1; height: 250px;} }
 
       &.center-txt {
-        background: $text-dark; /* Negro elegante en lugar de rojo */
-        color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; transition: 0.3s;
-        h3 { font-size: 2.2rem; line-height: 1.1; margin-bottom: 25px; font-weight: 900; }
+        background: $text-dark; color: $white; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; transition: 0.3s;
+        h3 { font-size: clamp(1.8rem, 3vw, 2.2rem); line-height: 1.1; margin-bottom: 25px; font-weight: 900; }
         .btn-link { 
-          color: white; text-decoration: none; font-weight: 700; border-bottom: 2px solid $primary; padding-bottom: 8px; transition: 0.3s; letter-spacing: 1px; text-transform: uppercase; font-size: 0.9rem;
-          &:hover { border-color: white; color: $primary; }
+          color: $white; text-decoration: none; font-weight: 700; border-bottom: 2px solid $primary; padding-bottom: 6px; transition: 0.2s; letter-spacing: 1px; text-transform: uppercase; font-size: 0.9rem;
+          &:hover { border-color: $white; color: $primary; }
         }
-        &:hover { background: #000; }
       }
     }
   }
 }
 
-/* ANIMACIÓN FADE UP */
-.fade-up { animation: fadeUp 1.2s cubic-bezier(0.165, 0.84, 0.44, 1) forwards; opacity: 0; transform: translateY(40px); }
-@keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
-
-/* --- 3.5 IMPACT METRICS (NUEVO) --- */
-.metrics-section {
-  background: $text-dark; /* Fondo negro sólido */
-  color: white;
-  padding: 80px 20px;
-  position: relative;
-  z-index: 5; /* Asegura que quede encima */
-  
-  .metrics-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-
-    @media(max-width: 900px) {
-      justify-content: center;
-      gap: 40px;
-    }
+/* =========================================
+   9. TRANSPARENCIA LEGAL
+   ========================================= */
+.legal-transparency {
+  background: $bg-light; padding: 25px 20px; text-align: center; border-top: 1px solid var(--gray-border);
+  p { 
+    margin: 0; font-size: 0.85rem; color: $text-muted; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;
+    strong { color: $text-dark; }
   }
+}
 
-  .metric-item {
-    text-align: center;
-    flex: 1;
-    min-width: 150px;
+/* =========================================
+   ANIMACIONES DE ENTRADA
+   ========================================= */
+.fade-up { animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.reveal { opacity: 0; animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-play-state: running; }
+.delay-1 { animation-delay: 0.2s; }
+.delay-2 { animation-delay: 0.4s; }
+.delay-3 { animation-delay: 0.6s; }
 
-    .count {
-      display: block;
-      font-size: 3.5rem;
-      font-weight: 900;
-      color: white;
-      margin-bottom: 5px;
-      /* Gradiente sutil en el texto para efecto metálico/premium */
-      background: linear-gradient(to right, #fff, #a5a5a5);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      line-height: 1.1;
-    }
-
-    .label {
-      font-size: 0.95rem;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: $primary; /* Tu color rojo neón */
-      font-weight: 700;
-    }
-  }
-
-  /* Líneas separadoras elegantes */
-  .separator {
-    width: 1px;
-    height: 60px;
-    background: rgba(255,255,255,0.15);
-    transform: skewX(-15deg); /* Inclinación dinámica */
-    
-    @media(max-width: 900px) { display: none; } /* Se ocultan en móvil */
-  }
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
 }

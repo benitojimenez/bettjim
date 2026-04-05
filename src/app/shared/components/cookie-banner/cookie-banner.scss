@@ -1,9 +1,10 @@
 /* --- VARS --- */
 $primary: #FF2E63;       /* Tu color de marca */
-$text-dark: #1F2937;
-$text-muted: #6B7280;
+$primary-light: rgba(255, 46, 99, 0.1); 
+$text-dark: #0F172A;
+$text-muted: #64748B;
 $radius: 16px;
-$shadow: 0 10px 40px rgba(0,0,0,0.12);
+$shadow: 0 15px 40px rgba(0,0,0,0.15);
 
 /* CONTENEDOR FLOTANTE */
 .cookie-card {
@@ -11,7 +12,7 @@ $shadow: 0 10px 40px rgba(0,0,0,0.12);
   bottom: 30px;
   left: 30px;
   width: 100%;
-  max-width: 400px;
+  max-width: 420px;
   background: white;
   padding: 24px;
   border-radius: $radius;
@@ -21,9 +22,9 @@ $shadow: 0 10px 40px rgba(0,0,0,0.12);
   display: flex;
   flex-direction: column;
   gap: 20px;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
 
-  /* Animación de entrada */
+  /* Animación de entrada fluida */
   &.fade-in-up {
     animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
@@ -32,18 +33,27 @@ $shadow: 0 10px 40px rgba(0,0,0,0.12);
 /* HEADER (ICONO + TEXTO) */
 .cookie-header {
   display: flex;
-  gap: 15px;
+  gap: 16px;
+  align-items: flex-start;
   
+  /* NUEVO ESTILO PARA EL SVG */
   .icon-box {
-    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: $primary-light;
+    color: $primary; /* Pinta el SVG del color de la marca */
     flex-shrink: 0;
-    animation: wave 2s infinite; /* Pequeño movimiento para llamar la atención */
+    animation: wave 3s infinite; /* Movimiento más sutil */
   }
 
   .text-content {
     h3 {
-      margin: 0 0 5px;
-      font-size: 1rem;
+      margin: 0 0 6px;
+      font-size: 1.05rem;
       font-weight: 700;
       color: $text-dark;
     }
@@ -57,7 +67,8 @@ $shadow: 0 10px 40px rgba(0,0,0,0.12);
         color: $primary;
         font-weight: 600;
         text-decoration: none;
-        &:hover { text-decoration: underline; }
+        transition: 0.2s;
+        &:hover { text-decoration: underline; color: darken($primary, 10%); }
       }
     }
   }
@@ -66,43 +77,48 @@ $shadow: 0 10px 40px rgba(0,0,0,0.12);
 /* BOTONES */
 .cookie-actions {
   display: flex;
-  gap: 10px;
-  justify-content: flex-end; /* Botones a la derecha */
+  gap: 12px;
+  justify-content: flex-end; 
 
   button {
-    padding: 10px 20px;
+    padding: 12px 20px;
     border-radius: 50px;
     font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
-    transition: 0.2s;
+    transition: all 0.2s ease;
     border: none;
   }
 
   .btn-ghost {
     background: transparent;
     color: $text-muted;
-    &:hover { background: #F3F4F6; color: $text-dark; }
+    &:hover { background: #F1F5F9; color: $text-dark; }
   }
 
   .btn-primary {
-    background: $text-dark; /* Negro elegante o usa $primary */
+    background: $text-dark; /* Negro elegante que contrasta genial con el rosa */
     color: white;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    &:hover { background: $primary; transform: translateY(-2px); }
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    &:hover { 
+      background: $primary; 
+      transform: translateY(-2px); 
+      box-shadow: 0 6px 15px rgba(255, 46, 99, 0.3);
+    }
   }
 }
 
 /* --- ANIMACIONES --- */
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(50px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(40px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 @keyframes wave {
   0%, 100% { transform: rotate(0deg); }
-  25% { transform: rotate(-10deg); }
-  75% { transform: rotate(10deg); }
+  10% { transform: rotate(-10deg); }
+  20% { transform: rotate(10deg); }
+  30% { transform: rotate(0deg); }
 }
 
 /* --- RESPONSIVE (MOBILE) --- */
@@ -111,13 +127,14 @@ $shadow: 0 10px 40px rgba(0,0,0,0.12);
     left: 0;
     bottom: 0;
     max-width: 100%;
-    border-radius: 20px 20px 0 0; /* Solo bordes superiores curvos */
-    padding: 20px;
-    padding-bottom: max(20px, env(safe-area-inset-bottom)); /* Safe Area para iPhone */
+    border-radius: 24px 24px 0 0; 
+    padding: 24px;
+    padding-bottom: max(24px, env(safe-area-inset-bottom)); 
   }
 
   .cookie-actions {
     width: 100%;
-    button { flex: 1; } /* Botones ocupan todo el ancho */
+    flex-direction: row; /* Mantener lado a lado si caben, sino cambiar a column */
+    button { flex: 1; text-align: center; } 
   }
 }

@@ -1,48 +1,66 @@
 @if (isLoading()) {
-<section class="hero-section" >
+<section class="hero-section">
   <div class="sk-hero-banner"></div>
 </section>
-}@else {
+} @else if (ads.AdsResource.error()) {
+<div class="error-message">Error loading ads.</div>
+} @else {
 <section class="hero-section">
+  
   <swiper-container #heroSwiper init="false" class="hero-swiper">
     @for (slide of ads.cleanAds(); track slide._id) {
     <swiper-slide>
+      
       <div class="media-bg">
         <img [src]="urlImage() + slide.image[0]" alt="Hero Bg" class="bg-img ken-burns" />
-
         <div class="overlay"></div>
       </div>
+
       @if (slide.title) {
       <div class="container content-wrapper">
-        <div class="content glass-card">
-          <span class="subtitle slide-in-top">{{ slide.title }}</span>
-          <h1 class="title slide-in-left">{{ slide.subTitle }}</h1>
-          <p class="desc fade-in">{{ slide.description ? slide.description : slide.category }}</p>
-          <a [href]="slide.url" class="btn-hero bounce-in">{{ slide.button }}</a>
+        <div class="content glass-card floating-card">
+          <div class="glass-shine"></div> <div class="reveal-wrapper">
+            <span class="subtitle">{{ slide.title }}</span>
+          </div>
+          
+          <div class="reveal-wrapper">
+            <h1 class="title">{{ slide.subTitle }}</h1>
+          </div>
+          
+          <div class="reveal-wrapper">
+            <p class="desc">{{ slide.description ? slide.description : slide.category }}</p>
+          </div>
+          
+          <div class="reveal-wrapper btn-wrapper">
+            <a [href]="slide.url" class="btn-hero pulse-glow">{{ slide.button }}</a>
+          </div>
         </div>
       </div>
       }
+      
     </swiper-slide>
     }
   </swiper-container>
 
   <div class="hero-controls">
-    <button class="hero-prev">❮</button>
+    <button class="hero-prev magnetic-hover" aria-label="Anterior">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+    </button>
+    
     <div class="hero-pagination"></div>
-    <button class="hero-next">❯</button>
+    
+    <button class="hero-next magnetic-hover" aria-label="Siguiente">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </button>
   </div>
 
   <div class="autoplay-progress">
     <div class="bar" [style.width.%]="progressWidth()"></div>
   </div>
+
 </section>
 }
-
-<!-- @if (ads.AdsResource.isLoading()) {
-<section class="hero-section">
- <div class="sk-hero-banner"></div>
-</section>
-} @else  -->
-@if (ads.AdsResource.error()) {
-<div class="error-message">Error loading ads.</div>
-} 

@@ -1,4 +1,4 @@
-import { Component, signal, OnInit, PLATFORM_ID, inject } from '@angular/core';
+import { Component, signal, OnInit, PLATFORM_ID, inject, effect, HostListener } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import confetti from 'canvas-confetti'; // Importar arriba
 
@@ -16,6 +16,9 @@ export class LuckyWheel implements OnInit {
   private audioTick: HTMLAudioElement | null = null;
   private audioWin: HTMLAudioElement | null = null;
   private audioLose: HTMLAudioElement | null = null;
+  // NUEVA VARIABLE PARA AUDIO DE FONDO
+  private audioBg: HTMLAudioElement | null = null;
+  private audioUnlocked = false; // <-- NUEVO: Control para saber si ya lo desbloqueamos
 
   // 3. ESTADOS (SIGNALS)
   isOpen = signal(false);
@@ -32,66 +35,75 @@ export class LuckyWheel implements OnInit {
 
   // 4. DATOS Y CONFIGURACIÓN
   winners = [
-    { user: '🔥 María', city: 'Lima', win: '10% OFF' },
-    { user: '🔥 Carlos', city: 'Arequipa', win: 'ENVÍO GRATIS' },
-    { user: '🔥 Lucia', city: 'Trujillo', win: 'S/. 15' },
-    { user: '🔥 Juan', city: 'Miraflores', win: '15% OFF' },
-    { user: '🔥 Marly', city: 'Lima', win: 'SORPRESA' },
-    { user: '🔥 Katerin', city: 'Huaraz', win: 'ENVÍO GRATIS' },
+    { user: ' María', city: 'Lima', win: '10% OFF' },
+    { user: ' Carlos', city: 'Arequipa', win: 'ENVÍO GRATIS' },
+    { user: ' Lucia', city: 'Trujillo', win: 'S/. 15' },
+    { user: ' Juan', city: 'Miraflores', win: '15% OFF' },
+    { user: ' Marly', city: 'Lima', win: 'SORPRESA' },
+    { user: ' Katerin', city: 'Huaraz', win: 'ENVÍO GRATIS' },
   ];
 
+  // AJUSTE: Reducido a 6 premios exactos para encajar con los 6 gajos del SCSS (16.66% c/u)
   PRIZES_CONFIG = [
     { text: 'ENVÍO GRATIS', weight: 5 },       // index 0
     { text: '10% OFF', weight: 40 },           // index 1
-    { text: 'S/. 15 BONO', weight: 10 },       // index 2
-    { text: 'SORPRESA', weight: 15 },          // index 3
-    { text: '15% OFF', weight: 20 },           // index 4
-    { text: 'INTENTA OTRA VEZ', weight: 10 }   // index 5
+    { text: 'INTENTA OTRA VEZ', weight: 15 },  // index 2
+    { text: 'SORPRESA', weight: 20 },          // index 3
+    { text: 'S/. 15 BONO', weight: 5 },        // index 4
+    { text: 'INTENTA OTRA VEZ', weight: 15 }   // index 5
   ];
 
   // 5. CONSTRUCTOR E INICIALIZACIÓN
   constructor() {
-    // Inicialización segura (SSR Friendly)
     if (isPlatformBrowser(this.platformId)) {
-
-      // Crear instancia de confeti (undefined para usar canvas global/custom)
       const confettiInstance = confetti.create(undefined, {
         resize: true,
         useWorker: true,
       });
       this.myConfetti.set(confettiInstance);
 
-      // Pre-carga de audios
       this.audioTick = new Audio('assets/audio/tick.mp3');
       this.audioWin = new Audio('assets/audio/win.mp3');
       this.audioLose = new Audio('assets/audio/lose.mp3'); 
 
-      // Ajustar volúmenes
       if (this.audioTick) this.audioTick.volume = 0.5;
       if (this.audioWin) this.audioWin.volume = 0.8;
+      // 1. Instanciar el audio de fondo
+      this.audioBg = new Audio('assets/audio/sonicwin.mp3'); // <-- Asegúrate de tener este archivo
+      if (this.audioBg) {
+        this.audioBg.loop = true; // Que se repita infinitamente
+        this.audioBg.volume = 0.15; // Volumen bajo (15%) para que no sature
+      }
+    
+
+    // 2. EFECTO: Vigila la señal isOpen automáticamente
+    effect(() => {
+      if (this.isOpen()) {
+        this.playBgMusic();
+      } else {
+        this.stopBgMusic();
+      }
+    });
     }
   }
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
-      // Revisar historial del usuario
       const status = localStorage.getItem('wheel_status'); 
 
       if (status === 'claimed') {
         this.hasPlayed.set(true);
       } else {
-        // Si es nuevo, esperamos y lanzamos el modal
         setTimeout(() => {
           if (!this.hasPlayed()) {
             this.isOpen.set(true);
           }
-        }, 3000); // 3 segundos de cortesía
+        }, 3000);
       }
     }
   }
 
   // 6. MÉTODOS PRINCIPALES (CORE)
-
   spin() {
     if (this.isSpinning()) return;
 
@@ -100,7 +112,7 @@ export class LuckyWheel implements OnInit {
     this.isSpinning.set(true);
     this.playSpinSound(); // 🔊 Audio tick
 
-    // B. Obtener ganador (Lógica Ponderada)
+    // B. Obtener ganador
     const winnerIndex = this.getWeightedWinner();
     const winnerText = this.PRIZES_CONFIG[winnerIndex].text;
 
@@ -113,37 +125,31 @@ export class LuckyWheel implements OnInit {
     const safeZone = segmentDegrees * 0.4;
     const randomWiggle = (Math.random() * safeZone * 2) - safeZone;
 
-    // El ángulo exacto dentro de la rueda donde está el premio
     const targetAngleInWheel = startAngle + centerOffset + randomWiggle;
 
-    // D. Fórmula de Rotación Final
-    const spins = 360 * 8; // 8 vueltas completas
+    // D. Fórmula de Rotación Final (8 vueltas completas)
+    const spins = 360 * 8; 
     const finalRotation = spins + (360 - targetAngleInWheel);
-
-    // console.log('Ganador Index:', winnerIndex);
-    // console.log('Rotación Final CSS:', finalRotation);
 
     // E. Aplicar Rotación
     this.rotationStyle.set(`rotate(${finalRotation}deg)`);
 
-    // F. Finalizar (4 segundos después)
+    // F. Finalizar (AJUSTADO A 5000ms para coincidir con el SCSS transition: 5s)
     setTimeout(() => {
       this.isSpinning.set(false);
-      this.stopSpinSound(); // 🛑 Parar audio tick
+      this.stopSpinSound(); 
 
       const isTryAgain = winnerText.toUpperCase().includes('INTENTA');
 
       if (isTryAgain) {
-        // PERDIÓ
         this.feedbackMessage.set('¡Casi! Gira de nuevo 🍀');
         this.playAudio('lose');
       } else {
-        // GANÓ
         this.prizeWon.set(winnerText);
         this.launchConfetti();
         this.playAudio('win');
       }
-    }, 4000);
+    }, 5000); // ⏱️ Cambio crítico aquí
   }
 
   claimPrize(email: string) {
@@ -151,7 +157,6 @@ export class LuckyWheel implements OnInit {
 
     console.log('Lead Capturado:', email);
 
-    // Marcar como jugado definitivamente
     this.hasPlayed.set(true);
     localStorage.setItem('wheel_status', 'claimed');
     
@@ -165,14 +170,14 @@ export class LuckyWheel implements OnInit {
   }
 
   // 7. MÉTODOS VISUALES Y AUDIO
-
   launchConfetti() {
     const fire = this.myConfetti();
     if (!fire) return;
 
     const duration = 5000;
     const end = Date.now() + duration;
-    const colors = ['#FF2E63', '#FFD700', '#FFFFFF', '#5f138bff'];
+    // AJUSTE: Colores del confeti cambiados a la paleta Neon/Cyberpunk
+    const colors = ['#FF2E63', '#00E5FF', '#FFD700', '#FFFFFF'];
 
     const frame = () => {
       const timeLeft = end - Date.now();
@@ -180,7 +185,6 @@ export class LuckyWheel implements OnInit {
 
       const particleCount = 7; 
 
-      // Cañón Izquierdo
       fire({
         particleCount: particleCount,
         angle: 60,
@@ -193,7 +197,6 @@ export class LuckyWheel implements OnInit {
         drift: 1,
       });
 
-      // Cañón Derecho
       fire({
         particleCount: particleCount,
         angle: 120,
@@ -216,7 +219,7 @@ export class LuckyWheel implements OnInit {
     if (!this.audioTick) return;
 
     let time = 0;
-    const duration = 4000;
+    const duration = 5000; // AJUSTADO A 5000ms
 
     const tickLoop = () => {
       if (!this.isSpinning()) return; 
@@ -251,8 +254,7 @@ export class LuckyWheel implements OnInit {
     }
   }
 
-  // 8. HELPERS Y UTILIDADES
-
+  // 8. HELPERS
   getWeightedWinner(): number {
     const totalWeight = this.PRIZES_CONFIG.reduce((sum, item) => sum + item.weight, 0);
     let randomPointer = Math.floor(Math.random() * totalWeight);
@@ -273,8 +275,52 @@ export class LuckyWheel implements OnInit {
     return `translateX(-50%) rotate(${rotation}deg)`;
   }
 
-  // Helper privado para randoms (si lo necesitas en el futuro)
-  private randomInRange(min: number, max: number) {
-    return Math.random() * (max - min) + min;
+  playBgMusic() {
+    if (this.audioBg) {
+      // El catch es importante porque los navegadores a veces bloquean 
+      // el auto-play si el usuario no ha interactuado con la pantalla antes.
+      this.audioBg.play().catch(e => console.log('Autoplay de fondo bloqueado por el navegador', e));
+    }
+  }
+
+  stopBgMusic() {
+    if (this.audioBg) {
+      this.audioBg.pause();
+      // Opcional: reiniciar el audio al principio cuando se cierre
+      // this.audioBg.currentTime = 0; 
+    }
+  }
+
+  // Seguridad: Apagar música si el componente se destruye (ej: cambio de ruta)
+  ngOnDestroy() {
+    this.stopBgMusic();
+  }
+
+ // =========================================
+  // DESBLOQUEO DE AUDIO GLOBAL (NIVEL DIOS)
+  // =========================================
+  @HostListener('window:pointerdown')
+  unlockAudioOnFirstTouch() {
+    // Si tenemos el audio cargado y AÚN NO se ha desbloqueado...
+    if (this.audioBg && !this.audioUnlocked) {
+      
+      // Intentamos darle Play en el momento exacto del clic
+      this.audioBg.play().then(() => {
+        
+        this.audioUnlocked = true; 
+        console.log('🎵 Audio desbloqueado por el navegador (Mouse/Touch)');
+        
+        // TRUCO: Si el usuario hizo clic ANTES de que pasen los 3 segundos 
+        // y la ruleta aún está cerrada, pausamos el audio inmediatamente. 
+        // Pero el navegador ya nos dio permiso, así que sonará perfecto cuando se abra.
+        if (!this.isOpen()) {
+          this.audioBg?.pause();
+        }
+
+      }).catch((error) => {
+        console.log('Aún esperando interacción real...', error);
+      });
+      
+    }
   }
 }

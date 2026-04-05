@@ -26,7 +26,7 @@
 
     <form [formGroup]="complaintForm" (ngSubmit)="onSubmit()" class="doc-body">
       <p class="intro-text">
-        Conforme a lo establecido en el código de protección y defensa del consumidor, este
+        Conforme a lo establecido en el Código de Protección y Defensa del Consumidor, este
         establecimiento cuenta con un Libro de Reclamaciones a su disposición.
       </p>
 
@@ -43,7 +43,7 @@
           </div>
           <div class="form-group doc-group">
             <div class="select-wrapper">
-              <select formControlName="documentType">
+              <select formControlName="documentType" class="modern-select">
                 <option value="DNI">DNI</option>
                 <option value="CE">CE</option>
                 <option value="RUC">RUC</option>
@@ -82,7 +82,7 @@
           <input
             type="text"
             formControlName="parentName"
-            placeholder="Nombre completo del representante"
+            placeholder="Nombre completo del representante legal"
           />
         </div>
         }
@@ -100,14 +100,21 @@
           <label class="radio-card">
             <input type="radio" formControlName="contractType" value="producto" />
             <div class="card-inner">
-              <span class="icon">📦</span>
+              <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+              </svg>
               <span>Producto</span>
             </div>
           </label>
+          
           <label class="radio-card">
             <input type="radio" formControlName="contractType" value="servicio" />
             <div class="card-inner">
-              <span class="icon">🛠️</span>
+              <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+              </svg>
               <span>Servicio</span>
             </div>
           </label>
@@ -117,7 +124,7 @@
           <div class="form-group amount">
             <label>Monto Reclamado</label>
             <div class="currency-input">
-              <span>S/</span>
+              <span class="currency-symbol">S/</span>
               <input type="number" formControlName="amount" placeholder="0.00" />
             </div>
           </div>
@@ -126,7 +133,7 @@
             <input
               type="text"
               formControlName="description"
-              placeholder="Ej. Zapatillas Nike Talla 42..."
+              placeholder="Ej. Zapatillas marca X, Talla 42..."
             />
           </div>
         </div>
@@ -146,7 +153,7 @@
             <div class="header">
               <strong>RECLAMO</strong>
             </div>
-            <p>Disconformidad relacionada a los productos o servicios.</p>
+            <p>Disconformidad relacionada directamente a los productos o servicios adquiridos.</p>
           </label>
 
           <label class="type-box" [class.selected]="complaintForm.get('type')?.value === 'queja'">
@@ -154,12 +161,12 @@
             <div class="header">
               <strong>QUEJA</strong>
             </div>
-            <p>Disconformidad no relacionada a los productos o servicios (ej: mala atención).</p>
+            <p>Disconformidad no relacionada a los productos o servicios (ej: mala atención del personal).</p>
           </label>
         </div>
 
         <div class="form-group full">
-          <label>Detalle del Reclamo/Queja</label>
+          <label>Detalle del Reclamo / Queja</label>
           <textarea
             formControlName="detail"
             rows="4"
@@ -172,7 +179,7 @@
           <textarea
             formControlName="request"
             rows="2"
-            placeholder="¿Qué solución espera? (Ej. Cambio de producto, devolución...)"
+            placeholder="¿Qué solución espera? (Ej. Cambio de producto, devolución del dinero...)"
           ></textarea>
         </div>
       </section>
@@ -183,7 +190,7 @@
             <input type="checkbox" formControlName="terms" />
             <span class="text"
               >Declaro ser el titular del servicio y acepto el tratamiento de mis datos personales
-              según la Política de Privacidad.</span
+              según la Política de Privacidad y Términos Legales.</span
             >
           </label>
         </div>
@@ -196,8 +203,10 @@
             [class.is-loading]="isSubmitting()"
           >
             @if (isSubmitting()) {
-            <div class="spinner"></div>
-            Enviando... } @else { Registrar Reclamo }
+              <div class="spinner"></div> Enviando... 
+            } @else { 
+              Registrar Reclamo 
+            }
           </button>
         </div>
 
@@ -216,27 +225,20 @@
 <div class="success-overlay" (click)="closeSuccessModal()">
   <div class="success-card" (click)="$event.stopPropagation()">
     <div class="success-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <svg class="svg-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="20 6 9 17 4 12"></polyline>
       </svg>
     </div>
 
     <h2>¡Reclamo Registrado!</h2>
-    <p class="subtitle">Hemos enviado una constancia a tu correo.</p>
+    <p class="subtitle">Hemos enviado una copia y constancia a tu correo electrónico.</p>
 
     <div class="code-box">
       <span class="label">TU CÓDIGO DE SEGUIMIENTO</span>
       <div class="code-display">
         {{ registeredCode() }}
-        <button class="copy-btn" (click)="copyCode()" title="Copiar">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-          >
+        <button class="copy-btn" (click)="copyCode()" title="Copiar código">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
           </svg>
@@ -245,10 +247,10 @@
     </div>
 
     <p class="legal-note">
-      Guarda este código. Daremos respuesta en un plazo máximo de 15 días hábiles.
+      Guarda este código. Daremos respuesta a tu solicitud en un plazo máximo de 15 días hábiles.
     </p>
 
-    <button class="btn-close-modal" (click)="closeSuccessModal()">Entendido, gracias</button>
+    <button class="btn-close-modal" (click)="closeSuccessModal()">Entendido, cerrar</button>
   </div>
 </div>
 }
