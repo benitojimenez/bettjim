@@ -34,7 +34,7 @@
 
   <div class="payment-accordion">
     <div class="payment-option" [class.selected]="billingSameAsShipping()">
-      <div class="option-header" (click)="billingSameAsShipping.set(true)">
+      <div class="option-header" (click)="toggleBilling(true)">
         <div class="radio-wrapper">
           <input type="radio" name="billing" [checked]="billingSameAsShipping()" />
           <span class="option-label">Misma dirección de envío</span>
@@ -74,7 +74,7 @@
 
   <div class="payment-accordion">
     <div class="payment-option" [class.selected]="selectedMethod() === 'card'">
-      <div class="option-header" (click)="selectedMethod.set('card')">
+      <div class="option-header" (click)="changePaymentMethod('card')">
         <div class="radio-wrapper">
           <input type="radio" name="payment" [checked]="selectedMethod() === 'card'" />
           <span class="option-label">Tarjeta de Crédito / Débito</span>
@@ -142,7 +142,7 @@
                   <input
                     type="text"
                     formControlName="expiration_year"
-                    placeholder="AA"
+                    placeholder="AAAA"
                     maxlength="4"
                     class="center-text"
                     [class.error]="
@@ -174,10 +174,10 @@
                   <label>Tipo</label>
                   <div class="select-wrapper">
                     <select formControlName="document_type">
-                      <option value="" disabled selected>Doc</option>
-                      <option value="DNI">DNI</option>
-                      <option value="CE">CE</option>
-                      <option value="PASSPORT">Pasaporte</option>
+                      <option value="" disabled selected>Seleccionar</option>
+                        <option value="dni">DNI</option>
+                        <option value="pasaporte">Pasaporte</option>
+                        <option value="ce">C.E.</option>
                     </select>
                     <span class="arrow">▼</span>
                   </div>
@@ -187,7 +187,8 @@
                   <label>N° Documento</label>
                   <input type="tel" formControlName="document_number" placeholder="Ej: 75423122" />
                   @if (
-                    formAntifraud.get('document_number')?.invalid && formAntifraud.get('document_number')?.touched
+                    formAntifraud.get('document_number')?.invalid &&
+                    formAntifraud.get('document_number')?.touched
                   ) {
                     <small class="error-msg">Inválido</small>
                   }
@@ -239,7 +240,7 @@
 
     @if (checkoutService.orderTotal() <= 500) {
       <div class="payment-option" [class.selected]="selectedMethod() === 'yape'">
-        <div class="option-header" (click)="selectedMethod.set('yape')">
+        <div class="option-header" (click)="changePaymentMethod('yape')">
           <div class="radio-wrapper">
             <input type="radio" name="payment" [checked]="selectedMethod() === 'yape'" />
             <span class="option-label">Yape</span>
@@ -252,12 +253,13 @@
 
         @if (selectedMethod() === 'yape') {
           <div class="option-body center-content">
-            <form [formGroup]="YapeForm">
+            <form [formGroup]="yapeForm">
               <div class="yape-pay">
                 <h3>Ingresa tu Celular Yape</h3>
                 <div class="input-group">
                   <input
                     type="text"
+                    id="phone"
                     formControlName="phone"
                     placeholder="123456789"
                     maxlength="9"
@@ -274,7 +276,7 @@
                   <div class="form-group type-col">
                     <label for="docType">Tipo de documento</label>
                     <div class="input-wrapper">
-                      <select formControlName="type_document" id="docType">
+                      <select formControlName="document_type" id="docType">
                         <option value="" disabled selected>Seleccionar</option>
                         <option value="dni">DNI</option>
                         <option value="pasaporte">Pasaporte</option>
@@ -320,12 +322,16 @@
     <button
       class="btn-checkout-primary"
       (click)="submitOrder()"
-      [disabled]="isProcessing() || (selectedMethod() === 'card' && cardForm.invalid ) || (selectedMethod() === 'yape' && YapeForm.invalid)"
+      [disabled]="
+        isProcessing() ||
+        (selectedMethod() === 'card' && cardForm.invalid) ||
+        (selectedMethod() === 'yape' && yapeForm.invalid)
+      "
     >
       @if (isProcessing()) {
         <span class="spinner-loader"></span> Procesando...
       } @else {
-        Pagar ahora
+        Pagar ahora {{selectedMethod() === 'card' ? '(Tarjeta)' : selectedMethod() === 'yape' ? '(Yape)' : ''}}
       }
     </button>
 

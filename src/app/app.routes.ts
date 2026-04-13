@@ -62,6 +62,10 @@ export const routes: Routes = [
         path: '404',
         loadComponent: () => import('./pages/error404/error404')
     },
+    {
+        path: 'flash/:slug',
+        loadComponent: () => import('./pages/flash-offer/flash-offer'),
+    },
     // {
     //     path: 'envivo',
     //     title: 'Transmisión en Vivo | Bettjim.com',

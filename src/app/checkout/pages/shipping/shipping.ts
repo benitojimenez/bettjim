@@ -33,7 +33,7 @@ export default class Shipping {
     const addr = this.checkoutService.shippingAddress();
     if (!addr) return 'Dirección no definida';
     // Formato: "Av. Larco 123, Miraflores, Lima"
-    return `${addr.address}, ${addr.city}, ${addr.department}`;
+    return `${addr.address},${addr.district}, ${addr.province}, ${addr.department}, ${addr.country}`;
   });
 
 

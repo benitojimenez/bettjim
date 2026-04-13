@@ -1,135 +1,171 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+
+// Servicios y Clases
 import { CheckoutService } from '../../../services/checkout';
-import { Address } from './../../../shared/classes/checkout';
 import { Auth } from '../../../services/auth';
+import { Ubigeo } from '../../../services/ubigeo';
+import { Address, CheckoutState } from './../../../shared/classes/checkout';
+
+// Componentes
+import { CustomSelect } from '../../../shared/components/custom-select/custom-select';
 
 @Component({
   selector: 'app-information',
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, CustomSelect],
   templateUrl: './information.html',
   styleUrl: './information.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export default class Information implements OnInit{
+export default class Information implements OnInit {
+  // --- INYECCIÓN DE DEPENDENCIAS ---
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private checkoutService = inject(CheckoutService);
-  public auth = inject(Auth)
-  // Simulación de Estado de Usuario (Esto vendría de tu AuthService)
-  // Estado Local
-  isLoggedIn = signal(false); // Simulación
-  selectedAddressId = signal<string>('new'); // 'new' o ID de dirección guardada
+  public ubigeo = inject(Ubigeo);
+  public auth = inject(Auth);
 
-  // Direcciones guardadas (Simulación)
-  savedAddresses = signal([
-    { id: 'addr_1', alias: 'Casa', firstName: 'Juan', lastName: 'Pérez', line1: 'Av. Larco 123', city: 'Miraflores', department: 'Lima', postalCode: '15047', phone: '999111222' },
-    { id: 'addr_2', alias: 'Oficina', firstName: 'Juan', lastName: 'Pérez', line1: 'Calle Las Begonias 450', city: 'San Isidro', department: 'Lima', postalCode: '27001', phone: '999333444' }
-  ]);
+  // --- ESTADO LOCAL ---
+  selectedAddressId = signal<string>('new');
+  
+  // Alias para Signals del Ubigeo (facilita lectura en HTML)
+  DEPARTAMENTOS = this.ubigeo.regiones;
+  PROVINCIAS = this.ubigeo.provinciasFiltradas;
+  DISTRITOS = this.ubigeo.distritosFiltrados;
 
-  // Formulario Reactivo
+  savedAddresses = signal<Address[]>([]);
+  selectedAddress = signal<Address | null>(null);
+
+  isLoggedIn = signal(false);  
+
+  // --- FORMULARIO REACTIVO ---
+
+  // --- CONFIGURACIÓN DEL FORMULARIO ---
   form = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     newsletter: [true],
+    phone: ['', [Validators.required, Validators.pattern(/^9[0-9]{8}$/)]],
     firstName: ['', Validators.required],
     lastName: ['', Validators.required],
+    documentType: ['DNI', Validators.required],
+    documentNumber: ['', [Validators.required, Validators.minLength(8)]],
+    businessName: [''],
+    country: ['Perú', Validators.required],
+    department: ['', Validators.required], // Guardaremos el ID para la lógica
+    province: ['', Validators.required],   // Guardaremos el ID para la lógica
+    district: ['', Validators.required],   // Guardaremos el ID para la lógica
     address: ['', Validators.required],
-    dni: ['', Validators.required],
     apartment: [''],
-    city: ['', Validators.required],
-    department: ['', Validators.required], // Región/Estado
-    postalCode: ['', Validators.required],
-    phone: ['', [Validators.required, Validators.pattern(/^[0-9]{9,}$/)]]
+    reference: ['', Validators.required],
+    postalCode: [''],
+    note: ['', Validators.maxLength(200)],
   });
 
-  // Lógica: Cuando seleccionas una tarjeta de dirección guardada
-  selectAddress(addressId: string) {
-    this.selectedAddressId.set(addressId);
+  ngOnInit() {
+    this.loadInitialData();
+  }
+
+  // --- PERSISTENCIA Y CARGA ---
+  private loadInitialData() {
+    // 1. Intentar cargar desde SessionStorage primero (Persistencia de usuario)
+    const savedData = sessionStorage.getItem('bettjim_checkout_draft');
     
-    if (addressId === 'new') {
-      // Limpiar solo los campos de dirección, mantener email
-      this.form.patchValue({
-        firstName: '', lastName: '', address: '', apartment: '',
-        city: '', department: '', postalCode: '', phone: ''
-      });
-    } else {
-      const addr = this.savedAddresses().find(a => a.id === addressId);
-      if (addr) {
-        this.form.patchValue({
-          firstName: addr.firstName,
-          lastName: addr.lastName,
-          address: addr.line1,
-          city: addr.city,
-          department: addr.department,
-          postalCode: addr.postalCode,
-          phone: addr.phone
-        });
+    if (savedData) {
+      const draft = JSON.parse(savedData) as Address;
+      this.patchAddressToForm(draft);
+    } 
+    // 2. Si no hay draft, intentar cargar del servicio (Estado global)
+    else {
+      const currentData = this.checkoutService.checkoutData();
+      if (currentData.shippingAddress) {
+        this.patchAddressToForm(currentData.shippingAddress);
       }
     }
-  }
- 
-  ngOnInit() {
-    // 1. RECUPERAR DATOS DEL SERVICIO (Si el usuario regresa del paso 2)
-    const currentData = this.checkoutService.checkoutData();
-    
-    // Si ya hay datos guardados en el servicio, rellenamos el formulario
- 
-      this.form.patchValue({
-        email: this.auth.currentUser()?.email,
-        newsletter: currentData.newsletter
-      });
-    
 
-    if (currentData.shippingAddress) {
-      this.form.patchValue({
-        firstName: currentData.shippingAddress.firstName,
-        lastName: currentData.shippingAddress.lastName,
-        address: currentData.shippingAddress.address,
-        dni: currentData.shippingAddress.dni,
-        apartment: currentData.shippingAddress.apartment,
-        city: currentData.shippingAddress.city,
-        department: currentData.shippingAddress.department,
-        postalCode: currentData.shippingAddress.postalCode,
-        phone: currentData.shippingAddress.phone
-      });
-      // Si la dirección coincide con una guardada, podríamos marcarla aquí (lógica opcional)
+    // 3. Email desde Auth si está logueado
+    if (this.auth.currentUser()) {
+      this.form.patchValue({ email: this.auth.currentUser()?.email });
     }
   }
 
+  private patchAddressToForm(addr: Address) {
+    // Seteamos los IDs en el servicio de Ubigeo para habilitar las cascadas
+    this.ubigeo.setDepartamento(addr.department);
+    this.ubigeo.setProvincia(addr.province);
+    this.ubigeo.setDistrito(addr.district);
+
+    this.form.patchValue({
+      ...addr,
+      // Aseguramos que el email se mantenga si viene del estado global
+      email: this.checkoutService.email() || this.form.value.email
+    });
+  }
+
+  // --- MÉTODOS DE UBIGEO ---
+  onDepChange(option: any) {
+    this.ubigeo.setDepartamento(option.id);
+    this.form.patchValue({
+      department: option.name, 
+      province: '',
+      district: ''
+    });
+  }
+
+  onProvChange(option: any) {
+    this.ubigeo.setProvincia(option.id);
+    this.form.patchValue({
+      province: option.name,
+      district: ''
+    });
+  }
+
+  onDistChange(option: any) {
+    this.ubigeo.setDistrito(option.id);
+    this.form.patchValue({ district: option.name });
+  }
+
+  // --- ENVÍO DEL FORMULARIO ---
   submit() {
     if (this.form.invalid) {
-      this.form.markAllAsTouched(); // Muestra los errores rojos
+      this.form.markAllAsTouched();
       return;
     }
 
     const val = this.form.value;
 
-    // 2. CONSTRUIR EL OBJETO ADDRESS
-    // Mapeamos el formulario plano a la estructura anidada que pide el servicio
-    const shippingData: Address = {
+    const shippingAddress: Address = {
       firstName: val.firstName!,
       lastName: val.lastName!,
-      address: val.address!,
-      dni: val.dni!,
-      apartment: val.apartment || '', // Opcional
-      city: val.city!,
+      documentType: val.documentType as any,
+      documentNumber: val.documentNumber!,
+      businessName: val.businessName || '',
+      phone: val.phone!,
+      country: 'Perú', // Fijo por ahora
       department: val.department!,
-      postalCode: val.postalCode!,
-      phone: val.phone!
+      province: val.province!,
+      district: val.district!,
+      address: val.address!,
+      apartment: val.apartment || '',
+      reference: val.reference!,
+      postalCode: val.postalCode || '',
     };
 
-    // 3. GUARDAR EN EL SERVICIO (Persistencia)
+    // 1. Guardar en el servicio global
     this.checkoutService.updateInformation({
       email: val.email!,
-      newsletter: val.newsletter === true,
-      shippingAddress: shippingData
+      newsletter: !!val.newsletter,
+      shippingAddress: shippingAddress,
+      note: val.note || 'null'
     });
 
-    // console.log('✅ Datos guardados en CheckoutService:', this.checkoutService.checkoutData());
+    // 2. Guardar borrador en SessionStorage
+    sessionStorage.setItem('bettjim_checkout_draft', JSON.stringify(shippingAddress));
 
-    // 4. NAVEGAR AL SIGUIENTE PASO
+    // 3. Navegar
     this.router.navigate(['/checkout/shipping']);
   }
+  
 }
-

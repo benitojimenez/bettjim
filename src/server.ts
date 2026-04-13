@@ -11,25 +11,11 @@ const browserDistFolder = join(import.meta.dirname, '../browser');
 import fs from 'node:fs'; // 🔥 1. IMPORTAMOS File System (NUEVO)
 const app = express();
 const angularApp = new AngularNodeAppEngine({
-  allowedHosts: ['bettjim.com', 'www.bettjim.com', 'api.bettjim.com', 'localhost']
+  allowedHosts: ['bettjim.com', 'www.bettjim.com', 'api.bettjim.com', 'localhost', 'http://127.0.0.1:4201']
 });
+// const angularApp = new AngularNodeAppEngine();
 import { environment } from './environments/environment';
 
-/**
- * Example Express Rest API endpoints can be defined here.
- * Uncomment and define endpoints as necessary.
- *
- * Example:
- * ```ts
- * app.get('/api/{*splat}', (req, res) => {
- *   // Handle API request
- * });
- * ```
- */
-// ==========================================
-// 🔥 LA SOLUCIÓN DEFINITIVA: LISTA BLANCA DE DOMINIOS
-// Le decimos a Angular que bettjim.com es un dominio seguro y propio.
-// ==========================================
 
 // ==========================================
 // 🔥 LA SOLUCIÓN DEFINITIVA: Cambiamos '1' por 'true'

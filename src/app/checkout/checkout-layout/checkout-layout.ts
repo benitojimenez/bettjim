@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { OrderSummary } from "../witgets/order-summary/order-summary";
 
@@ -9,6 +9,7 @@ import { OrderSummary } from "../witgets/order-summary/order-summary";
   imports: [RouterOutlet, CommonModule, OrderSummary],
   templateUrl: './checkout-layout.html',
   styleUrl: './checkout-layout.scss',
+  changeDetection:ChangeDetectionStrategy.OnPush
 })
 export class CheckoutLayout {
   // Controla si el resumen está abierto en móvil

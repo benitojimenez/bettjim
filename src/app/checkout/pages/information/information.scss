@@ -1,276 +1,409 @@
-:host {
-  display: block;
-  /* Variables locales para este componente */
-  --primary: #1f2937;    /* Texto oscuro */
-  --accent: #2563eb;     /* Azul Shopify/Stripe */
-  --border: #d1d5db;     /* Gris borde */
-  --input-bg: #ffffff;
-  --bg-hover: #f9fafb;
-  --focus-ring: rgba(37, 99, 235, 0.15); /* Anillo azul suave */
-  --error: #ef4444;
-  --radius: 8px;         /* Bordes modernos */
+/* =========================================
+   1. VARIABLES LOCALES (Bettjim Checkout)
+   ========================================= */
+$primary:      #0f172a;    /* Texto principal oscuro */
+$accent:       #FF2E63;    /* Magenta Bettjim */
+$border:       #cbd5e1;    /* Borde gris sutil */
+$input-bg:     #ffffff;
+$bg-hover:     #f8fafc;
+$focus-ring:   rgba(255, 46, 99, 0.15); /* Anillo magenta suave */
+$error:        #ef4444;
+$radius:       12px;       /* Bordes muy modernos */
+$text-muted:   #64748b;
+
+/* =========================================
+   2. KEYFRAMES Y ANIMACIONES BASE
+   ========================================= */
+@keyframes fadeUp { 
+  from { opacity: 0; transform: translateY(15px); } 
+  to { opacity: 1; transform: translateY(0); } 
 }
 
-/* Animación de entrada suave */
+@keyframes fadeIn { 
+  from { opacity: 0; } 
+  to { opacity: 1; } 
+}
+
 .step-animation {
   animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* =========================================
+   3. TIPOGRAFÍA Y UTILIDADES
+   ========================================= */
 h2 {
-  font-size: 1.15rem;
-  font-weight: 600;
-  color: var(--primary);
-  margin-bottom: 20px;
-  letter-spacing: -0.02em;
+  font-size: 1.3rem; 
+  font-weight: 800; 
+  color: $primary; 
+  margin-bottom: 24px; 
+  letter-spacing: -0.5px;
 }
 
-.mt-large { margin-top: 40px; }
+.mt-large { 
+  margin-top: 45px; 
+}
 
 /* --- HEADER CONTACTO --- */
 .header-row {
-  display: flex; justify-content: space-between; align-items: baseline;
-  margin-bottom: 16px;
-  flex-wrap: wrap; gap: 10px;
+  display: flex; 
+  justify-content: space-between; 
+  align-items: baseline; 
+  margin-bottom: 16px; 
+  flex-wrap: wrap; 
+  gap: 10px;
 
   .login-prompt {
-    font-size: 0.85rem; color: #6b7280;
+    font-size: 0.9rem; 
+    color: $text-muted;
+    
     a { 
-      color: var(--accent); text-decoration: none; font-weight: 500; 
-      &:hover { text-decoration: underline; }
+      color: $accent; 
+      text-decoration: none; 
+      font-weight: 600; 
+      transition: 0.2s;
+      
+      &:hover { 
+        filter: brightness(1.1); 
+        text-decoration: underline; 
+      }
     }
   }
 }
 
 /* =========================================
-   FLOATING LABELS (La Parte Crítica)
+   4. LAYOUTS DE FORMULARIO (Grids)
    ========================================= */
+.form-row {
+  display: grid; 
+  grid-template-columns: 1fr 1fr; 
+  gap: 16px;
+  
+  &.three-col { 
+    grid-template-columns: 1fr 1fr 1fr; 
+    padding-bottom: 1rem;
+  }
+}
+
+/* =========================================
+   5. COMPONENTES DE FORMULARIO (Inputs Flotantes)
+   ========================================= */
+
+/* --- FLOATING LABELS (Estilo Premium) --- */
 .form-floating {
-  position: relative;
-  margin-bottom: 14px; /* Espacio entre inputs */
+  position: relative; 
+  margin-bottom: 16px;
+  width: 100%; /* Asegura que no se encoja */
 
   input, select {
-    width: 100%;
-    height: 54px; /* Altura fija estándar */
-    
-    /* TRUCO ANTI-OVERLAP:
-       Padding Superior: 24px (Espacio reservado para el label cuando sube)
-       Padding Inferior: 8px (Espacio para el texto del usuario)
-       Padding Lateral: 12px
-    */
-    padding: 24px 12px 8px 12px;
-    
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    background: var(--input-bg);
-    
-    font-size: 0.95rem;
-    line-height: 1.25;
-    color: var(--primary); /* Color del texto del usuario */
-    
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    appearance: none; /* Quita estilos nativos de Safari/iOS */
+    box-sizing: border-box; /* 🔥 VITAL: Evita que el padding rompa el ancho en móvil */
+    width: 100%; 
+    height: 56px; 
+    padding: 24px 14px 8px 14px; 
+    border: 1px solid $border; 
+    border-radius: $radius; 
+    background: $input-bg;
+    font-size: 0.95rem; 
+    line-height: 1.3; 
+    color: $primary; 
+    font-weight: 500;
+    outline: none; 
+    transition: all 0.2s ease-in-out;
+    appearance: none; 
+    -webkit-appearance: none;
 
-    /* El placeholder nativo debe ser invisible */
-    &::placeholder { color: transparent; }
+    &::placeholder { color: transparent; } 
 
-    /* Estado Focus */
-    &:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 4px var(--focus-ring);
-      z-index: 10; /* Traer al frente */
+    /* Foco y Selección */
+    &:focus { 
+      border-color: $accent; 
+      box-shadow: 0 0 0 4px $focus-ring; 
+      z-index: 5; 
     }
 
-    /* Estado Error */
+    /* Errores */
     &.ng-invalid.ng-touched {
-      border-color: var(--error);
+      border-color: $error;
       &:focus { box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15); }
     }
+    
+    /* Deshabilitado */
+    &:disabled { 
+      background: #f1f5f9; 
+      color: #94a3b8; 
+      cursor: not-allowed; 
+      border-color: #e2e8f0;
+    }
   }
 
-  /* Etiqueta Flotante */
+  /* ETIQUETA ANIMADA */
   label {
-    position: absolute;
-    left: 13px; /* Alineado con el padding-left del input (+1px visual) */
-    
-    /* ESTADO INICIAL (Centrado) */
-    top: 50%;
+    position: absolute; 
+    left: 14px; 
+    top: 28px; 
     transform: translateY(-50%);
     
-    font-size: 0.95rem;
-    color: #6b7280; /* Gris placeholder */
-    pointer-events: none; /* Clic traspasa al input */
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    transform-origin: top left;
+    /* 🔥 ANTI-DESBORDE PARA MÓVIL: Evita que etiquetas largas se salgan del input */
+    width: calc(100% - 32px); 
+    white-space: nowrap;      
+    overflow: hidden;         
+    text-overflow: ellipsis;  
     
-    width: 90%; /* Evita que el label se salga si es muy largo */
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: 0.95rem; 
+    color: #94a3b8; 
+    font-weight: 400;
+    pointer-events: none; 
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    transform-origin: top left; 
   }
 
-  /* --- ACTIVACIÓN DE LA ANIMACIÓN --- */
-  /* Cuando hay foco O cuando hay texto (placeholder no visible) */
-  input:focus + label,
+  /* Lógica de flote */
+  input:focus + label, 
   input:not(:placeholder-shown) + label,
-  select:focus + label,
-  select:not([value=""]) + label,
-  select.has-value + label {
-    
-    /* Posición Final (Arriba) */
-    transform: translateY(-24px) scale(0.8); /* Sube y se hace pequeño */
-    
-    color: #4b5563; /* Color un poco más oscuro */
-    font-weight: 500;
-  }
-
-  /* Mensaje de Error debajo del input */
-  .error-text {
-    font-size: 0.75rem; color: var(--error); margin-top: 4px; margin-left: 2px;
-    animation: fadeIn 0.3s ease;
-  }
-
-  /* Icono derecho (Tooltip) */
-  .field-icon {
-    position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
-    color: #9ca3af; width: 20px; cursor: help; pointer-events: auto;
+  select:focus + label, 
+  select:not(:placeholder-shown) + label,
+  select:disabled + label {
+    transform: translateY(-18px) scale(0.75); 
+    color: $text-muted; 
+    font-weight: 600;
   }
   
-  &.with-icon input { padding-right: 42px; }
+  input:focus + label, 
+  select:focus + label { 
+    color: $accent; 
+  }
+
+  /* SELECT NATIVO PERSONALIZADO */
+  select {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 16px;
+    padding-right: 40px; 
+  }
+
+  .error-text { 
+    font-size: 0.75rem; color: $error; margin-top: 6px; display: block; font-weight: 500; animation: fadeIn 0.3s ease; 
+  }
 }
 
-/* --- GRIDS DE FORMULARIO --- */
-.form-row {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
-  &.three-col { grid-template-columns: 1fr 1fr 1fr; }
-}
-
-/* Checkbox Moderno */
+/* --- CHECKBOX PERSONALIZADO --- */
 .checkbox-wrapper {
-  display: flex; align-items: center; gap: 10px; margin-top: 8px;
+  display: flex; align-items: flex-start; gap: 10px; margin-top: 10px;
   
   input[type="checkbox"] {
-    width: 18px; height: 18px;
-    accent-color: var(--accent); /* Color nativo del navegador */
-    cursor: pointer;
+    appearance: none; width: 20px; height: 20px; border: 2px solid $border; border-radius: 6px;
+    outline: none; cursor: pointer; transition: all 0.2s ease; display: grid; place-content: center; position: relative; top: 2px;
+    
+    &::before {
+      content: ""; width: 10px; height: 10px; transform: scale(0); transition: 0.2s transform ease-in-out;
+      box-shadow: inset 1em 1em white; transform-origin: bottom left;
+      clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%); 
+    }
+    
+    &:checked { background-color: $accent; border-color: $accent; &::before { transform: scale(1); } }
+    &:focus-visible { box-shadow: 0 0 0 3px $focus-ring; }
   }
   
-  label {
-    font-size: 0.9rem; color: #374151; cursor: pointer; user-select: none;
-  }
+  label { font-size: 0.95rem; color: $primary; cursor: pointer; user-select: none; line-height: 1.4; }
 }
 
 /* =========================================
-   SELECTOR DE DIRECCIONES (Saved Addresses)
+   6. DIRECCIONES GUARDADAS
    ========================================= */
 .address-selector {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 14px; margin-bottom: 25px;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-bottom: 30px;
 }
 
 .address-card {
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 16px;
-  cursor: pointer;
-  background: white;
-  transition: all 0.2s ease;
-  display: flex; align-items: flex-start; gap: 12px;
-  position: relative;
+  border: 1px solid $border; border-radius: $radius; padding: 18px; cursor: pointer; background: white; transition: all 0.2s ease; display: flex; align-items: flex-start; gap: 14px;
+  &:hover { border-color: #94a3b8; background: $bg-hover; }
 
-  /* Hover */
-  &:hover { border-color: #9ca3af; background: var(--bg-hover); }
-
-  /* Radio Button Visual */
   .radio-circle {
-    width: 18px; height: 18px;
-    border: 1px solid #9ca3af; border-radius: 50%;
-    margin-top: 2px; flex-shrink: 0;
-    position: relative;
-    background: white;
-    transition: 0.2s;
-    
+    width: 20px; height: 20px; border: 2px solid $border; border-radius: 50%; margin-top: 2px; flex-shrink: 0; position: relative; transition: 0.2s;
     &::after {
-      content: ''; position: absolute;
-      top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
-      width: 8px; height: 8px;
-      background: white; border-radius: 50%;
-      transition: transform 0.2s;
+      content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
+      width: 10px; height: 10px; background: $accent; border-radius: 50%; transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
   }
 
   .addr-info {
     display: flex; flex-direction: column;
-    .alias { font-weight: 600; font-size: 0.9rem; color: var(--primary); }
-    .detail { font-size: 0.85rem; color: #6b7280; margin-top: 2px; line-height: 1.3; }
+    .alias { font-weight: 700; font-size: 0.95rem; color: $primary; margin-bottom: 2px; }
+    .detail { font-size: 0.85rem; color: $text-muted; line-height: 1.4; }
   }
 
-  /* ESTADO SELECCIONADO */
   &.selected {
-    border-color: var(--accent);
-    background: #eff6ff; /* Azul muy pálido */
-    box-shadow: 0 0 0 1px var(--accent); /* Borde doble visual */
+    border-color: $accent; background: rgba(255, 46, 99, 0.03); box-shadow: 0 0 0 1px $accent;
+    .radio-circle { border-color: $accent; &::after { transform: translate(-50%, -50%) scale(1); } }
+  }
+
+  &.new-addr {
+    align-items: center;
+    .alias { color: $accent; font-weight: 600; }
+    &:hover { background: rgba(255, 46, 99, 0.03); border-color: $accent; }
+  }
+}
+
+.address-form {
+  transition: opacity 0.4s ease, filter 0.4s ease; position: relative; z-index: 30;
+  &.faded { opacity: 0.4; pointer-events: none; filter: grayscale(1); }
+}
+
+/* =========================================
+   7. FOOTER Y BOTONES DE ACCIÓN
+   ========================================= */
+.step-footer {
+  margin-top: 50px; padding-top: 25px; border-top: 1px solid rgba(0,0,0,0.08);
+  display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 10;
+
+  .link-back {
+    display: flex; align-items: center; gap: 8px; color: $accent; font-weight: 600; text-decoration: none; font-size: 0.95rem; transition: 0.2s;
+    svg { width: 18px; transition: transform 0.2s; }
+    &:hover { filter: brightness(1.2); svg { transform: translateX(-4px); } }
+  }
+
+  .btn-checkout-primary {
+    background: $primary; color: white; border: none; padding: 18px 36px; border-radius: $radius; font-size: 1.05rem; font-weight: 700; cursor: pointer; transition: 0.3s;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     
-    .radio-circle {
-      background: var(--accent); border-color: var(--accent);
-      &::after { transform: translate(-50%, -50%) scale(1); }
+    &:hover:not(:disabled) { background: #000000; transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
+    &:active:not(:disabled) { transform: translateY(0); }
+    &:disabled { background: #cbd5e1; cursor: not-allowed; box-shadow: none; }
+  }
+}
+/* 1. Aplicamos margen a los componentes personalizados 
+      para que no se peguen con los inputs nativos */
+app-custom-select {
+  display: block; // Importante para que acepte el margen
+  margin-bottom: 16px;
+}
+/* =========================================
+   SECCIÓN DE NOTAS (Textarea Premium)
+   ========================================= */
+.note-section {
+  width: 100%;
+  margin-top: 20px;
+  margin-bottom: 24px;
+  position: relative;
+
+  textarea {
+    width: 100%;
+    min-height: 120px; /* Altura ideal inicial */
+    max-height: 300px; /* Evita que crezca infinitamente */
+    padding: 16px;
+    
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1; /* $border */
+    border-radius: 12px;       /* $radius */
+    
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: #0f172a;           /* $primary */
+    line-height: 1.5;
+    
+    outline: none;
+    resize: vertical;         /* Solo permite estirar hacia abajo */
+    transition: all 0.2s ease-in-out;
+    display: block;
+    box-sizing: border-box;
+
+    &::placeholder {
+      color: #94a3b8;         /* $text-muted */
+      font-weight: 400;
+    }
+
+    /* Efecto Focus (Magenta Bettjim) */
+    &:focus {
+      border-color: #FF2E63;  /* $accent */
+      box-shadow: 0 0 0 4px rgba(255, 46, 99, 0.15); /* $focus-ring */
+      background-color: #fff;
+    }
+
+    /* Scrollbar minimalista para el textarea */
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 10px;
     }
   }
 
-  /* Botón "Nueva Dirección" */
-  &.new-addr {
-    align-items: center;
-    .alias { color: var(--accent); }
-    &:hover { background: #eff6ff; }
+  /* Pequeña etiqueta de ayuda opcional debajo */
+  &::after {
+    content: "Máximo 200 caracteres";
+    display: block;
+    font-size: 0.75rem;
+    color: #94a3b8;
+    margin-top: 6px;
+    text-align: right;
   }
 }
-
-/* Transición para el formulario cuando está deshabilitado visualmente */
-.address-form {
-  transition: opacity 0.3s, filter 0.3s;
-  
-  &.faded {
-    opacity: 0.5;
-    pointer-events: none; /* Bloquea clics */
-    filter: grayscale(1);
-  }
-}
-
 /* =========================================
-   FOOTER ACCIONES
-   ========================================= */
-.step-footer {
-  margin-top: 40px;
-  display: flex; justify-content: space-between; align-items: center;
-
-  
-}
-
-/* =========================================
-   RESPONSIVE MÓVIL
+   8. RESPONSIVE MÓVIL (A prueba de balas)
    ========================================= */
 @media (max-width: 600px) {
-  .form-row, .form-row.three-col {
-    grid-template-columns: 1fr; /* Todo a 1 columna */
-    gap: 0; /* El margen inferior del .form-floating maneja el espacio */
+  
+  /* 1. Destruimos el flex/grid en móvil y usamos bloques simples.
+        Esto asegura que no haya comportamientos extraños de 'gap' */
+  .form-row, 
+  .form-row.three-col { 
+    display: block;
+  }
+
+  /* 2. 🔥 LA MAGIA: Forzamos un margen inferior estricto a TODOS los inputs,
+        sin importar si están sueltos o agrupados. */
+  .form-floating,
+  .form-row .form-floating,
+  .form-row.three-col .form-floating {
+    margin-bottom: 16px !important; 
+    width: 100%;
+  }
+
+  /* 3. Selector de direcciones en una sola columna */
+  .address-selector { 
+    grid-template-columns: 1fr; 
+  }
+  /* Forzamos el margen a inputs normales Y a los selectores personalizados */
+  .form-floating, 
+  app-custom-select {
+    margin-bottom: 20px !important; // Un poco más de espacio para pulgares en móvil
+  }
+
+  /* Si están dentro de una fila, quitamos el margen extra para no duplicar */
+  .form-row {
+    display: block;
+    app-custom-select, .form-floating {
+       margin-bottom: 20px !important;
+    }
   }
   
-  .address-selector { grid-template-columns: 1fr; }
-  
+  /* 4. Footer apilado para pulgares */
   .step-footer {
-    flex-direction: column-reverse; /* Botón arriba, link abajo */
-    gap: 20px;
-    .btn-checkout-primary { width: 100%; }
-    .link-back { width: 100%; justify-content: center; }
+    flex-direction: column-reverse; 
+    gap: 24px; 
+    margin-top: 30px;
+    
+    .btn-checkout-primary { 
+      width: 100%; 
+      padding: 20px; 
+    }
+    .link-back { 
+      width: 100%; 
+      justify-content: center; 
+    }
   }
-}
+  .note-section {
+    margin-bottom: 30px; /* Más espacio antes del botón de continuar */
 
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+    textarea {
+      min-height: 100px; /* Un poco más bajo en móvil para que quepa el teclado */
+      font-size: 16px;    /* 💡 TRUCO PRO: Evita que iOS haga zoom automático al enfocar */
+      padding: 14px;
+    }
+  }
 }

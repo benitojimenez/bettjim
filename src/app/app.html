@@ -1,12 +1,17 @@
 <app-progress-bar/>
 <app-toast />
-<app-header-one/>
 
-<app-sidebar />
-<app-cart-sidebar/>
+@if (!isFlashRoute()) {
+  <app-header-one/>
+  <app-sidebar />
+  <app-cart-sidebar/>
+}
+
 <main class="main-content">
   <router-outlet />
 </main>
-<app-footer-one /> 
-<app-cookie-banner/>
-<!-- <app-lucky-wheel/> -->
+
+@if (!isFlashRoute()) {
+  <app-footer-one /> 
+  <app-cookie-banner/>
+}

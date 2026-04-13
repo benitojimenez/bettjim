@@ -1,59 +1,66 @@
 <div class="step-animation">
+  
   <section class="section-group">
     <div class="header-row">
       <h2>Contacto</h2>
-      @if(!auth.isAuthenticated()) {
-      <span class="login-prompt">
-        ¿Ya tienes cuenta? <a routerLink="/auth/login">Iniciar sesión</a>
-      </span>
+      @if (!auth.isAuthenticated()) {
+        <span class="login-prompt">
+          ¿Ya tienes cuenta? <a routerLink="/auth/login">Iniciar sesión</a>
+        </span>
       }
     </div>
 
     <form [formGroup]="form">
-      <div class="form-floating">
-        <input type="email" id="email" formControlName="email" placeholder="Email" />
-        <label for="email">Correo electrónico</label>
-        @if(form.get('email')?.invalid && form.get('email')?.touched) {
-        <span class="error-text">Ingresa un correo válido</span>
-        }
+      <div class="form-row">
+        <div class="form-floating">
+          <input type="email" id="email" formControlName="email" placeholder=" " />
+          <label for="email">Correo electrónico</label>
+          @if (form.get('email')?.invalid && form.get('email')?.touched) {
+            <span class="error-text">Ingresa un correo válido</span>
+          }
+        </div>
+        <div class="form-floating">
+          <input type="tel" id="phone" formControlName="phone" placeholder=" " />
+          <label for="phone">Teléfono / Celular</label>
+        </div>
       </div>
 
       <div class="checkbox-wrapper">
         <input type="checkbox" id="newsletter" formControlName="newsletter" />
-        <label for="newsletter">Enviarme novedades y ofertas por correo</label>
+        <label for="newsletter">Enviarme novedades y ofertas secretas por correo</label>
       </div>
     </form>
   </section>
 
   <section class="section-group mt-large">
     <h2>Dirección de envío</h2>
+    
+    @if (auth.isAuthenticated() && savedAddresses().length > 0) {
+      <div class="address-selector">
+        <!-- @for (addr of savedAddresses(); track addr.id) {
+          <div
+            class="address-card"
+            [class.selected]="selectedAddressId() === addr.id"
+            (click)="selectAddress(addr.id)"
+          >
+            <div class="radio-circle"></div>
+            <div class="addr-info">
+              <span class="alias">{{ addr.alias }}</span>
+               <span class="detail">{{ addr.line1 }}, {{ addr.city }}</span> 
+            </div>
+          </div>
+        } -->
 
-    @if(auth.isAuthenticated() && savedAddresses().length > 0) {
-    <div class="address-selector">
-      @for(addr of savedAddresses(); track addr.id) {
-      <div
-        class="address-card"
-        [class.selected]="selectedAddressId() === addr.id"
-        (click)="selectAddress(addr.id)"
-      >
-        <div class="radio-circle"></div>
-        <div class="addr-info">
-          <span class="alias">{{ addr.alias }}</span>
-          <span class="detail">{{ addr.line1 }}, {{ addr.city }}</span>
-        </div>
+        <!-- <div
+          class="address-card new-addr"
+          [class.selected]="selectedAddressId() === 'new'"
+          (click)="selectAddress('new')"
+        >
+          <div class="radio-circle"></div>
+          <span class="alias">Usar una nueva dirección</span>
+        </div> -->
       </div>
-      }
-
-      <div
-        class="address-card new-addr"
-        [class.selected]="selectedAddressId() === 'new'"
-        (click)="selectAddress('new')"
-      >
-        <div class="radio-circle"></div>
-        <span class="alias">Usar una nueva dirección</span>
-      </div>
-    </div>
-    }
+    } 
 
     <form
       [formGroup]="form"
@@ -69,61 +76,96 @@
 
       <div class="form-row">
         <div class="form-floating">
-          <input type="text" id="name" formControlName="firstName" placeholder="Nombre" />
+          <input type="text" id="name" formControlName="firstName" placeholder=" " />
           <label for="name">Nombre</label>
         </div>
         <div class="form-floating">
-          <input type="text" id="lastname" formControlName="lastName" placeholder="Apellido" />
+          <input type="text" id="lastname" formControlName="lastName" placeholder=" " />
           <label for="lastname">Apellidos</label>
         </div>
       </div>
-       <div class="form-row">
+
+      <div class="form-row">
         <div class="form-floating">
-          <input type="text" id="phone" formControlName="phone" placeholder="Numero telefonico" />
-          <label for="name">Telefono</label>
+          <select formControlName="documentType" id="docType">
+            <option value="DNI">DNI</option>
+            <option value="CE">Carnet de Extranjería</option>
+            <option value="RUC">RUC (Factura)</option>
+          </select>
+          <label for="docType">Tipo de Documento</label>
         </div>
         <div class="form-floating">
-          <input type="text" id="dni" formControlName="dni" placeholder="Ingresa tu documento de Identidad" />
-          <label for="lastname">Documento de Identidad</label>
+          <input type="text" id="docNumber" formControlName="documentNumber" placeholder=" " />
+          <label for="docNumber">Número de Documento</label>
         </div>
       </div>
 
-      <div class="form-floating">
-        <input type="text" id="addr" formControlName="address" placeholder="Dirección" />
-        <label for="addr">Dirección (Av, Calle, Jr)</label>
-      </div>
-
-      <div class="form-floating">
-        <input type="text" id="apt" formControlName="apartment" placeholder="Dpto" />
-        <label for="apt">Casa, apartamento, etc. (opcional)</label>
-      </div>
+      @if(form.get('documentType')?.value === 'RUC') {
+        <div class="form-floating step-animation">
+          <input type="text" id="businessName" formControlName="businessName" placeholder=" " />
+          <label for="businessName">Razón Social</label>
+        </div>
+      }
 
       <div class="form-row three-col">
+        <app-custom-select 
+        [label]="ubigeo.loadingRegiones() ? 'Cargando departamentos...' : 'Departamento'" 
+        [options]="DEPARTAMENTOS()"
+        [selectedId]="ubigeo.selectedDepId()"
+        (selectionChange)="onDepChange($event)">
+      </app-custom-select>
+
+        <app-custom-select 
+          [label]="ubigeo.loadingProvincias() ? 'Cargando provincias...' : 'Provincia'" 
+          [options]="PROVINCIAS()"
+          [disabled]="!ubigeo.selectedDepId() || ubigeo.loadingProvincias()"
+          [selectedId]="ubigeo.selectedProvId()"
+          (selectionChange)="onProvChange($event)">
+        </app-custom-select>
+
+        <app-custom-select 
+          [label]="ubigeo.loadingDistritos() ? 'Cargando distritos...' : 'Distrito'" 
+          [options]="DISTRITOS()"
+          [disabled]="!ubigeo.selectedProvId()|| ubigeo.loadingProvincias()"
+          [selectedId]="ubigeo.selectedDistId()"
+          (selectionChange)="onDistChange($event)"> </app-custom-select>
+      </div>
+
+      <div class="form-floating">
+        <input type="text" id="addr" formControlName="address" placeholder=" " />
+        <label for="addr">Dirección Exacta (Av, Calle, Jr, N°)</label>
+      </div>
+
+      <div class="form-row">
         <div class="form-floating">
-          <input type="text" id="city" formControlName="city" placeholder="Ciudad" />
-          <label for="city">Ciudad</label>
+          <input type="text" id="reference" formControlName="reference" placeholder=" " />
+          <label for="reference">Referencia de llegada (Opcional pero recomendado)</label>
         </div>
         <div class="form-floating">
-          <select formControlName="department" id="dept">
-            <option value="" disabled selected hidden></option>
-            <option value="lima">Lima</option>
-            <option value="arequipa">Arequipa</option>
-            <option value="cusco">Cusco</option>
-          </select>
-          <label for="dept">Departamento</label>
+          <input type="text" id="apt" formControlName="apartment" placeholder=" " />
+          <label for="apt">Dpto, Casa, Lote (Opcional)</label>
         </div>
-        <div class="form-floating">
-          <input type="text" id="zip" formControlName="postalCode" placeholder="Postal" />
-          <label for="zip">Código Postal</label>
-        </div>
+      </div>
+
+      <div class="form-floating">
+        <input type="text" id="postal" formControlName="postalCode" placeholder=" " />
+        <label for="postal">Código Postal (Opcional)</label>
+      </div>
+      <div class="note-section">
+        <textarea name="note" id="12" cols="30" rows="10"></textarea>
       </div>
     </form>
   </section>
 
   <div class="step-footer">
+    <a routerLink="/shop" class="link-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+      Volver al carrito
+    </a>
     <button class="btn-checkout-primary" (click)="submit()" [disabled]="form.invalid">
       Continuar a Envíos
     </button>
-    <a routerLink="/shop" class="link-back">Seguir comprando</a>
   </div>
 </div>

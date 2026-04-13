@@ -19,7 +19,6 @@
     </div>
   </div>
 
-  <!--  -->
   <div class="free-shipping-bar mt-large">
     @if (progress().isFree) {
       <div class="message success">
@@ -43,43 +42,52 @@
 
     <div class="options-container">
       @for (method of methods(); track method.id) {
+        <label class="shipping-card" [class.selected]="selectedMethodId() === method.id">
+          <input
+            type="radio"
+            name="shipping"
+            [value]="method.id"
+            [ngModel]="selectedMethodId()"
+            (ngModelChange)="selectedMethodId.set($event)"
+          />
 
-      <label class="shipping-card" [class.selected]="selectedMethodId() === method.id">
-        <input
-          type="radio"
-          name="shipping"
-          [value]="method.id"
-          [ngModel]="selectedMethodId()"
-          (ngModelChange)="selectedMethodId.set($event)"
-        />
+          <div class="card-content">
+            <div class="radio-indicator"></div>
 
-        <div class="card-content">
-          <div class="radio-indicator"></div>
+            <div class="method-info">
+              <span class="name">{{ method.name }}</span>
+              <span class="eta">{{ method.eta }}</span>
+            </div>
 
-          <div class="method-info">
-            <span class="name">{{ method.name }}</span>
-            <span class="eta">{{ method.eta }}</span>
+            <div class="price-container">
+              @if (method.price === 0 && method.originalPrice) {
+                <span class="original-price">{{ method.originalPrice | currency : 'PEN' }}</span>
+                <span class="free-badge">Gratis</span>
+              } 
+              @else if (method.price === 0) {
+                <span class="free-badge">Gratis</span>
+              } 
+              @else {
+                <span class="final-price">{{ method.price | currency : 'PEN' }}</span>
+              }
+            </div>
           </div>
-
-          <div class="price">
-            @if(method.price === 0) { Gratis } @else {
-            {{ method.price | currency : 'PEN' }}
-            }
-          </div>
-        </div>
-      </label>
-
+        </label>
       }
     </div>
   </section>
 
   <div class="step-footer">
+    <a routerLink="../information" class="link-back">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+      Volver a información
+    </a>
+    
     <button 
-    class="btn-checkout-primary" 
-    (click)="submit()"
-    [disabled]="!selectedMethodId()">
-    Continuar a Pago
-  </button>
-    <a routerLink="../information" class="link-back">Volver a información</a>
+      class="btn-checkout-primary" 
+      (click)="submit()"
+      [disabled]="!selectedMethodId()">
+      Continuar a Pago
+    </button>
   </div>
 </div>

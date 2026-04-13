@@ -1,0 +1,222 @@
+/* =========================================
+   VARIABLES LOCALES DEL COMPONENTE
+   ========================================= */
+$primary:      #0f172a;    /* Texto oscuro principal */
+$accent:       #FF2E63;    /* Magenta Bettjim */
+$border:       #cbd5e1;    /* Gris sutil para bordes */
+$input-bg:     #ffffff;
+$bg-hover:     #f8fafc;
+$focus-ring:   rgba(255, 46, 99, 0.15); /* Anillo de luz al hacer clic */
+$text-muted:   #64748b;
+$radius:       12px;
+
+/* Aseguramos que el componente ocupe el ancho correcto donde se coloque */
+:host {
+  display: block;
+  width: 100%;
+}
+
+/* =========================================
+   CONTENEDOR PRINCIPAL
+   ========================================= */
+.form-floating.custom-select-container {
+  position: relative;
+  width: 100%;
+  
+  /* =========================================
+     1. EL INPUT (Falso Select)
+     ========================================= */
+  input {
+    width: 100%; height: 56px; 
+    padding: 24px 45px 8px 14px; 
+    border: 1px solid $border; border-radius: $radius; background: $input-bg;
+    font-size: 0.95rem; line-height: 1.3; color: $primary; font-weight: 500;
+    outline: none; transition: all 0.2s ease-in-out;
+    cursor: pointer; user-select: none;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+
+    &::placeholder { color: transparent; }
+
+    &:focus { border-color: $accent; box-shadow: 0 0 0 4px $focus-ring; z-index: 5; }
+    
+    &:disabled { 
+      background: #f1f5f9; color: #94a3b8; cursor: not-allowed; 
+      border-color: #e2e8f0;
+    }
+  }
+
+  /* =========================================
+     2. ETIQUETA FLOTANTE (Animada)
+     ========================================= */
+  label {
+    position: absolute; left: 14px; 
+    top: 28px; 
+    transform: translateY(-50%);
+    font-size: 0.95rem; color: #94a3b8; font-weight: 400;
+    pointer-events: none; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    transform-origin: top left; 
+    width: calc(100% - 45px); 
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  input:focus + label, 
+  input:not(:placeholder-shown) + label,
+  &.is-open label {
+    transform: translateY(-18px) scale(0.75); 
+    color: $text-muted; font-weight: 600;
+  }
+  
+  input:focus + label, &.is-open label { color: $accent; }
+
+  /* =========================================
+     3. ICONO DE FLECHA (Chevron)
+     ========================================= */
+  .chevron-icon {
+    position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+    width: 18px; height: 18px; color: #94a3b8; pointer-events: none;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* =========================================
+     4. EL MENÚ DESPLEGABLE PREMIUM
+     ========================================= */
+  .custom-dropdown-menu {
+    position: absolute; top: calc(100% + 8px); left: 0; width: 100%;
+    background: #ffffff;
+    border: 1px solid $border; border-radius: $radius;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1), 0 5px 15px rgba(0,0,0,0.05);
+    z-index: 99999;
+    
+    opacity: 0; visibility: hidden;
+    transform: translateY(-10px) scale(0.98);
+    transform-origin: top center;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+
+    /* =========================================
+       NUEVO: BARRA DE BÚSQUEDA INTERNA (CORREGIDA)
+       ========================================= */
+    .search-wrapper {
+      padding: 10px 10px 6px; 
+      background: #ffffff;
+      border-radius: $radius $radius 0 0; 
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-bottom: 1px solid #e2e8f0;
+
+      .search-icon {
+        position: absolute;
+        left: 20px; 
+        top: 50%;
+        transform: translateY(-50%);
+        width: 16px;
+        height: 16px;
+        color: $text-muted;
+        pointer-events: none; 
+        /* 🔥 LA MAGIA: Obliga a la lupa a estar SIEMPRE por encima del input 🔥 */
+        z-index: 10;
+      }
+
+      .search-input {
+        position: relative;
+        width: 100%;
+        height: 42px; 
+        padding: 0 15px 0 42px; 
+        background: #f8fafc;
+        border: 1px solid transparent; 
+        border-radius: 8px; 
+        font-size: 0.95rem; 
+        color: $primary;
+        outline: none;
+        transition: all 0.2s ease;
+        z-index: 1;
+
+        &::placeholder { color: $text-muted; font-weight: 500; }
+        
+        &:focus {
+          background: #ffffff;
+          border-color: $accent;
+          box-shadow: 0 0 0 3px rgba(255, 46, 99, 0.1); 
+        }
+      }
+    }
+
+    .options-wrapper {
+      max-height: 240px; overflow-y: auto; padding: 8px;
+      
+      &::-webkit-scrollbar { width: 6px; }
+      &::-webkit-scrollbar-track { background: transparent; }
+      &::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+      &::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    }
+
+    .custom-option {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 16px; border-radius: 8px; cursor: pointer; transition: all 0.2s ease;
+      
+      .option-label {
+        display: flex; align-items: center; gap: 10px;
+        
+        .location-icon {
+          width: 16px; height: 16px; color: #94a3b8; 
+          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .option-text { font-size: 0.95rem; font-weight: 500; color: $primary; transition: 0.2s; }
+      }
+
+      .check-icon { width: 18px; height: 18px; animation: scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
+
+      &:hover {
+        background: $bg-hover; 
+        .option-label {
+          .option-text { color: $accent; }
+          .location-icon { color: $accent; transform: translateY(-2px); } 
+        }
+      }
+
+      &.selected {
+        background: rgba(255, 46, 99, 0.05); 
+        .option-label {
+          .option-text { color: $accent; font-weight: 700; }
+          .location-icon { color: $accent; fill: rgba(255, 46, 99, 0.1); } 
+        }
+      }
+    }
+
+    /* Mensaje "No hay resultados" alineado */
+    .no-results {
+      padding: 24px 20px;
+      text-align: center;
+      font-size: 0.9rem;
+      color: $text-muted;
+      font-weight: 500;
+    }
+  }
+
+  /* =========================================
+     5. ESTADO ABIERTO (.is-open)
+     ========================================= */
+  &.is-open {
+    z-index: 9999 !important; 
+    
+    input { border-color: $accent; box-shadow: 0 0 0 4px $focus-ring; }
+    .chevron-icon { transform: translateY(-50%) rotate(-180deg); color: $accent; }
+    
+    .custom-dropdown-menu {
+      opacity: 1; visibility: visible;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  &.disabled {
+    opacity: 0.7; pointer-events: none;
+    .chevron-icon { color: #cbd5e1; }
+  }
+}
+
+/* Animación del checkmark */
+@keyframes scaleIn { 
+  0% { transform: scale(0); opacity: 0; } 
+  100% { transform: scale(1); opacity: 1; } 
+}

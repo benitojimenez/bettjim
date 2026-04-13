@@ -1,0 +1,592 @@
+// ==========================================
+// VARIABLES Y MIXINS
+// ==========================================
+$color-flash: #e63946; // Rojo agresivo para ventas
+$color-dark: #1d3557;
+$color-gray: #f1faee;
+$color-success: #2a9d8f; // Verde esmeralda para el descuento
+$text-main: #333;
+$text-muted: #888;
+
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+// ==========================================
+// CONTENEDOR PRINCIPAL
+// ==========================================
+.flash-offer-container {
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: $text-main;
+  background-color: #fafafa;
+  min-height: 100vh;
+  padding-bottom: 50px;
+
+ 
+  // ENCABEZADO MINIMALISTA
+  .flash-header {
+    background: white;
+    padding: 20px 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: center; 
+    
+    .header-content {
+      display: flex;
+      align-items: center; 
+      gap: 15px; 
+    }
+
+    // 🔥 LOGO CON TUS UI TOKENS
+    .brand-logo {
+      font-family: var(--font-heading, 'Outfit', sans-serif); // Usa tu fuente principal
+      font-size: 2.2rem; // Tamaño grande e imponente
+      font-weight: 800; // Letra bien gruesa (Bold)
+      letter-spacing: -0.04em; // Junta las letras como en tu imagen
+      color: var(--text-main, #1a1f2b); // Azul oscuro casi negro
+      text-decoration: none;
+      display: flex; 
+      align-items: center; // Alineación perfecta
+      transition: 0.2s;
+      line-height: 1;
+      
+      &:hover { opacity: 0.8; }
+      
+      // El ".com" grande y rojo/rosado
+      .highlight { 
+        color: var(--primary, $color-flash); // Tu color rojo
+        // Al no poner un font-size aquí, hereda el 2.2rem, viéndose igual de grande que Bettjim
+      }
+    }
+
+    // EL ESLOGAN
+    .slogan {
+      font-family: var(--font-family, 'Inter', sans-serif); // Fuente de texto normal
+      font-size: 1.1rem;
+      color: #666;
+      font-weight: 400;
+      border-left: 2px solid #eaeaea; 
+      padding-left: 15px;
+      letter-spacing: -0.02em;
+    }
+  }
+  
+ 
+
+  // ESTRUCTURA A DOS COLUMNAS (PC) / UNA COLUMNA (MÓVIL)
+  .flash-main {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+
+    @media (min-width: 768px) {
+      grid-template-columns: 1fr 1fr;
+      align-items: start;
+    }
+  }
+
+  // ==========================================
+  // COLUMNA IZQUIERDA (FOTOS Y GALERÍA)
+  // ==========================================
+  .visual-column {
+    .main-image-wrapper {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      background: white;
+      
+      .main-img {
+        width: 100%;
+        display: block;
+        aspect-ratio: 1 / 1; // Mantiene la foto cuadrada
+        object-fit: cover;
+      }
+
+      // Etiqueta de Oferta Temblorosa con SVG
+      .sale-badge {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        background: $color-flash;
+        color: white;
+        font-weight: 800;
+        padding: 8px 12px;
+        border-radius: 5px;
+        font-size: 0.9rem;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        z-index: 10;
+        animation: tilt-shaking 3s infinite;
+        
+        // Alineación del SVG y el texto
+        display: flex;
+        align-items: center;
+        gap: 6px; 
+        
+        .svg-fire {
+          width: 16px;
+          height: 16px;
+          fill: #ffda79; // Color amarillo/fuego por dentro
+          stroke: none;
+        }
+      }
+    }
+
+    // Miniaturas
+    .gallery-thumbnails {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      
+      .thumb {
+        width: 70px;
+        height: 70px;
+        border-radius: 8px;
+        object-fit: cover;
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition: 0.2s;
+        
+        &.active, &:hover {
+          border-color: $color-dark;
+          opacity: 1;
+        }
+        &:not(.active) { opacity: 0.6; }
+      }
+    }
+  }
+
+  // ==========================================
+  // COLUMNA DERECHA (DETALLES Y VENTAS)
+  // ==========================================
+  .details-column {
+    
+    // Título Principal
+    .product-title {
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin: 0 0 10px;
+      line-height: 1.1;
+      color: $color-dark;
+    }
+
+    // Prueba Social (Estrellas SVG y Reseñas)
+    .social-proof {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+
+      .stars {
+        display: flex;
+        gap: 2px;
+        
+        .svg-star {
+          width: 18px;
+          height: 18px;
+          fill: #f39c12; // Dorado premium
+          stroke: #f39c12;
+        }
+      }
+      
+      .review-count {
+        font-size: 0.9rem;
+        color: #0066cc;
+        text-decoration: none;
+        font-weight: 500;
+        &:hover { text-decoration: underline; }
+      }
+    }
+
+    // Reloj de Urgencia y Live Viewers
+    .urgency-timer {
+      background: rgba($color-flash, 0.05);
+      border: 1px solid rgba($color-flash, 0.2);
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      text-align: center;
+
+      // Visualizadores en vivo
+      .live-viewers {
+        background: rgba(0, 0, 0, 0.05);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #444;
+        margin-bottom: 15px;
+
+        .pulse-dot {
+          width: 8px;
+          height: 8px;
+          background-color: #ff0000;
+          border-radius: 50%;
+          animation: blink 1.5s infinite;
+        }
+      }
+
+      .timer-title {
+        color: $color-flash;
+        font-weight: bold;
+        margin: 0 0 10px;
+        font-size: 0.9rem;
+      }
+
+      .timer-boxes {
+        @include flex-center;
+        gap: 10px;
+
+        .time-box {
+          background: white;
+          color: $color-flash;
+          padding: 8px 15px;
+          border-radius: 6px;
+          font-weight: bold;
+          font-size: 1.5rem;
+          box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+          display: flex;
+          flex-direction: column;
+          
+          small { font-size: 0.7rem; color: $text-muted; margin-top: 2px; }
+        }
+        .colon { font-size: 1.5rem; font-weight: bold; color: $color-flash; }
+      }
+    }
+
+    // Precios y Descuento
+    .price-section {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 25px;
+
+      .old-price {
+        font-size: 1.3rem;
+        color: $text-muted;
+        text-decoration: line-through;
+      }
+      .flash-price {
+        font-size: 2.8rem;
+        font-weight: 900;
+        color: $color-flash;
+      }
+      .discount-badge {
+        background-color: $color-success;
+        color: white;
+        padding: 4px 10px;
+        border-radius: 5px;
+        font-weight: 800;
+        font-size: 1rem;
+      }
+    }
+
+    // Barra de Escasez de Stock
+    .stock-scarcity {
+      margin-bottom: 25px;
+      
+      p {
+        margin: 0 0 8px 0;
+        font-size: 0.95rem;
+        color: #d62828;
+        strong { font-weight: 800; }
+      }
+
+      .progress-bar {
+        width: 100%;
+        height: 8px;
+        background-color: #eee;
+        border-radius: 10px;
+        overflow: hidden;
+
+        .progress-fill {
+          height: 100%;
+          background: linear-gradient(90deg, #ff4d4d, #d62828);
+          border-radius: 10px;
+          animation: fillBar 1.5s ease-out forwards;
+        }
+      }
+    }
+
+    // Selección de Variantes (Colores y Tallas)
+    .variant-section {
+      margin-bottom: 20px;
+
+      .variant-label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+        color: $text-muted;
+        strong { color: $text-main; }
+      }
+
+      .color-options {
+        display: flex;
+        gap: 10px;
+        
+        .color-swatch {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          cursor: pointer;
+          border: 2px solid #ddd;
+          box-shadow: inset 0 0 0 3px white;
+          transition: 0.2s;
+
+          &.active { border-color: $color-dark; transform: scale(1.1); }
+        }
+      }
+
+      .size-options {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+
+        .size-btn {
+          padding: 10px 18px;
+          border: 1px solid #ccc;
+          background: white;
+          border-radius: 6px;
+          font-weight: bold;
+          cursor: pointer;
+          transition: 0.2s;
+
+          &:hover:not(.out-of-stock) { border-color: $color-dark; }
+          &.active {
+            background: $color-dark;
+            color: white;
+            border-color: $color-dark;
+          }
+          &.out-of-stock {
+            opacity: 0.5;
+            cursor: not-allowed;
+            text-decoration: line-through;
+          }
+        }
+      }
+    }
+
+    // Descripción del Producto
+    .product-description {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: #555;
+      margin-bottom: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+    }
+
+    // Botón de Compra con SVG Carrito
+    .cta-button {
+      width: 100%;
+      background-color: $color-flash;
+      color: white;
+      font-size: 1.4rem;
+      font-weight: 900;
+      padding: 18px;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba($color-flash, 0.4);
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      transition: background-color 0.3s ease;
+      
+      // Ajustes Flex para texto y SVG
+      display: flex !important; 
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+
+      .svg-cart {
+        width: 24px;
+        height: 24px;
+        transition: transform 0.3s ease;
+      }
+
+      &:hover {
+        background-color: darken($color-flash, 10%);
+        
+        .svg-cart {
+          transform: translateX(5px); // El carrito avanza
+        }
+      }
+    }
+
+    .animated-pulse {
+      animation: pulse-red 2s infinite;
+    }
+
+    // Grid de Confianza (Garantía, Envío, Seguridad)
+    .trust-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px dashed #ddd;
+
+      .trust-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        font-size: 0.75rem;
+        color: #666;
+        font-weight: 500;
+
+        .svg-trust {
+          width: 28px;
+          height: 28px;
+          margin-bottom: 8px;
+          stroke: #1d3557; // Color oscuro elegante
+          opacity: 0.9;
+        }
+      }
+    }
+  }
+}
+
+// ==========================================
+// KEYFRAMES (Animaciones Especiales)
+// ==========================================
+
+// Efecto de latido para el botón de compra
+@keyframes pulse-red {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba($color-flash, 0.7); }
+  70% { transform: scale(1.03); box-shadow: 0 0 0 15px rgba($color-flash, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba($color-flash, 0); }
+}
+
+// Efecto tembloroso para la etiqueta de oferta
+@keyframes tilt-shaking {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(3deg); }
+  50% { transform: rotate(0deg); }
+  75% { transform: rotate(-3deg); }
+  100% { transform: rotate(0deg); }
+}
+
+// Punto rojo parpadeante para "personas viendo"
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0.3; }
+  100% { opacity: 1; }
+}
+
+// Efecto de llenado de barra de stock
+@keyframes fillBar {
+  0% { width: 0%; }
+}
+
+// ==========================================
+// 📱 AJUSTES RESPONSIVOS (SOLO PARA CELULARES)
+// ==========================================
+@media (max-width: 767px) {
+  .flash-offer-container {
+    
+    .flash-header {
+      padding: 15px 0;
+      .header-content {
+        flex-direction: column;
+        gap: 5px;
+      }
+      .brand-logo { font-size: 1.8rem; } // Se reduce un poco en móvil para no desbordar
+      .slogan {
+        border-left: none;
+        padding-left: 0;
+        font-size: 0.9rem;
+      }
+    }
+    
+    // Reduce el padding lateral para ganar espacio en la pantalla
+    .flash-main {
+      padding: 0 15px;
+      gap: 20px; // Menos separación entre la foto y los detalles
+    }
+    
+
+    // Ajustes de la Imagen y Miniaturas
+    .visual-column {
+      .main-image-wrapper .sale-badge {
+        font-size: 0.75rem;
+        padding: 5px 8px;
+        .svg-fire { width: 14px; height: 14px; }
+      }
+
+      .gallery-thumbnails {
+        justify-content: center; // Centra las miniaturas en móvil
+        .thumb {
+          width: 55px; // Miniaturas un poco más pequeñas
+          height: 55px;
+        }
+      }
+    }
+
+    // Ajustes de Textos y Precios
+    .details-column {
+      
+      .product-title {
+        font-size: 1.6rem; // Evita que el título ocupe 4 líneas
+      }
+
+      .social-proof {
+        justify-content: flex-start;
+        .stars .svg-star { width: 16px; height: 16px; }
+      }
+
+      // Reloj más compacto
+      .urgency-timer {
+        padding: 10px;
+        .live-viewers { font-size: 0.75rem; padding: 4px 10px; }
+        
+        .timer-boxes .time-box {
+          padding: 6px 10px;
+          font-size: 1.2rem;
+          small { font-size: 0.65rem; }
+        }
+      }
+
+      // Precios adaptados para que no se desborden
+      .price-section {
+        flex-wrap: wrap; // Si no caben, bajan a la siguiente línea
+        gap: 10px;
+        
+        .old-price { font-size: 1.1rem; }
+        .flash-price { font-size: 2.2rem; } // Precio un poco más pequeño
+        .discount-badge { font-size: 0.85rem; padding: 4px 8px; }
+      }
+
+      // Botón de Compra adaptado al pulgar
+      .cta-button {
+        font-size: 1.1rem;
+        padding: 15px;
+        .svg-cart { width: 20px; height: 20px; }
+      }
+
+      // Grid de Confianza (Evita que los textos se apachurren)
+      .trust-grid {
+        gap: 5px;
+        padding-top: 15px;
+        
+        .trust-item {
+          font-size: 0.65rem; // Texto más pequeño para que entre bien
+          .svg-trust { 
+            width: 22px; 
+            height: 22px; 
+            margin-bottom: 5px;
+          }
+        }
+      }
+    }
+  }
+}
