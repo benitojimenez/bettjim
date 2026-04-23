@@ -45,7 +45,33 @@
       </div>
 
       <h1 class="product-title">{{ product().title }}</h1>
+      <div class="product-vendor">
+        <div class="product-vendor__icon-box">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-6 9 6"></path>
+            <path d="M21 10v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V10"></path>
+            <line x1="10" y1="14" x2="10" y2="20"></line>
+            <line x1="14" y1="14" x2="14" y2="20"></line>
+          </svg>
+        </div>
 
+        <div class="product-vendor__details">
+          <span class="product-vendor__label">Vendido por</span>
+          
+          <div class="product-vendor__store">
+            <a href="javascript:void(0)" class="product-vendor__name">
+              {{ product().store }}
+            </a>
+            
+            <span class="product-vendor__badge">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              </svg>
+              <span class="product-vendor__badge-text">Verificado</span>
+            </span>
+          </div>
+        </div>
+      </div>
       <div class="reviews">
         <span class="stars">★★★★★</span>
         <span class="review-count">4.9 (128 reseñas)</span>
@@ -65,10 +91,11 @@
           <span class="icon-check">✔</span> En Stock {{ currentStock() }} unidades - Envío
           disponible
         } @else if (product().type_inventory === 2 && !selectedColor()) {
-          <span class="icon-info">ℹ️</span> Selecciona color y talla para ver disponibilidad
-        } @else {
-          <span class="icon-error" style="color: var(--color-danger)">❌</span> Producto Agotado
+          <span class="icon-info"></span> Selecciona color y talla para ver disponibilidad
         }
+        <!-- @else {
+          <span class="icon-error" style="color: var(--color-danger)">❌</span> Producto Agotado
+        } -->
       </div>
 
       @if (product().type_inventory === 2) {
@@ -98,8 +125,8 @@
                 >Selecciona un color primero.</span
               >
             }
-            
-            @for (size of availableSizes(); track $index ) {
+
+            @for (size of availableSizes(); track $index) {
               <button
                 class="size-btn"
                 [class.active]="size === selectedSize()"
