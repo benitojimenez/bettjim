@@ -30,13 +30,13 @@
         @for (item of cartService.cartItems(); track item.product._id) {
           <li class="cart-item fade-in">
             <div class="item-img">
-              <img [src]="URL_IMG + item.product.images[0].src || 'assets/placeholder.png'" [alt]="item.product.title" />
+              <img [src]="URL_IMG + item.image || 'assets/placeholder.png'" [alt]="item.title" />
             </div>
 
             <div class="item-details">
               <div class="row-top">
                 <div class="title-group">
-                  <a class="item-title">{{ item.product.title }}</a>
+                  <a class="item-title">{{ item.title }}</a>
                   @if (item.variety) {
                     <span class="item-variety">{{ item.variety | uppercase }}</span>
                   }
@@ -58,8 +58,8 @@
                 </div>
 
                 <div class="price-group">
-                  <span class="unit-breakdown">{{item.quantity}} x {{ item.unit_price | currency : cartService.Currency.currency }}</span>
-                  <span class="final-price">{{ item.total | currency : cartService.Currency.currency }}</span>
+                  <span class="unit-breakdown">{{item.quantity}} x {{ item.discount_price | currency : cartService.Currency.currency }}</span>
+                  <span class="final-price">{{ item.subtotal | currency : cartService.Currency.currency }}</span>
                 </div>
               </div>
             </div>

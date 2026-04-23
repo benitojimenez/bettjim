@@ -188,7 +188,7 @@ export class CheckoutService {
   // --- LLAMADAS API ---
 
   createOrder(data: any): Observable<any> {
-    return this._http.post(`${environment.API_URL}v1/create_order`, data);
+    return this._http.post(`${environment.API_URL}v2/create_order`, data);
   }
 
   checkoutPay(data: any): Observable<any> {

@@ -24,4 +24,5 @@ export class CartSidebar {
     // Puedes inyectar AuthService si quieres ocultar el botón sync
     return false; 
   }
+ 
 }

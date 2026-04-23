@@ -288,7 +288,7 @@ export default class ProductLetf implements OnInit, OnDestroy {
         total: this.quantity() * this.cartService.getDiscount(prod),
       };
 
-      this.cartService.addToCartVariant(data);
+      this.cartService.addToCart(data);
     } else {
       // console.log(`Agregando ${this.quantity()} de ${prod.title}`);
       this.cartService.addToCart(prod); // Asumiendo que tu servicio tiene este método

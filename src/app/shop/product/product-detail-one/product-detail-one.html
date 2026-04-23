@@ -1,6 +1,7 @@
 <app-breadcrumbs [items]="breadcrumbs()"></app-breadcrumbs>
-@if (ps.singleProductResource.isLoading()) {
-    <div class="skeleton-wrapper">
+
+@if (isLoading() || !product()) {
+  <div class="skeleton-wrapper container">
     <div class="sk-gallery"></div>
     <div class="sk-info">
       <div class="sk-line title"></div>
@@ -8,294 +9,315 @@
       <div class="sk-block desc"></div>
     </div>
   </div>
-} @else if (ps.cleanProductSlug(); as prod) {
-<section class="product-hero container">
-  <div class="product-gallery">
-    <div class="thumbnail-list">
-      @for (img of prod.images; track $index) {
-        <img
-        [class.active]="activeImage() === img.src"
-        (click)="changeImage(img.src)"
-        (mouseenter)="changeImage(img.src)"
-         [src]="URL_IMG() + img.src" [alt]="prod.title"
-        [alt]="prod.title + ', index: ' + $index"
-        class="active"
-        />
-      }    
-    </div>
-    <div class="main-image-container">
-      <div class="badges">
-        @if (isDiscountActive()) {
-          <span class="badge offer">-{{ prod.discount }}%</span>
+} @else {
+  <section class="product-hero container">
+    <div class="product-gallery">
+      <div class="thumbnail-list">
+        @for (img of product().images; track img.image_id) {
+          <img
+            [class.active]="activeImage() === img.src"
+            (click)="changeImage(img.src)"
+            (mouseenter)="changeImage(img.src)"
+            (mouseleave)="changeImage(null)"
+            [src]="URL_IMG() + img.src"
+            [alt]="product().title"
+          />
         }
-        @if (prod.new) {
-          <span class="badge new">NUEVO</span>
-        }        
       </div>
-      <img
-        [src]="URL_IMG() + activeImage()"
-        [alt]="prod.title"
-        class="main-image"
-      />
-      <div class="extract-tag">ENVÍO RÁPIDO</div>
-    </div>
-  </div>
 
-  <div class="product-info">
-    <div class="breadcrumbs">ROPA / <span class="highlight">{{prod.subcategory}}</span></div>
-
-    <h1 class="product-title">{{prod.title}}</h1>
-
-    <div class="reviews">
-      <span class="stars">★★★★★</span>
-      <span class="review-count">4.9 (128 reseñas)</span>
-    </div>
-
-    <div class="pricing">
-      <span class="current-price">{{
-            prod.price | appDiscount : prod | currency : ps.Currency.currency
-          }}</span>
+      <div class="main-image-container">
+        <div class="badges">
           @if (isDiscountActive()) {
-            <span class="old-price">{{ prod.price | currency : ps.Currency.currency }}</span>
+            <span class="badge offer">-{{ product().discount }}%</span>
           }
-    </div>
-     @if (prod.type_inventory===1) {
-      <div class="stock-status"><span class="icon-check">✔</span> En Stock {{ stockLeft() }} unidades - Envío disponible</div>
-     }
-    @if (sizes().length ) {
-      <div class="stock-status"><span class="icon-check">✔</span> En Stock {{ stockLeft() }} unidades - Envío disponible</div>
-    }   
-    @if (prod.type_inventory===2) {
-    <div class="variant-selector">
-      <label>@if (!this.color() && indexVariant() === 0) { Seleciones Color: <strong></strong> }
-            @else { Color seleccionado{{ this.color() ? ': ' + this.color() : '' }} }</label>
-      <div class="color-options">
-        @for (item of prod.variants; track $index) {
-          <button class="color-btn" 
-          [style.background-color]="item.color_code"
-          [class.active]="item.color == this.color()"
-          (click)="ChangeVariants(item, prod, $index)"
-          ></button>
-        }        
+          @if (product().new) {
+            <span class="badge new">NUEVO</span>
+          }
+        </div>
+        <img [src]="URL_IMG() + activeImage()" [alt]="product().title" class="main-image" />
+        <div class="extract-tag">ENVÍO RÁPIDO</div>
       </div>
     </div>
 
-    <div class="variant-selector">
-      <label>Seleciona Talla: <strong>{{ size() }}</strong></label>
-      <div class="size-options">
-        @for (item of sizes(); track $index) {
-          <button 
-          class="size-btn" 
-         (click)="Size(item, $index)"
-              [class]="{ active: $index === indexSize() }"
-          >
-            {{ item | titlecase}}
-          </button>
+    <div class="product-info">
+      <div class="breadcrumbs">
+        ROPA / <span class="highlight">{{ product().subcategory }}</span>
+      </div>
+
+      <h1 class="product-title">{{ product().title }}</h1>
+
+      <div class="reviews">
+        <span class="stars">★★★★★</span>
+        <span class="review-count">4.9 (128 reseñas)</span>
+      </div>
+
+      <div class="pricing">
+        <span class="current-price">{{
+          product().price | appDiscount: product() | currency: ps.Currency.currency
+        }}</span>
+        @if (isDiscountActive()) {
+          <span class="old-price">{{ product().price | currency: ps.Currency.currency }}</span>
         }
       </div>
-    </div>
-    }
 
-    <div class="action-area">
-      <div class="quantity-selector">
-        <button class="qty-btn" (click)="updateQuantity(-1)" [disabled]="quantity() <= 1">-</button>
-        <input type="number" [value]="quantity()" [min]="1" />
-        <button class="qty-btn" (click)="updateQuantity(1)" [disabled]="isMaxStockReached()">+</button>
+      <div class="stock-status">
+        @if (currentStock() > 0) {
+          <span class="icon-check">✔</span> En Stock {{ currentStock() }} unidades - Envío
+          disponible
+        } @else if (product().type_inventory === 2 && !selectedColor()) {
+          <span class="icon-info">ℹ️</span> Selecciona color y talla para ver disponibilidad
+        } @else {
+          <span class="icon-error" style="color: var(--color-danger)">❌</span> Producto Agotado
+        }
       </div>
-      <button class="btn-add-cart " (click)="addToCart()" [disabled]="isMaxStockReached()" > AGREGAR AL CARRITO</button>
-    </div>
 
-    <div class="trust-badges">
-      <div class="trust-item">
-        <span class="icon">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+      @if (product().type_inventory === 2) {
+        <div class="variant-selector">
+          <label
+            >Color seleccionado: <strong>{{ selectedColor() || 'Ninguno' }}</strong></label
           >
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-            <path d="m9 12 2 2 4-4"></path>
-          </svg>
-        </span>
-        <span>PAGO SEGURO</span>
-      </div>
-
-      <div class="trust-item">
-        <span class="icon">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <rect x="3" y="8" width="15" height="10" rx="2"></rect>
-            <path d="M18 8h2a2 2 0 0 1 2 2v5l-2 2h-2"></path>
-            <circle cx="5.5" cy="18.5" r="1.5"></circle>
-            <circle cx="18.5" cy="18.5" r="1.5"></circle>
-            <path d="M12 18h3"></path>
-          </svg>
-        </span>
-        <span>ENVÍO PROTEGIDO</span>
-      </div>
-
-      <div class="trust-item">
-        <span class="icon">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <circle cx="12" cy="8" r="7"></circle>
-            <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
-          </svg>
-        </span>
-        <span>GARANTÍA TOTAL</span>
-      </div>
-    </div>
-    <div class="shared-product">
-        <button (click)="openShare()">
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <circle cx="18" cy="5" r="3"></circle>
-            <circle cx="6" cy="12" r="3"></circle>
-            <circle cx="18" cy="19" r="3"></circle>
-            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-          </svg>
-          Compartir
-        </button>
-    </div>
-  </div>
-</section>
-<section class="product-details-section">
-  <div class="container">
-    
-    <div class="tabs">
-      <button class="tab-btn" [class.active]="activeTab() === 'detalles'" (click)="activeTab.set('detalles')">DETALLES</button>
-      <button class="tab-btn" [class.active]="activeTab() === 'resenas'" (click)="activeTab.set('resenas')">RESEÑAS</button>
-      <button class="tab-btn" [class.active]="activeTab() === 'envios'" (click)="activeTab.set('envios')">ENVÍOS</button>
-    </div>
-
-    <div class="details-content">
-      @if (activeTab() === 'detalles') {
-        <div class="tab-pane fade-in">
-           <div [innerHTML]="prod.description"></div>
-        
-      </div>
-    }
-    
-      @if (activeTab() === 'resenas') {
-        <div class="tab-pane fade-in" >
-        <div class="reviews-container">
-          <div class="reviews-header">
-            <div class="rating-summary">
-              <h2 class="rating-score">4.9</h2>
-              <div class="stars">★★★★★</div>
-              <p class="rating-count">Basado en 128 reseñas</p>
-            </div>
-            <button class="btn-write-review">Escribir una reseña</button>
-          </div>
-
-          <div class="reviews-list">
-            <div class="review-item">
-              <div class="review-meta">
-                <span class="author">María Gómez <span class="verified">✔ Comprador verificado</span></span>
-                <span class="date">Hace 2 semanas</span>
-              </div>
-              <div class="stars">★★★★★</div>
-              <p class="review-text">¡Me encanta! Es súper calientita y el diseño de pingüino es adorable. La talla M me quedó perfecta y llegó rapidísimo.</p>
-            </div>
-
-            <div class="review-item">
-              <div class="review-meta">
-                <span class="author">Lucía R. <span class="verified">✔ Comprador verificado</span></span>
-                <span class="date">Hace 1 mes</span>
-              </div>
-              <div class="stars">★★★★☆</div>
-              <p class="review-text">Muy suave al tacto. La tela es buena y no destiñe al lavarla. Le pongo 4 estrellas solo porque la paquetería tardó un día más de lo esperado.</p>
-            </div>
+          <div class="color-options">
+            @for (item of availableColors(); track item?.color) {
+              <button
+                class="color-btn"
+                [style.background-color]="item?.color_code"
+                [class.active]="item?.color === selectedColor()"
+                (click)="selectColor(item?.color)"
+              ></button>
+            }
           </div>
         </div>
-      </div>
 
-      }
-      @if (activeTab() === 'envios') {
-       <div class="tab-pane fade-in">
-  <div class="shipping-container">
-    <h2>Opciones de Entrega</h2>
-    <p class="shipping-desc">Procesamos todos los pedidos en un plazo de 24 horas laborables.</p>
-    
-    <div class="shipping-grid">
-      @for (option of shippingOptions; track option.id) {
-        <div class="shipping-card">
-          <div class="icon-wrap">
-            
-            @switch (option.id) {
-              @case ('standard') {
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="3" y="8" width="15" height="10" rx="2"></rect>
-                  <path d="M18 8h2a2 2 0 0 1 2 2v5l-2 2h-2"></path>
-                  <circle cx="5.5" cy="18.5" r="1.5"></circle>
-                  <circle cx="18.5" cy="18.5" r="1.5"></circle>
-                  <path d="M12 18h3"></path>
-                </svg>
-              }
-              @case ('express') {
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-                </svg>
-              }
-              @case ('province') {
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.2-1.1.7l-1.2 3.6 7.6 4.6-3 3-2.8-.9c-.4-.1-.8.1-1 .5l-1.4 2.1 4.5 2 2 4.5 2.1-1.4c.4-.2.6-.6.5-1l-.9-2.8 3-3 4.6 7.6 3.6-1.2c.5-.2.8-.6.7-1.1z"></path>
-                </svg>
-              }
+        <div class="variant-selector">
+          <label
+            >Selecciona Talla: <strong>{{ selectedSize() || 'Ninguna' }}</strong></label
+          >
+          <div class="size-options">
+            @if (availableSizes().length === 0 && !selectedColor()) {
+              <span style="font-size: 0.85rem; color: var(--text-muted)"
+                >Selecciona un color primero.</span
+              >
             }
             
+            @for (size of availableSizes(); track $index ) {
+              <button
+                class="size-btn"
+                [class.active]="size === selectedSize()"
+                (click)="selectSize(size)"
+              >
+                {{ size | titlecase }}
+              </button>
+            }
           </div>
-          <div class="shipping-info">
-            <h3>{{ option.title }}</h3>
-            <p>{{ option.description }}</p>
-          </div>
-          <div class="shipping-price">{{ option.price }}</div>
         </div>
       }
+
+      <div class="action-area">
+        <div class="quantity-selector">
+          <button class="qty-btn" (click)="updateQuantity(-1)" [disabled]="quantity() <= 1">
+            -
+          </button>
+          <input type="number" readonly [value]="quantity()" />
+          <button class="qty-btn" (click)="updateQuantity(1)" [disabled]="isMaxStockReached()">
+            +
+          </button>
+        </div>
+        <button
+          class="btn-add-cart"
+          (click)="addToCart()"
+          [disabled]="
+            currentStock() === 0 ||
+            (product().type_inventory === 2 && (!selectedColor() || !selectedSize()))
+          "
+        >
+          AGREGAR AL CARRITO
+        </button>
+      </div>
+
+      <div class="shared-product">
+        <button (click)="openShare()">Compartir</button>
+      </div>
     </div>
-    
-    <div class="shipping-alert">
-      <strong>Nota:</strong> ¡El envío estándar es <strong>GRATIS</strong> en compras mayores a S/ 150.00!
+  </section>
+
+  <section class="product-details-section">
+    <div class="container">
+      <div class="tabs">
+        <button
+          class="tab-btn"
+          [class.active]="activeTab() === 'detalles'"
+          (click)="activeTab.set('detalles')"
+        >
+          DETALLES
+        </button>
+
+        <button
+          class="tab-btn"
+          [class.active]="activeTab() === 'resenas'"
+          (click)="activeTab.set('resenas')"
+        >
+          RESEÑAS
+        </button>
+
+        <button
+          class="tab-btn"
+          [class.active]="activeTab() === 'envios'"
+          (click)="activeTab.set('envios')"
+        >
+          ENVÍOS
+        </button>
+      </div>
+
+      <div class="details-content">
+        @if (activeTab() === 'detalles') {
+          <div class="tab-pane fade-in">
+            <div [innerHTML]="product().description"></div>
+          </div>
+        }
+
+        @if (activeTab() === 'resenas') {
+          <div class="tab-pane fade-in">
+            <div class="reviews-container">
+              <div class="reviews-header">
+                <div class="rating-summary">
+                  <h2 class="rating-score">4.9</h2>
+
+                  <div class="stars">★★★★★</div>
+
+                  <p class="rating-count">Basado en 128 reseñas</p>
+                </div>
+
+                <button class="btn-write-review">Escribir una reseña</button>
+              </div>
+
+              <div class="reviews-list">
+                <div class="review-item">
+                  <div class="review-meta">
+                    <span class="author"
+                      >María Gómez <span class="verified">✔ Comprador verificado</span></span
+                    >
+
+                    <span class="date">Hace 2 semanas</span>
+                  </div>
+
+                  <div class="stars">★★★★★</div>
+
+                  <p class="review-text">
+                    ¡Me encanta! Es súper calientita y el diseño de pingüino es adorable. La talla M
+                    me quedó perfecta y llegó rapidísimo.
+                  </p>
+                </div>
+
+                <div class="review-item">
+                  <div class="review-meta">
+                    <span class="author"
+                      >Lucía R. <span class="verified">✔ Comprador verificado</span></span
+                    >
+
+                    <span class="date">Hace 1 mes</span>
+                  </div>
+
+                  <div class="stars">★★★★☆</div>
+
+                  <p class="review-text">
+                    Muy suave al tacto. La tela es buena y no destiñe al lavarla. Le pongo 4
+                    estrellas solo porque la paquetería tardó un día más de lo esperado.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+
+        @if (activeTab() === 'envios') {
+          <div class="tab-pane fade-in">
+            <div class="shipping-container">
+              <h2>Opciones de Entrega</h2>
+
+              <p class="shipping-desc">
+                Procesamos todos los pedidos en un plazo de 24 horas laborables.
+              </p>
+
+              <div class="shipping-grid">
+                @for (option of shippingOptions; track option.id) {
+                  <div class="shipping-card">
+                    <div class="icon-wrap">
+                      @switch (option.id) {
+                        @case ('standard') {
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <rect x="3" y="8" width="15" height="10" rx="2"></rect>
+
+                            <path d="M18 8h2a2 2 0 0 1 2 2v5l-2 2h-2"></path>
+
+                            <circle cx="5.5" cy="18.5" r="1.5"></circle>
+
+                            <circle cx="18.5" cy="18.5" r="1.5"></circle>
+
+                            <path d="M12 18h3"></path>
+                          </svg>
+                        }
+
+                        @case ('express') {
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                          </svg>
+                        }
+
+                        @case ('province') {
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path
+                              d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.2-1.1.7l-1.2 3.6 7.6 4.6-3 3-2.8-.9c-.4-.1-.8.1-1 .5l-1.4 2.1 4.5 2 2 4.5 2.1-1.4c.4-.2.6-.6.5-1l-.9-2.8 3-3 4.6 7.6 3.6-1.2c.5-.2.8-.6.7-1.1z"
+                            ></path>
+                          </svg>
+                        }
+                      }
+                    </div>
+
+                    <div class="shipping-info">
+                      <h3>{{ option.title }}</h3>
+
+                      <p>{{ option.description }}</p>
+                    </div>
+
+                    <div class="shipping-price">{{ option.price }}</div>
+                  </div>
+                }
+              </div>
+
+              <div class="shipping-alert">
+                <strong>Nota:</strong> ¡El envío estándar es <strong>GRATIS</strong> en compras
+                mayores a S/ 150.00!
+              </div>
+            </div>
+          </div>
+        }
+      </div>
     </div>
-  </div>
-</div>
-      }
-    </div>
-  </div>
-</section>
+  </section>
 }
 @if (relatedProducts().length > 0) {
   <div class="product-related">
@@ -305,12 +327,15 @@
     ></app-product-slider>
   </div>
 }
-@if (isShareModalOpen()) {
-<app-share-modal
-  [productUrl]="ps.cleanProductSlug().slug"
-  [productTitle]="ps.cleanProductSlug().title"
-  (close)="closeShare()"
-/>
 
+<!-- @if (isShareModalOpen()) {
+  <app-share-modal [productUrl]="ps.cleanProductSlug()?.slug || ''" [productTitle]="ps.cleanProductSlug()?.title || ''" (close)="closeShare()"/>
+} -->
+<app-viewer-toast />
+@if (isShareModalOpen()) {
+  <app-share-modal
+    [productUrl]="product()?.slug || ''"
+    [productTitle]="product()?.title || ''"
+    (close)="closeShare()"
+  />
 }
-<app-viewer-toast/>

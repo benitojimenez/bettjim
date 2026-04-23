@@ -15,12 +15,18 @@ import { Cart } from '../../../services/cart';
 })
 export class HeaderOne implements OnInit {
   layout = inject(LayoutService);
-  ps = inject(Products);
+  productService = inject(Products);
   cartService = inject(Cart)
   auth = inject(Auth); // Inyectamos Auth Service
   // Método para actualizar la búsqueda
   // 👇 Inyectamos el Router para manipular la URL
   private router = inject(Router);
+
+  // Signal local para el input del header
+  headerSearchTerm = this.productService.search; // Directamente vinculada a la señal global de búsqueda del servicio de productos
+
+  // Para detectar en qué página estamos (si es necesario para lógica específica)
+  private route = inject(ActivatedRoute);
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
   ngOnInit() {
@@ -33,6 +39,12 @@ export class HeaderOne implements OnInit {
   ngOnDestroy() {
     // Limpiamos el timer al salir para no gastar memoria
     if (this.intervalId) clearInterval(this.intervalId);
+  }
+  clearHeaderSearch() {
+    this.headerSearchTerm.set('');
+    // Opcional: Si quieres que al darle a la X estando en /shop se limpie la tienda automáticamente
+    // this.productService.search.set('');
+    // this.router.navigate(['/shop']);
   }
 
   startAnnouncementLoop() {
@@ -62,21 +74,26 @@ export class HeaderOne implements OnInit {
 
   private intervalId: any;
 
-
-
   onSearch(term: string) {
-    // CAMBIO CLAVE: En lugar de [], ponemos ['/shop']
+    if (!term) return; // Opcional: Evitar búsquedas vacías desde el header
+
+    // 1. Actualizamos el estado global al instante
+    this.productService.search.set(term);
+    this.productService.page.set(1); // Siempre que buscamos, volvemos a la pag 1
+
+    // 2. Navegamos a la tienda. 
+    // - Si estás en el /home, te lleva al /shop.
+    // - Si YA estás en el /shop, solo inyecta el parámetro en la URL sin recargar la página.
     this.router.navigate(['/shop'], { 
-      
-      // relativeTo: this.route,  <-- BORRA ESTO (Ya no es relativo, es absoluto a /shop)
-      
-      queryParams: { q: term || null }, // Asigna el término a ?q=
-      
-      queryParamsHandling: 'merge',     // Mantiene otros filtros si ya estabas en /shop (ej: ?cat=hombre&q=...)
-      
-      replaceUrl: true                  // Evita llenar el historial del navegador con cada letra
+      queryParams: { 
+        search: term,
+        page: null // Limpiamos la página de la URL para que arranque limpio
+      },
+      queryParamsHandling: 'merge' // Respeta si el usuario ya tenía un filtro de color o precio en la URL
     });
   }
+
+  
 
   // 1. Estado para el Buscador
   isSearchFocused = false;

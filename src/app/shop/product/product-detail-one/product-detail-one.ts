@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnDestroy, OnInit, signal, ChangeDetectionStrategy, effect, PLATFORM_ID } from '@angular/core';
+import { Component, computed, inject, OnDestroy, OnInit, signal, ChangeDetectionStrategy, effect, PLATFORM_ID, Input } from '@angular/core';
 import { CommonModule, isPlatformServer } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Subscription, interval } from 'rxjs';
@@ -19,7 +19,6 @@ import { ViewerToast } from "../../widgets/viewer-toast/viewer-toast";
 
 @Component({
   selector: 'app-product-detail-one',
-  standalone: true, // Asumiendo Angular 17+ por tu sintaxis de imports
   imports: [CommonModule, Breadcrumbs, DiscountPipe, ProductSlider, ShareModal, ViewerToast],
   templateUrl: './product-detail-one.html',
   styleUrl: './product-detail-one.scss',
@@ -27,155 +26,176 @@ import { ViewerToast } from "../../widgets/viewer-toast/viewer-toast";
 })
 export default class ProductDetailOne implements OnInit, OnDestroy {
 
-  activeTab = signal('detalles');
+  @Input() slug!: string;
 
   // ================================================================
   // 1. INYECCIONES Y CONFIGURACIÓN
   // ================================================================
   private seo = inject(Seo);
-  private seoJsonLd = inject(SeoJsonLd); // <-- REEMPLAZA EL MANEJO MANUAL DEL DOM
+  private seoJsonLd = inject(SeoJsonLd);
   private route = inject(ActivatedRoute);
   public ps = inject(Products);
   public cartService = inject(Cart);
   private _platformId = inject(PLATFORM_ID);
+
+  public URL_IMG = signal(environment.API_URL+'product_imagen/' );
+
+  // ================================================================
+  // 2. ESTADO BASE (Fuente de Verdad)
+  // ================================================================
+  public product = computed(() => this.ps.cleanProductSlug());
+  public Inventory = computed(() => this.ps.cleanInventoryProduct() || []);
   
-  // ELIMINADOS: Renderer2 y ElementRef (Ya no se ensucia el componente con manipulación del DOM)
+  public isLoading = computed(() => this.ps.singleProductResource.isLoading());
+  public error = computed(() => this.ps.singleProductResource.error());
 
-  public URL_IMG = signal(environment.API_URL + 'product_imagen/');
-
-  // ================================================================
-  // 2. ESTADO (SIGNALS)
-  // ================================================================
-  isShareModalOpen = signal<boolean>(false);
-  public activeImage = signal<string>('');
+  // Selecciones del Usuario
+  public selectedColor = signal<string>('');
+  public selectedSize = signal<string>('');
   public quantity = signal<number>(1);
-  public loading = signal<boolean>(true);
-
-  public timeLeft = signal<string>('');
-  public viewers = signal<number>(12);
-  public stockLeft = signal<number>(0);
-  public url: string = environment.API_URL + 'product_imagen/';
-  public urlDomain: string = 'https://bettjim.com/';
+  public hoverImage = signal<string | null>(null);
+  
+  // UI States
+  public activeTab = signal('detalles');
+  public isShareModalOpen = signal(false);
+  public timeLeft = signal('');
+  public viewers = signal(12);
 
   // ================================================================
-  // 3. COMPUTED SIGNALS (DERIVADOS)
+  // 3. ESTADO DERIVADO (Magia Reactiva)
   // ================================================================
-  public breadcrumbs = computed(() => {
-    const productData = this.ps.cleanProductSlug();
-    const baseCrumbs = [
-      { label: 'Inicio', url: '/' },
-      { label: 'Tienda', url: '/shop' }
-    ];
+  
+  // Extraemos todos los colores únicos del producto
+ public availableColors = computed(() => {
+    const p = this.product();
+    if (!p || !p.variants) return [];
+    
+    const uniqueVariants: any[] = [];
+    const seenColors = new Set<string>();
 
-    if (!productData) return baseCrumbs;
+    for (const variant of p.variants) {
+      if (variant && variant.color && !seenColors.has(variant.color)) {
+        seenColors.add(variant.color);
+        uniqueVariants.push(variant); // Empujamos el objeto real y seguro
+      }
+    }
+    
+    return uniqueVariants;
+  });
 
-    return [
-      ...baseCrumbs,
-      {
-        label: productData.category || 'General',
-        url: ['/shop'],
-        queryParams: { cat: productData.category }
-      },
-      { label: productData.title }
-    ];
+  // Tallas disponibles basadas en el color seleccionado
+  // Tallas disponibles basadas en el color seleccionado
+  public availableSizes = computed(() => {
+    const p = this.product();
+    const color = this.selectedColor();
+    if (!p || !p.variants || !color) return [];
+    
+    // 1. Buscamos la única variante que tiene ese color
+    const variant = p.variants.find((v: any) => v.color === color);
+    
+    // 2. Devolvemos su array de tallas de forma plana.
+    // Si la variante existe y tiene tallas, las devuelve: ["S", "M", "L"]
+    // Si no, devuelve un array vacío para no romper el HTML.
+    return (variant && variant.sizes) ? variant.sizes : [];
+  });
+  // Imagen activa automática
+  public activeImage = computed(() => {
+    if (this.hoverImage()) return this.hoverImage();
+    
+    const p = this.product();
+    if (!p) return '';
+
+    if (this.selectedColor() && p.variants) {
+      const variant = p.variants.find((v: any) => v.color === this.selectedColor());
+      if (variant) {
+        const match = p.images?.find((img: any) => img.image_id === variant.image_id);
+        if (match) return match.src;
+      }
+    }
+    return p.images?.[0]?.src || '';
+  });
+
+  // Stock calculado exacto
+  public currentStock = computed(() => {
+    const p = this.product();
+    if (!p) return 0;
+    
+    if (p.type_inventory === 1) return p.stock;
+
+    const color = this.selectedColor();
+    const size = this.selectedSize();
+    if (!color || !size) return 0; // Si no ha elegido ambos, mostramos 0
+
+    const match = this.Inventory().find((i: any) => i.color === color && i.size === size);
+    return match ? match.stock : 0;
+  });
+
+  public isMaxStockReached = computed(() => this.currentStock() === 0 || this.quantity() >= this.currentStock());
+
+  public isDiscountActive = computed(() => {
+    const p = this.product();
+    if (!p?.discount) return false;
+    const now = Date.now();
+    const start = new Date(p.discount_start).getTime();
+    const end = new Date(p.discount_end).getTime();
+    return now >= start && now <= end;
   });
 
   public relatedProducts = computed(() => {
-    const allProducts = this.ps.displayProducts();
-    const currentProduct = this.ps.cleanProductSlug();
-    let filtered = allProducts;
-
-    if (currentProduct) {
-      filtered = filtered.filter(p => p._id !== currentProduct._id);
-    }
-    return filtered.slice(0, 2);
+    const p = this.product();
+    if (!p) return [];
+    return this.ps.displayProducts().filter(prod => prod._id !== p._id).slice(0, 2);
   });
 
-  public deliveryDate = computed(() => {
-    const date = new Date();
-    date.setDate(date.getDate() + 3);
-    return date;
+  public breadcrumbs = computed(() => {
+    const p = this.product();
+    const base = [{ label: 'Inicio', url: '/' }, { label: 'Tienda', url: '/shop' }];
+    if (!p) return base;
+    return [...base, { label: p.category || 'General', url: ['/shop'], queryParams: { cat: p.category } }, { label: p.title }];
   });
-
-  Inventory = signal<any>([])
 
   private timerSubscription?: Subscription;
   private viewersInterval?: any;
 
   // ================================================================
-  // 5. CONSTRUCTOR & EFECTOS
+  // 4. EFECTOS Y CICLO DE VIDA
   // ================================================================
   constructor() {
     effect(() => {
-      const product = this.ps.cleanProductSlug();
-      const inventories = this.ps.cleanInvetoryProduct();
+      const p = this.product();
       
-      if (product && product.images?.length > 0) {
-        this.activeImage.set(product.images[0].src);
-      }
-      
-      if (product && product.category) {
-        this.ps.filterByCategory.set([product.category]);
-      }
-      
-      if (product?.type_inventory === 1) {
-        this.productStock.set(product.stock)
-        this.stockLeft.set(product.stock)
-      }
-      
-      if (inventories) {
-        this.Inventory.set(inventories);
-      }
+      if (p) {
+        // Reseteos automáticos al cambiar de producto
+        this.selectedColor.set('');
+        this.selectedSize.set('');
+        this.quantity.set(1);
+        this.hoverImage.set(null);
 
-      if (product) {
+        // SEO
         this.seo.generateTags({
-          title: product.title + ' | Bettjim.com',
-          description: product.summary || `Compra ${product.title} al mejor precio en Bettjim.`,
-          image: 'product_imagen/' + (product.images?.[0]?.src || product.title),
-          slug: `product/${product.slug}`, // Mantiene la compatibilidad con tus rutas
+          title: `${p.title} | Bettjim.com`,
+          description: p.summary || `Compra ${p.title} al mejor precio.`,
+          image: `product_imagen/${p.images?.[0]?.src}`,
+          slug: `product/${p.slug}`,
           type: 'product',
-          price: this.cartService.getDiscount(product),
+          price: this.cartService.getDiscount(p),
           currency: 'PEN',
-          brand: 'Bettjim',
-          stock: product.stock > 0,
-          keywords: `comprar ${product.title}, bettjim, moda peru, tienda online peru, ${product.category}`
+          stock: p.stock > 0
         });
 
-        // DELEGACIÓN AL NUEVO SERVICIO SSR-SAFE
         if (isPlatformServer(this._platformId)) {
-          this.seoJsonLd.addJsonLdScript(product, inventories || []);
-          this.seoJsonLd.addBreadcrumbSchema(product);
+          this.seoJsonLd.addJsonLdScript(p, this.Inventory() || []);
+          this.seoJsonLd.addBreadcrumbSchema(p);
         }
       }
-    });
+    }, { allowSignalWrites: true });
   }
 
-  public isDiscountActive = computed(() => {
-    const p = this.ps.cleanProductSlug();
-    if (!p.discount) return false;
-    
-    const discountVal = Number(p.discount);
-    if (isNaN(discountVal) || discountVal <= 0) return false;
-
-    const now = new Date();
-    const start = new Date(p.discount_start);
-    const end = new Date(p.discount_end);
-
-    if (isNaN(start.getTime()) || isNaN(end.getTime())) return false;
-
-    return now >= start && now <= end;
-  });
-
-  // ================================================================
-  // 6. CICLO DE VIDA (Angular Hooks)
-  // ================================================================
   ngOnInit() {
-    this.route.paramMap.subscribe(params => {
-      const slugFull = params.get('slug');
-      if (slugFull) {
-        this.ps.selectedSlug.set(slugFull);
-      }
-    });
+    // Si viene por Input (App Router Bindings)
+    if (this.slug) {
+      this.ps.selectedSlug.set(this.slug);
+    }
 
     this.startCountdown();
     this.startViewersSimulation();
@@ -187,82 +207,121 @@ export default class ProductDetailOne implements OnInit, OnDestroy {
   }
 
   // ================================================================
-  // 7. MÉTODOS DE UI & LÓGICA
+  // 5. ACCIONES DEL USUARIO (Limpias y directas)
   // ================================================================
-  changeImage(src: string) {
-    this.activeImage.set(src);
+  
+  selectColor(color: string) {
+    console.log('Color seleccionado:', color);
+    this.selectedColor.set(color);
+    this.selectedSize.set(''); // Al cambiar color, borramos la talla seleccionada
+    this.quantity.set(1);
+  }
+
+  selectSize(size: string) {
+    console.log('Talla seleccionada:', size);
+    this.selectedSize.set(size);
+    this.quantity.set(1);
   }
 
   updateQuantity(val: number) {
-    const maxStock = typeof this.productStock === 'function' ? this.productStock() : this.productStock;
-
     this.quantity.update(q => {
       const newQ = q + val;
-      if (newQ < 1) return 1;
-      if (newQ > maxStock) return maxStock;
-      return newQ;
+      return Math.max(1, Math.min(newQ, this.currentStock()));
     });
   }
 
-  public isMaxStockReached = computed(() => this.productStock() === 0);
-
-  setTab(tab: string) {
-    this.activeTab.set(tab);
+  changeImage(src: string | null) {
+    this.hoverImage.set(src);
   }
 
   addToCart() {
-    const prod = this.ps.cleanProductSlug();
+    const prod = this.product();
+    
+    // 1. Obtenemos la imagen exacta de la variante (o la principal)
+    const cartImage = this.activeImage(); 
+    
+    // 2. Extraemos el stock máximo (usando nuestra Signal computada Nivel Dios)
+    const availableStock = this.currentStock();
+
     if (prod.type_inventory === 2) {
+      // Validamos variantes
+      if (!this.selectedColor() || !this.selectedSize()) {
+        alert("Por favor, selecciona un color y una talla.");
+        return;
+      }
+      
+      const invMatch = this.Inventory().find((i: any) => i.color === this.selectedColor() && i.size === this.selectedSize());
+      
       const data = {
-        product: prod,
+        // --- Identificadores ---
+        product: prod._id,
+        inventory: invMatch?._id || null, 
         user: localStorage.getItem('_id') ?? 'null',
-        type_discount: null,
-        discount: prod.discount ?? 0,
+        store: prod.store || 'Bettjim', // La tienda (Por defecto Bettjim si está vacío)
+        
+        // --- Info Visual para el Carrito (Lean Data) ---
+        title: prod.title,
+        image: cartImage,
+        variety: `${this.selectedColor()} - ${this.selectedSize()}`,
+        
+        // --- Cantidades y Límites ---
         quantity: this.quantity(),
-        variety: `${this.color()}-${this.size()}`,
-        inventory: this.inventory_id(),
-        code_cupon: null,
-        code_discount: null,
+        max_stock: availableStock, // 🔥 El tope para el botón '+' en el carrito
+        
+        // --- Precios ---
         unit_price: prod.price,
+        discount: prod.discount ?? 0,
         discount_price: this.cartService.getDiscount(prod),
+        discount_amount: prod.price - this.cartService.getDiscount(prod), // Monto descontado por unidad
+        subtotal: this.quantity() * this.cartService.getDiscount(prod),
+        total: this.quantity() * this.cartService.getDiscount(prod),
+        
+      };
+      
+      this.cartService.addToCart(data);
+
+    } else {
+      // Lógica para productos Tipo 1 (Sin variantes)
+      const data = {
+        product: prod._id,
+        inventory: null,
+        user: localStorage.getItem('_id') ?? 'null',
+        store: prod.store || 'Bettjim',
+        
+        title: prod.title,
+        image: cartImage,
+        variety: null, // O puedes dejarlo null
+        
+        quantity: this.quantity(),
+        max_stock: availableStock, // 🔥 En tipo 1, esto será prod.stock
+        
+        unit_price: prod.price,
+        discount: prod.discount ?? 0,
+        discount_price: this.cartService.getDiscount(prod),
+       discount_amount: 0, // Monto descontado por unidad
         subtotal: this.quantity() * this.cartService.getDiscount(prod),
         total: this.quantity() * this.cartService.getDiscount(prod),
       };
-      this.cartService.addToCartVariant(data);
-    } else {
-      this.cartService.addToCart(prod);
+      
+      // Asegúrate de que tu cartService acepte este nuevo formato
+      this.cartService.addToCart(data); 
     }
   }
+  // --- Helpers UI y Marketing ---
+  openShare() { this.isShareModalOpen.set(true); }
+  closeShare() { this.isShareModalOpen.set(false); }
+  setTab(tab: string) { this.activeTab.set(tab); }
 
-  addToCartVariant() {
-    const prod = this.ps.cleanProductSlug();
-  }
-
-  buyNow() {
-    this.addToCart();
-    alert('Yendo al checkout directo...');
-  }
-
-  // ================================================================
-  // 8. MÉTODOS INTERNOS (Marketing & Variantes)
-  // ================================================================
   private startCountdown() {
     const endOfDay = new Date();
     endOfDay.setHours(23, 59, 59, 999);
-
     this.timerSubscription = interval(1000).subscribe(() => {
       const now = new Date();
       const diff = endOfDay.getTime() - now.getTime();
-
-      if (diff <= 0) {
-        this.timeLeft.set('00h 00m 00s');
-        return;
-      }
-
+      if (diff <= 0) { this.timeLeft.set('00h 00m 00s'); return; }
       const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
       const s = Math.floor((diff % (1000 * 60)) / 1000);
-
       this.timeLeft.set(`${h}h ${m}m ${s}s`);
     });
   }
@@ -274,85 +333,9 @@ export default class ProductDetailOne implements OnInit, OnDestroy {
     }, 5000);
   }
 
-  public color = signal('');
-  public sizes = signal([]);
-  public size = signal('');
-  public productStock = signal<any>(0)
-  public indexSize = signal<any>(0)
-  public indexVariant = signal<any>(0)
-  public inventory_id = signal('');
-
-  ChangeVariants(variants: any, product: any, index: number) {
-    this.sizes.set(variants.sizes);
-    this.color.set(variants.color);
-    this.productStock.set(0);
-    this.indexSize.set(0);
-    this.quantity.set(1);
-    this.indexVariant.set(index);
-    this.Size(this.sizes()[0], this.indexSize());
-    
-    product.variants.map((item: any) => {
-      if (item.color === variants.color) {
-        product.images.map((img: any) => {
-          if (img.image_id === item.image_id) {
-            this.activeImage.set(img.src);
-          }
-        })
-      }
-    });
-  }
-
-  Size(e: any, i: number) {
-    this.indexSize.set(i);
-    const filteredInventory = this.Inventory().filter((item: any) => {
-      return item.color === this.color() && item.size === e;
-    });
-
-    if (filteredInventory.length > 0) {
-      this.quantity.set(1);
-      this.productStock.set(filteredInventory[0].stock);
-      this.stockLeft.set(filteredInventory[0].stock)
-      this.size.set(filteredInventory[0].size);
-      this.inventory_id.set(filteredInventory[0]._id);
-    } else {
-      this.productStock.set(0);
-      this.quantity.set(1);
-    }
-  }
-
-  openShare() {
-    this.isShareModalOpen.set(true);
-  }
-
-  closeShare() {
-    this.isShareModalOpen.set(false);
-  }
-
-  private checkProductStock(product: any, variantsWithStock: any[]): boolean {
-    if (product.type_inventory === 1) {
-      return product.stock > 0;
-    }
-    return variantsWithStock.some((v: any) => v.stock > 0);
-  }
-
   shippingOptions = [
-    {
-      id: 'standard',
-      title: 'Envío Estándar (Lima)',
-      description: 'Entrega en 2 a 3 días hábiles a tu domicilio.',
-      price: 'S/ 10.00'
-    },
-    {
-      id: 'express',
-      title: 'Envío Express (Lima)',
-      description: 'Entrega el mismo día (pedidos antes de la 1:00 PM).',
-      price: 'S/ 18.00'
-    },
-    {
-      id: 'province',
-      title: 'Envío a Provincias',
-      description: 'Enviado a través de Olva Courier o Shalom (3-5 días hábiles).',
-      price: 'S/ 15.00'
-    }
+    { id: 'standard', title: 'Envío Estándar (Lima)', description: 'Entrega en 2 a 3 días hábiles.', price: 'S/ 10.00' },
+    { id: 'express', title: 'Envío Express (Lima)', description: 'Entrega el mismo día (pedidos antes de 1 PM).', price: 'S/ 18.00' },
+    { id: 'province', title: 'Envío a Provincias', description: 'Olva Courier o Shalom (3-5 días).', price: 'S/ 15.00' }
   ];
 }

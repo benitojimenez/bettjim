@@ -1,20 +1,33 @@
+import { Inventory } from './../shared/classes/inventory';
 import { Injectable, computed, effect, inject, signal, resource, PLATFORM_ID } from '@angular/core';
-import { httpResource, HttpClient } from '@angular/common/http';
+import { httpResource, HttpClient, HttpParams } from '@angular/common/http';
 import { lastValueFrom } from 'rxjs';
 import { Product } from '../shared/classes/product'; // Ajusta la ruta si es necesario
-import { Inventory } from '../shared/classes/inventory';
 import { environment } from '../../environments/environment';
 import { ToastService } from './toast'; // Tu nuevo servicio
 import { User } from './user'; // Asumo que estos son tus servicios UserService
 import { Auth } from './auth'; // Asumo que estos son tus servicios AuthService
 import { isPlatformBrowser } from '@angular/common';
-
+import { publicDecrypt } from 'node:crypto';
+// 1. Interfaces de la Respuesta
+export interface PaginationData {
+  totalItems: number;
+  totalPages: number;
+  currentPage: number;
+  itemsPerPage: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+}
 // Interfaces
 interface ProductResponse {
+  success: boolean;
   data: Product[];
+  pagination:PaginationData
 }
 export interface ProductSingResponse {
+  success: boolean;
   data: Product;
+  inventory:any[];
 }
 interface CartResponse {
   data: any[];
@@ -43,26 +56,78 @@ export class Products {
   public OpenCart = signal(false);
   // ==========================================================
   // 1. SEÑAL ACTIVADORA (Aquí guardaremos el slug que viene de la URL)
-
+  
   public selectedSlug = signal<string>('');
+  // ==========================================
+  // 🎛️ ESTADO REACTIVO (Parámetros de la API)
+  // ==========================================
+ public page = signal<number>(1);
+  public limit = signal<number>(12);
+  public search = signal<string>('');
+  public category = signal<string>('');
+  public subcategory = signal<string>('');
+  public store = signal<string>('');
+  public brand = signal<string>('');
+  public price = signal<string>('');
+  public size = signal<string[]>([]);
+  public color = signal<string[]>([]);
+
   // ==========================================================
   // 1. GESTIÓN DE PRODUCTOS
   // ==========================================================
-  public searchTerm = signal<string>('');
-  //  EL RECURSO (La petición HTTP reactiva)
+  
+  // EL RECURSO (La petición HTTP reactiva)
   public productsResource = httpResource<ProductResponse>(() => {
-    const term = this.searchTerm().trim();
-    let urlTarget = '';
-    if (term) {
-      urlTarget = `${environment.API_URL}search_product/${encodeURIComponent(term)}`;
-    } else {
-      urlTarget = `${environment.API_URL}list_products/`;
-    }
-    return { url: urlTarget, method: 'GET' };
-  }, { defaultValue: { data: [] } });
+    
+    // 1. Instanciamos HttpParams con los valores obligatorios
+    let params = new HttpParams()
+      .set('page', this.page())
+      .set('limit', this.limit());
+
+    // 2. Extraemos los valores de las Signals
+    const s = this.search();
+    const c = this.category();
+    const sc = this.subcategory();
+    const st = this.store(); // ¡Corregido!
+    const b = this.brand();
+    const pr = this.price();
+    
+    // 🧹 Limpieza vital: Filtramos los arrays para quitar los strings vacíos [''] -> []
+    const sz = this.size().filter(val => val.trim() !== '');
+    const cl = this.color().filter(val => val.trim() !== '');
+
+    // 3. Añadimos los parámetros dinámicos solo si tienen contenido real
+    if (s) params = params.set('search', s);
+    if (c) params = params.set('category', c);
+    if (sc) params = params.set('subcategory', sc);
+    if (st) params = params.set('store', st); // Ahora sí viaja a la API
+    if (b) params = params.set('brand', b);
+    if (pr) params = params.set('price', pr);
+    
+    // Al usar HttpParams, Angular maneja automáticamente el URL Encoding (no necesitas encodeURIComponent)
+    if (sz.length > 0) params = params.set('size', sz.join(','));
+    if (cl.length > 0) params = params.set('color', cl.join(','));
+
+    // 4. Retornamos la configuración limpia
+    return { 
+      url: `${environment.API_URL}v1/getproducts?${params.toString()}`, 
+      method: 'GET' 
+    };
+
+  }, { 
+    defaultValue: {
+      success: false, 
+      data: [], 
+      pagination: { totalItems: 0, totalPages: 1, currentPage: 1, itemsPerPage: 12, hasNextPage: false, hasPrevPage: false } 
+    } 
+  });
 
   public cleanProducts = computed(() => {
     return this.productsResource.value()?.data ?? [];
+  });
+  public productPagination = computed(() => {
+    if (this.productsResource.error()) return null;
+    return this.productsResource.value()?.pagination;
   });
 
   //********************************************************************** */
@@ -81,14 +146,23 @@ export class Products {
       url: `${environment.API_URL}get_product_slug/${slug}`,
       method: 'GET'
     };
-  }, { defaultValue: { data: {} as Product } });
+  }, { defaultValue: { 
+    success: false,
+    data: {} as Product, 
+    inventory: []} });
 
   // 3. LIMPIAMOS EL RESULTADO (Obtenemos el producto directamente o null)
   public cleanProductSlug = computed(() => {
     // Como el backend devuelve el objeto directo, lo pasamos directo.
     const product = this.singleProductResource.value()?.data;
+    console.log('Producto limpio:', product);
     return product ?? null;
   });
+  public cleanInventoryProduct = computed(() => {
+    console.log('Inventario limpio:', this.singleProductResource.value()?.inventory);
+    return this.singleProductResource.value()?.inventory;
+  });
+
 
   //********************************************************************** */
 

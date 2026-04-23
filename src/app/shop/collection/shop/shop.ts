@@ -1,5 +1,5 @@
 import { Variants } from './../../../shared/classes/product';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { environment } from '../../../../environments/environment';
@@ -18,116 +18,154 @@ import { Seo } from '../../../services/seo';
   styleUrl: './shop.scss',
 })
 export default class Shop implements OnInit {
-  public URL_IMG: string = environment.API_URL + 'product_imagen/';
-  // Servicios
-  public ps = inject(Products);
+  // ==========================================
+  // 💉 1. DEPENDENCIAS
+  // ==========================================
+  public productService = inject(Products);
   public categories = inject(Categories);
   public layout = inject(LayoutService);
-  private route = inject(ActivatedRoute);
+  public route = inject(ActivatedRoute);
   private router = inject(Router);
   public seo = inject(Seo);
 
-
-  // Estado UI
+  // ==========================================
+  // 🎛️ 2. ESTADO DE LA UI
+  // ==========================================
+  public URL_IMG: string = environment.API_URL + 'product_imagen/';
   public showCartDetail = false;
-  // Estado del Producto y UI
   public activeImage = signal<string>('');
-  // Señal para categoría activa
-  activeCategory = signal<string>('');
-  // Categorías
-  // categoriesList = this.categories.cleanProducts();
+  
+  // Conexión directa con el Resource
+  isLoading = this.productService.productsResource.isLoading;
+  pagination = this.productService.productPagination;
+  error = this.productService.productsResource.error;
 
-  // 1. CAMBIO: La señal ahora es un ARRAY de strings, no un string suelto
-  activeColors = signal<string[]>([]);
-  //Sizes 
-  activeSizes = signal<string[]>([]);
-  // Configuración de Precios
-  maxLimit = 1000; // El precio más alto posible en tu tienda
+  // Enlazamos variables locales directamente a las del servicio para facilidad de lectura en HTML
+  searchQuery = this.productService.search;
+  activeCategory = this.productService.category;
+  activeColors = this.productService.color;
+  activeSizes = this.productService.size;
+
+  // Precios
+  maxLimit = 1000;
   minVal = signal(0);
   maxVal = signal(1000);
-  // Método para actualizar la búsqueda
-  onSearch(term: string) {
-    // Al setear la señal, el httpResource en el servicio se dispara automáticamente
-    this.ps.searchTerm.set(term);
+
+  // Computados de Paginación
+  hasNext = computed(() => this.pagination()?.hasNextPage ?? false);
+  hasPrev = computed(() => this.pagination()?.hasPrevPage ?? false);
+  visiblePages = computed(() => {
+    const pag = this.pagination();
+    if (!pag) return [];
+    const current = pag.currentPage;
+    const total = pag.totalPages;
+    const pages: number[] = [];
+    let start = Math.max(1, current - 2);
+    let end = Math.min(total, current + 2);
+    if (current <= 2 && total >= 5) end = 5;
+    if (current >= total - 1 && total >= 5) start = total - 4;
+    for (let i = start; i <= end; i++) pages.push(i);
+    return pages;
+  });
+
+  // ==========================================
+  // 🚀 3. EL CEREBRO REACTIVO (effect)
+  // ==========================================
+  constructor() {
+    // EL EFFECT MANDA: Si CUALQUIER Signal cambia, la URL se actualiza automáticamente.
+   effect(() => {
+      const page = this.productService.page();
+      const search = this.productService.search();
+      const category = this.productService.category();
+      const price = this.productService.price();
+      
+      // 🧹 LIMPIEZA EXTREMA: Quitamos cualquier string vacío o nulo del array
+      const colorArr = this.productService.color().filter(c => c && c.trim() !== '');
+      const sizeArr = this.productService.size().filter(s => s && s.trim() !== '');
+
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { 
+          page: page === 1 ? null : page,
+          search: search || null,
+          category: category || null,
+          price: price || null,
+          // Si el array limpio tiene elementos, los une con coma. Si no, manda null para borrarlo de la URL
+          color: colorArr.length > 0 ? colorArr.join(',') : null,
+          size: sizeArr.length > 0 ? sizeArr.join(',') : null,
+        },
+        queryParamsHandling: 'merge',
+        replaceUrl: true
+      });
+    });
   }
+
   ngOnInit() {
-    // Configurar SEO para la página de inicio de moda
     this.seo.generateTags({
       title: 'Bettjim.com | Tu mundo a un clic de distancia',
-      description: 'Bettjim.com es una tienda online peruana de tecnología, moda, belleza y más. Descubre productos innovadores y confiables. Compra ahora y vive la experiencia Bettjim. ',
+      description: 'Descubre productos innovadores y confiables.',
       slug: 'shop',
-      keywords: 'Moda, tienda de moda, ropa en línea, accesorios de moda, tendencias de moda 2026, estilo personal, compras de moda, moda sostenible, ropa casual, ropa formal, calzado de moda, bolsos y carteras, joyería de moda, moda para hombres, moda para mujeres, moda unisex, moda de verano, moda de invierno, moda urbana, moda vintage, moda de lujo, belleza, tienda de belleza, productos de belleza en línea, cuidado de la piel, maquillaje, fragancias, cosméticos, tecnología, gadgets, electrónica de consumo, ofertas tecnológicas, reseñas de productos tecnológicos',
-      type: 'website',
       image: 'obtener_logo/bettjim.png'
     });
 
-    // 🔥 EL CEREBRO: Escucha la URL y decide qué mostrar
-    this.route.queryParams.subscribe(params => {
-      // 1. Search 
-      // --- 1. SEARCH & CATEGORY (Tu lógica actual) ---
-      const searchTerm = params['q'];
-      const categoryFilter = params['cat'];
-
-      this.activeCategory.set(categoryFilter || '');
-
-      if (searchTerm) {
-        this.ps.searchTerm.set(searchTerm);
-        this.ps.filterByCategory.set([]);
-      } else if (categoryFilter) {
-        this.ps.filterByCategory.set([categoryFilter]);
-        this.ps.searchTerm.set('');
-      } else {
-        this.ps.searchTerm.set('');
-        this.ps.filterByCategory.set([]);
-      }
-      // --- LÓGICA DE PRECIO ---
-      const min = params['minPrice'];
-      const max = params['maxPrice'];
-
-      // 1. Actualiza señales locales del componente (para el slider visual)
-      const minNum = min ? Number(min) : 0;
-      const maxNum = max ? Number(max) : 1000;
-      
-      this.minVal.set(minNum);
-      this.maxVal.set(maxNum);
-
-      // 2. Actualiza señales del SERVICIO (para el filtrado real)
-      this.ps.minPrice.set(minNum);
-      this.ps.maxPrice.set(maxNum);
-      
-      // A. Colores
-      const colorParam = params['color'];
-      const colorsArray = colorParam ? colorParam.split(',') : [];
-      this.activeColors.set(colorsArray); // Actualizamos UI
-
-      // B. Tallas
-      const sizeParam = params['size'];
-      const sizesArray = sizeParam ? sizeParam.split(',') : [];
-      this.activeSizes.set(sizesArray); // Actualizamos UI
-
-      // --- 3. 🔥 UNIFICACIÓN Y ENVÍO AL SERVICIO 🔥 ---
-      // Combinamos ambos arrays. Si tu backend espera 'tags' genéricos:
-      const allTags = [...colorsArray, ...sizesArray];
-
-      // Enviamos TODO junto al servicio
-      this.ps.filterTags.set(allTags);
-    });
+    // LECTURA INICIAL (Solo una vez al cargar la página si el usuario entra por un link compartido)
+    const params = this.route.snapshot.queryParams;
+    
+    if (params['page']) this.productService.page.set(Number(params['page']));
+    if (params['search']) this.productService.search.set(params['search']);
+    if (params['category']) this.productService.category.set(params['category']);
+    
+    if (params['color']) {
+      // Separa por comas y elimina los vacíos
+      const cleanColors = params['color'].split(',').filter((c: string) => c.trim() !== '');
+      this.productService.color.set(cleanColors);
+    }
+    
+    if (params['size']) {
+      const cleanSizes = params['size'].split(',').filter((s: string) => s.trim() !== '');
+      this.productService.size.set(cleanSizes);
+    }
+    
+    if (params['price']) {
+      const [min, max] = params['price'].split('-');
+      this.minVal.set(Number(min) || 0);
+      this.maxVal.set(Number(max) || this.maxLimit);
+      this.productService.price.set(params['price']);
+    }
   }
 
-  // 1. Navegación para Categorías
+  // ==========================================
+  // 🖱️ 4. ACCIONES (Solo actualizan Signals)
+  // ==========================================
+
   onCategoryChange(selectedCat: string) {
-    const newCat = this.activeCategory() === selectedCat ? null : selectedCat;
-
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: { cat: newCat },
-      queryParamsHandling: 'merge',
-    });
+    const newCat = this.activeCategory() === selectedCat ? '' : selectedCat;
+    this.productService.category.set(newCat);
+    this.productService.page.set(1); // Siempre volver a pag 1 al filtrar
   }
-  // 1. Actualiza el valor VISUAL mientras arrastras (Input event)
+
+  onColorChange(selectedColor: string) {
+    const current = this.activeColors();
+    const updated = current.includes(selectedColor) 
+      ? current.filter(c => c !== selectedColor) 
+      : [...current, selectedColor];
+
+    this.productService.color.set(updated);
+    this.productService.page.set(1);
+  }
+
+  onSizeChange(size: string) {
+    const current = this.activeSizes();
+    const updated = current.includes(size) 
+      ? current.filter(s => s !== size) 
+      : [...current, size];
+
+    this.productService.size.set(updated);
+    this.productService.page.set(1);
+  }
+
   updateMin(event: Event) {
     const value = Number((event.target as HTMLInputElement).value);
-    // Evita que el min supere al max - 10 (margen de seguridad)
     if (value >= this.maxVal() - 50) {
       this.minVal.set(this.maxVal() - 50);
       (event.target as HTMLInputElement).value = this.minVal().toString();
@@ -138,7 +176,6 @@ export default class Shop implements OnInit {
 
   updateMax(event: Event) {
     const value = Number((event.target as HTMLInputElement).value);
-    // Evita que el max sea menor al min + 10
     if (value <= this.minVal() + 50) {
       this.maxVal.set(this.minVal() + 50);
       (event.target as HTMLInputElement).value = this.maxVal().toString();
@@ -147,87 +184,64 @@ export default class Shop implements OnInit {
     }
   }
 
-  // 2. Actualiza la URL cuando sueltas el slider (Change event)
   applyPriceFilter() {
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: { 
-        minPrice: this.minVal(), 
-        maxPrice: this.maxVal() 
-      },
-      queryParamsHandling: 'merge',
-    });
+    this.productService.price.set(`${this.minVal()}-${this.maxVal()}`);
+    this.productService.page.set(1);
   }
 
-  // 2. FUNCIÓN: Añadir o Quitar color del array
-
-  onColorChange(selectedColor: string) {
-    // 1. Obtenemos el valor actual (garantizado que es un array gracias al paso 1 y 2)
-    const currentColors = this.activeColors();
-
-    let updatedColors: string[];
-
-    // 2. Lógica de Array
-    if (currentColors.includes(selectedColor)) {
-      // Si existe, lo filtramos (quitamos)
-      updatedColors = currentColors.filter(c => c !== selectedColor);
-    } else {
-      // Si no existe, lo agregamos al array
-      updatedColors = [...currentColors, selectedColor];
-    }
-
-    // 3. Convertir de nuevo a String para la URL
-    const paramValue = updatedColors.length > 0 ? updatedColors.join(',') : null;
-
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: { color: paramValue },
-      queryParamsHandling: 'merge',
-    });
-  }
-
-  // 3. Función de cambio (Idéntica a onColorChange pero con 'size')
-  onSizeChange(size: string) {
-    const currentSizes = this.activeSizes();
-    let updatedSizes: string[];
-
-    // A. Si ya existe, lo quitamos
-    if (currentSizes.includes(size)) {
-      updatedSizes = currentSizes.filter(s => s !== size);
-    } else {
-      // B. Si no existe, lo agregamos
-      updatedSizes = [...currentSizes, size];
-    }
-
-    // C. Actualizar URL
-    const paramValue = updatedSizes.length > 0 ? updatedSizes.join(',') : null;
-
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: { size: paramValue },
-      queryParamsHandling: 'merge',
-    });
-  }
-
-  // Ordenamiento
   onSort(event: Event) {
     const value = (event.target as HTMLSelectElement).value;
-    this.ps.sortOption.set(value);
+    this.productService.sortOption.set(value); 
   }
 
-  // UI Carrito
+  resetFilters() {
+    // Reseteamos todas las Signals. El effect limpiará la URL y el Resource hará la petición.
+    this.productService.search.set('');
+    this.productService.category.set('');
+    this.productService.color.set([]);
+    this.productService.size.set([]);
+    this.productService.price.set('');
+    this.productService.page.set(1);
+    
+    this.minVal.set(0);
+    this.maxVal.set(this.maxLimit);
+    
+    this.layout.closeFilter();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ==========================================
+  // 📄 5. PAGINACIÓN 
+  // ==========================================
+
+  nextPage() {
+    if (this.hasNext()) {
+      this.productService.page.update(p => p + 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  prevPage() {
+    if (this.hasPrev()) {
+      this.productService.page.update(p => p - 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  goToPage(page: number) {
+    if (page !== this.pagination()?.currentPage) {
+      this.productService.page.set(page);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  // ==========================================
+  // 🛠️ 6. HELPERS
+  // ==========================================
   toggleCart() {
     this.showCartDetail = !this.showCartDetail;
   }
 
-  // Reset Total
-  resetFilters() {
-    this.router.navigate(['/shop']).then(() => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-    this.layout.closeFilter();
-  }
-  // Navegación de Galería
   changeImage(src: string) {
     this.activeImage.set(src);
   }

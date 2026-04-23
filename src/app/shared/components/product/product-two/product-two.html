@@ -51,7 +51,7 @@
           class="btn-add-cart"
           [title]="'Añadir al Carrito ' + product().title"
           aria-label="Añadir al Carrito"
-          (click)="cartService.addToCart(product())"
+          (click)="addToCart()"
           [disabled]="ps.productsResource.isLoading()"
         >
           <span class="icon flex-center">

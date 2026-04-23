@@ -64,5 +64,28 @@ export class ProductTwo {
 
     return now >= start && now <= end;
   });
-
+  addToCart() {
+     const data = {
+        product: this.product()._id,
+        inventory: null,
+        user: localStorage.getItem('_id') ?? 'null',
+        store: this.product().store || 'Bettjim',
+        
+        title: this.product().title,
+        image: this.product().images[0].src, // Asegúrate de que siempre haya al menos una imagen
+        variety: null, // O puedes dejarlo null
+        
+        quantity:1,
+        max_stock: this.product().stock, // 🔥 En tipo 1, esto será prod.stock
+        
+        unit_price: this.product().price,
+        discount: this.product().discount ?? 0,
+        discount_price: this.cartService.getDiscount(this.product()),
+        subtotal: 1 * this.cartService.getDiscount(this.product()),
+        total: 1 * this.cartService.getDiscount(this.product()),
+      };
+      
+      // Asegúrate de que tu cartService acepte este nuevo formato
+      this.cartService.addToCart(data); 
+  }
 }
