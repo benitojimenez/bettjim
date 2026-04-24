@@ -30,6 +30,7 @@ export interface Product{
     content: string;
     lis_title: string;
     store: string;
+    sellerId: string;
     status: boolean;
     disabled: boolean;
     stars: number;
