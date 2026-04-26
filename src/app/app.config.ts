@@ -5,6 +5,8 @@ import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay, withIncrementalHydration } from '@angular/platform-browser';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './interceptors/auth.interceptor';
+import { isDevMode } from '@angular/core';
+
 
 // 1. IMPORTAR LIBRERÍAS DE IDIOMA
 import { registerLocaleData } from '@angular/common';
