@@ -1,4 +1,4 @@
-import { afterNextRender, Component, effect, ElementRef, Inject, input, PLATFORM_ID, ViewChild, ViewEncapsulation } from '@angular/core';
+import { afterNextRender, Component, effect, ElementRef, Inject, input, PLATFORM_ID, viewChild, ViewChild, ViewEncapsulation } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 
 import { ProductTwo } from '../../../shared/components/product/product-two/product-two';
@@ -24,63 +24,56 @@ export class ProductSlider {
   title = input.required<string>();
   products = input.required<any[]>();
   
-  // 1. Capturamos el Swiper y los nuevos controles
-  @ViewChild('swiperRef') swiperRef!: ElementRef;
-  @ViewChild('prevBtn') prevBtn?: ElementRef;
-  @ViewChild('nextBtn') nextBtn?: ElementRef;
-  @ViewChild('paginationEl') paginationEl?: ElementRef;
-
-  private isInitialized = false;
+  // 🔥 Usamos viewChild (Signals) en lugar del viejo @ViewChild para mejor reactividad
+  swiperRef = viewChild<ElementRef>('swiperRef');
+  prevBtn = viewChild<ElementRef>('prevBtn');
+  nextBtn = viewChild<ElementRef>('nextBtn');
+  paginationEl = viewChild<ElementRef>('paginationEl');
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {
-    afterNextRender(async () => {
-      if (this.products().length > 0 && !this.isInitialized) {
-        await this.initSwiper();
+    
+    // EFECTO: Reacciona automáticamente cuando hay productos y el HTML está listo
+    effect(async () => {
+      const prods = this.products();
+      const swiperEl = this.swiperRef()?.nativeElement;
+
+      // Si hay productos, el elemento swiper existe y estamos en el navegador
+      if (prods && prods.length > 0 && swiperEl && isPlatformBrowser(this.platformId)) {
+        
+        const { register } = await import('swiper/element/bundle');
+        register();
+
+        // 🔥 EL FIX MÁGICO: Damos 50ms para que el @for dibuje todos los <swiper-slide> 
+        // antes de que Swiper calcule los anchos. Esto arregla el bug al regresar de otra ruta.
+        setTimeout(() => {
+          const params = {
+            slidesPerView: 2,
+            spaceBetween: 15,
+            loop: true,
+            speed: 800,
+            navigation: { 
+              nextEl: this.nextBtn()?.nativeElement, 
+              prevEl: this.prevBtn()?.nativeElement 
+            },
+            pagination: { 
+              el: this.paginationEl()?.nativeElement, 
+              clickable: true 
+            },
+            autoplay: { delay: 4000, disableOnInteraction: false, pauseOnMouseEnter: true },
+            breakpoints: {
+              640: { slidesPerView: 2, spaceBetween: 20 },
+              1024: { slidesPerView: 4, spaceBetween: 30 },
+              1400: { slidesPerView: 6, spaceBetween: 30 }
+            },
+          };
+
+          // Inyectamos parámetros e inicializamos
+          Object.assign(swiperEl, params);
+          if (typeof swiperEl.initialize === 'function') {
+            swiperEl.initialize();
+          }
+        }, 50); 
       }
     });
-  }
-
-  async initSwiper() {
-    try {
-      const { register } = await import('swiper/element/bundle');
-      register();
-
-      await customElements.whenDefined('swiper-container');
-
-      const swiperEl = this.swiperRef?.nativeElement;
-      if (!swiperEl) return;
-
-      // 2. Configuración usando nativeElement en lugar de clases CSS
-      const params = {
-        slidesPerView: 2,
-        spaceBetween: 15,
-        loop: true,
-        speed: 800,
-        navigation: { 
-          // Pasamos el elemento HTML directo
-          nextEl: this.nextBtn?.nativeElement, 
-          prevEl: this.prevBtn?.nativeElement 
-        },
-        pagination: { 
-          // Pasamos el elemento HTML directo
-          el: this.paginationEl?.nativeElement, 
-          clickable: true 
-        },
-        autoplay: { delay: 4000, disableOnInteraction: false, pauseOnMouseEnter: true },
-        breakpoints: {
-          640: { slidesPerView: 2, spaceBetween: 20 },
-          1024: { slidesPerView: 4, spaceBetween: 30 },
-          1400: { slidesPerView: 6, spaceBetween: 30 }
-        },
-      };
-
-      Object.assign(swiperEl, params);
-      swiperEl.initialize();
-      
-      this.isInitialized = true;
-
-    } catch (error) {
-      console.error('Bettjim: Error iniciando Swiper del Carrusel', error);
-    }
   }
 }

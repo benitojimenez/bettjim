@@ -1,8 +1,11 @@
-/* --- VARIABLES LOCALES --- */
+/* --- VARIABLES MARKETPLACE --- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Poppins:wght@600;800&display=swap');
+
 $brand-color: #FF2E63;
-$text-dark: #1E293B;
-$text-light: #64748B;
-$bg-skeleton: #F1F5F9;
+$brand-light: #FF6B95;
+$text-main: #0f172a;
+$text-muted: #64748b;
+/* Eliminamos $bg-section porque usaremos transparent para tomar el color del body */
 
 .slider-section {
   padding-top: 3rem;
@@ -11,39 +14,93 @@ $bg-skeleton: #F1F5F9;
   padding-left: 5%;
   padding-right: 5%;
   font-family: 'Inter', system-ui, sans-serif;
-  /* Eliminé el hover que ocultaba los botones */
+  
+  /* 🔥 Fondo transparente para que el gris del body se vea de fondo */
+  background-color: transparent; 
+  
+  margin: 0 auto;
 }
 
-/* --- HEADER DE SECCIÓN --- */
+/* =========================================
+   HEADER DE SECCIÓN (Efecto WOW)
+   ========================================= */
 .header {
   display: flex; 
   justify-content: space-between; 
-  align-items: flex-end;
-  margin-bottom: 30px;
+  align-items: center; 
+  margin-bottom: 24px;
   
   .section-title { 
     font-family: 'Poppins', sans-serif; 
-    font-size: 2rem; 
-    font-weight: 700;
+    font-size: 1.8rem; 
+    font-weight: 800;
     margin: 0; 
-    color: $text-dark; 
+    color: $text-main; 
     letter-spacing: -0.5px;
-    
-    @media (max-width: 600px) { font-size: 1.5rem; }
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+
+    /* Ícono de fuego dinámico */
+    &::before {
+      content: '';
+      display: inline-block;
+      width: 28px;
+      height: 28px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FF2E63'%3E%3Cpath d='M17.39 15.14A4.33 4.33 0 0 1 18 17.5a5.55 5.55 0 0 1-5.63 5.5A5.64 5.64 0 0 1 6.5 17.15c0-3.32 2.67-4.48 2.67-4.48A4.75 4.75 0 0 0 11.23 18c1.37-3.69-.64-6.32-2.18-8.52-1.39-2-3-4.24-2.45-6.84 0 0 4.19 1.13 6.64 5.4 1 1.77 1.25 3.73 1.07 5.76a4 4 0 0 0 3.08-2.66z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-size: contain;
+      animation: pulse-fire 1.5s ease-in-out infinite alternate;
+    }
+
+    /* Subrayado de marcador vibrante */
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 2px;
+      left: 38px; 
+      width: 40px;
+      height: 6px;
+      background: $brand-color;
+      border-radius: 4px;
+      z-index: -1;
+      opacity: 0.3;
+      transition: width 0.3s ease;
+    }
+
+    &:hover::after {
+      width: calc(100% - 38px); 
+    }
+
+    @media (max-width: 600px) { 
+      font-size: 1.4rem; 
+      &::before { width: 24px; height: 24px; }
+      &::after { left: 34px; height: 5px; }
+    }
   }
 }
 
-/* --- SWIPER LAYOUT --- */
+@keyframes pulse-fire {
+  0% { transform: scale(1) rotate(-5deg); filter: drop-shadow(0 0 2px rgba(255,46,99,0.3)); }
+  100% { transform: scale(1.15) rotate(5deg); filter: drop-shadow(0 0 8px rgba(255,46,99,0.6)); }
+}
+
+/* =========================================
+   SWIPER LAYOUT
+   ========================================= */
 swiper-container {
   width: 100%;
-  padding-bottom: 24px;
+  padding-bottom: 30px; 
+  margin: -10px; 
+  padding: 10px;
 }
 
 swiper-slide {
   height: auto;
   display: flex; 
   justify-content: center;
-  align-items: stretch; /* Estira todas las tarjetas por igual */
+  align-items: stretch; 
 }
 
 app-product-two {
@@ -52,104 +109,137 @@ app-product-two {
   height: 100%;
 }
 
-/* --- CONTROLES DE NAVEGACIÓN (Flechas VISIBLES SIEMPRE) --- */
+/* =========================================
+   CONTROLES DE NAVEGACIÓN (Destacados sobre gris)
+   ========================================= */
 .swiper-nav-btns {
   display: flex; 
-  gap: 12px;
+  gap: 8px;
 
   button {
-    width: 44px; height: 44px;
-    border-radius: 50%;
-    border: 1px solid #E2E8F0;
-    background: white;
-    color: $text-dark;
+    width: 40px; height: 40px;
+    border-radius: 10px; 
+    border: none;
+    /* 🔥 Fondo blanco puro para que resalten sobre el body gris */
+    background: #ffffff; 
+    color: $text-main;
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+    /* 🔥 Sombra suave constante para separarlos del fondo gris */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     
-    /* ¡CORRECCIÓN AQUÍ! Ahora son 100% visibles y están en su posición original */
-    opacity: 1; 
-    transform: translateX(0);
-
-    svg { transition: transform 0.2s; }
+    svg { 
+      width: 20px; height: 20px; 
+      transition: transform 0.2s; 
+      stroke-width: 2.5; 
+    }
 
     &:hover {
-      background: $brand-color;
-      border-color: $brand-color;
+      background: $text-main;
       color: white;
-      box-shadow: 0 8px 15px rgba(255, 46, 99, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
       
-      /* Micro-interacción: La flecha se mueve un poco al pasar el mouse */
       &.custom-prev svg { transform: translateX(-2px); }
       &.custom-next svg { transform: translateX(2px); }
     }
 
-    &:active { transform: scale(0.9); }
+    &:active { transform: scale(0.95); }
     
-    /* Estado deshabilitado (cuando estás en el primer o último slide y no hay loop) */
     &:disabled {
       opacity: 0.5;
       cursor: not-allowed;
       &:hover {
-        background: white; border-color: #E2E8F0; color: $text-dark; box-shadow: none;
+        background: #ffffff; color: $text-main; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); transform: none;
         svg { transform: none; }
       }
     }
   }
 }
 
-/* --- PAGINACIÓN --- */
+/* =========================================
+   PAGINACIÓN
+   ========================================= */
 .custom-pagination {
-  display: flex; justify-content: center; margin-top: 5px;
+  display: flex; justify-content: center; margin-top: 0px;
   
   ::ng-deep .swiper-pagination-bullet {
-    width: 8px; height: 8px; background: #CBD5E1; opacity: 1;
-    margin: 0 6px !important; border-radius: 50%; transition: all 0.3s ease;
+    width: 16px; height: 4px; 
+    /* Gris un poco más oscuro que el fondo para que se vean */
+    background: #cbd5e1; opacity: 1;
+    margin: 0 4px !important; border-radius: 4px; 
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     
-    &-active { background: $brand-color; width: 24px; border-radius: 4px; }
+    &-active { 
+      background: $brand-color; 
+      width: 36px; 
+      box-shadow: 0 2px 6px rgba(255,46,99,0.3);
+    }
   }
 }
 
-/* --- SKELETON LOADING --- */
+/* =========================================
+   SKELETON LOADING
+   ========================================= */
 .sk-swiper-simulation {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px; overflow: hidden; margin-bottom: 24px;
+  grid-template-columns: repeat(6, 1fr); 
+  gap: 15px; 
+  overflow: hidden; 
+  margin-bottom: 24px;
+  
+  @media (max-width: 1400px) { grid-template-columns: repeat(4, 1fr); }
+  @media (max-width: 1024px) { grid-template-columns: repeat(3, 1fr); }
+  @media (max-width: 640px) { grid-template-columns: repeat(2, 1fr); gap: 10px;}
   
   .sk-card {
-    background: white; border-radius: 16px; border: 1px solid #F1F5F9;
-    overflow: hidden; display: flex; flex-direction: column;
+    background: #ffffff; /* Tarjeta blanca sobre fondo gris */
+    border-radius: 12px; 
+    border: 1px solid #e2e8f0; /* Borde muy sutil */
+    overflow: hidden; 
+    display: flex; 
+    flex-direction: column;
+    height: 100%;
     
-    .sk-details { padding: 16px; }
+    .sk-image-placeholder { 
+      width: 100%; 
+      aspect-ratio: 3 / 4; 
+    }
+
+    .sk-details { 
+      padding: 12px; 
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
 
     .skeleton {
-      background: #F1F5F9;
-      background-image: linear-gradient(90deg, #F1F5F9 0px, #E2E8F0 40px, #F1F5F9 80px);
+      /* Pulso de carga: gris sobre blanco */
+      background: #f1f5f9;
+      background-image: linear-gradient(90deg, #f1f5f9 0px, #ffffff 40px, #f1f5f9 80px);
       background-size: 200% 100%;
-      animation: shimmer 1.5s infinite linear;
+      animation: shimmer 1.2s infinite linear;
     }
     
-    .sk-image-placeholder { width: 100%; aspect-ratio: 3 / 4; }
-    
     .sk-text { 
-      height: 14px; border-radius: 4px; margin-bottom: 12px; 
-      &.title { height: 20px; margin-bottom: 0; margin-top: 20px; }
-      &.w-75 { width: 75%; }
+      height: 12px; 
+      border-radius: 4px; 
+      margin-bottom: 8px; 
+      
+      &.title { height: 16px; margin-top: auto; margin-bottom: 0; }
+      &.w-75 { width: 80%; }
       &.w-50 { width: 50%; }
     }
   }
 }
 
-@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-
-/* --- RESPONSIVE --- */
-@media (max-width: 900px) {
-  .slider-section { padding-left: 16px; padding-right: 16px; }
-  .sk-swiper-simulation { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+@keyframes shimmer { 
+  0% { background-position: 200% 0; } 
+  100% { background-position: -200% 0; } 
 }
 
+/* --- RESPONSIVE GENERAL --- */
 @media (max-width: 600px) {
   .swiper-nav-btns { display: none; } 
-  .sk-swiper-simulation { grid-template-columns: 85% 15%; }
 }

@@ -44,37 +44,39 @@ export class HeroSlider {
 
 
     // EFECTO 2: Inicializar Swiper (Solo cuando isLoading sea FALSE)
-    effect(async () => {
-      // Dependencias
+   effect(async () => {
       const loading = this.isLoading();
       const swiperEl = this.swiperRef()?.nativeElement;
 
-      // Solo iniciamos si YA terminamos de cargar (pasaron los 100ms) y el elemento existe
       if (!loading && swiperEl && isPlatformBrowser(this.platformId)) {
         
         const { register } = await import('swiper/element/bundle');
         register();
 
-        const params = {
-          slidesPerView: 1,
-          loop: true,
-          speed: 1000,
-          effect: 'fade',
-          autoplay: { delay: 6000, disableOnInteraction: false },
-          pagination: { clickable: true, el: '.hero-pagination' },
-          navigation: { nextEl: '.hero-next', prevEl: '.hero-prev' },
-          on: {
-            autoplayTimeLeft: (s: any, time: number, progress: number) => {
-              untracked(() => this.progressWidth.set((1 - progress) * 100));
+        // 🔥 EL FIX MÁGICO: Le damos 50ms a Angular para que termine 
+        // de imprimir todos los <swiper-slide> del @for antes de que Swiper los mida.
+        setTimeout(() => {
+          const params = {
+            slidesPerView: 1,
+            loop: true,
+            speed: 1000,
+            effect: 'fade',
+            autoplay: { delay: 6000, disableOnInteraction: false },
+            pagination: { clickable: true, el: '.hero-pagination' },
+            navigation: { nextEl: '.hero-next', prevEl: '.hero-prev' },
+            on: {
+              autoplayTimeLeft: (s: any, time: number, progress: number) => {
+                untracked(() => this.progressWidth.set((1 - progress) * 100));
+              }
             }
-          }
-        };
+          };
 
-        Object.assign(swiperEl, params);
-        
-        if (typeof swiperEl.initialize === 'function') {
-          swiperEl.initialize();
-        }
+          Object.assign(swiperEl, params);
+          
+          if (typeof swiperEl.initialize === 'function') {
+            swiperEl.initialize();
+          }
+        }, 50); // <- Este pequeño retraso salva el slider al navegar atrás
       }
     });
   }

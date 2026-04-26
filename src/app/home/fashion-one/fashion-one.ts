@@ -11,10 +11,11 @@ import { TrustBadges } from "../../shared/components/trust-badges/trust-badges";
 import { CategoryGrid } from "../widgets/category-grid/category-grid";
 import { Brand } from "../widgets/brand/brand";
 import { Skeleton } from "../../shared/components/skeleton/skeleton";
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-fashion-one',
-  imports: [CommonModule, ProductSlider, HeroSlider, TrustBadges],
+  imports: [CommonModule, ProductSlider, HeroSlider, TrustBadges, RouterLink],
   templateUrl: './fashion-one.html',
   styleUrl: './fashion-one.scss',
 })

@@ -1,9 +1,41 @@
-<app-hero-slider />
+<!-- baner principal -->
+<app-hero-slider /> 
 
 <app-trust-badges />
-<!-- <app-category-grid/> -->
- <!-- <app-skeleton/> -->
 
 <app-product-slider title="Top Ventas" [products]="top10Products()" />
+<section class="promo-banners container-fluid">
+  <article class="promo-banners__card">
+    <div class="promo-banners__image-wrapper">
+      <img src="./assets/baner/BANER1.jpg" alt="Perfumería Árabe" class="promo-banners__img">
+      <div class="promo-banners__overlay"></div>
+    </div>
+    <div class="promo-banners__content">
+      <span class="promo-banners__subtitle">Día de la Madre</span>
+      <!-- <h3 class="promo-banners__title">Esencias Árabes</h3>
+      <p class="promo-banners__text">Fragancias importadas de alta gama que dejan huella.</p> -->
+      <a routerLink="/shop"
+      [queryParams]="{ category: 'Mujer' }"
+      class="promo-banners__btn">Explorar</a>
+    </div>
+  </article>
+  <article class="promo-banners__card">
+    <div class="promo-banners__image-wrapper">
+      <img src="./assets/baner/BANER2.jpg" alt="Perfumería Árabe" class="promo-banners__img">
+      <div class="promo-banners__overlay"></div>
+    </div>
+   <div class="promo-banners__content">
+    <span class="promo-banners__subtitle">Día de la Madre</span>
+    <h3 class="promo-banners__title">REGALOS</h3>
+    <p class="promo-banners__text">Collares y pijamas para Mamá</p>
+    
+    <a routerLink="/shop"
+        [queryParams]="{ price: '0-99' }"
+        class="promo-banners__btn">
+        Explorar
+    </a>
+    </div>
+  </article>
+</section>
 <!-- <app-brand/> -->
 <app-product-slider title="Los Mas Vistos" [products]="top10Products()" />

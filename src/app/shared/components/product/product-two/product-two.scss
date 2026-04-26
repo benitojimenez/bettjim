@@ -2,35 +2,41 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;700&display=swap');
 
 $card-bg: #FFFFFF;
-$text-main: #1E293B; /* Slate 800 - Más elegante que el negro puro */
+$text-main: #1E293B; /* Slate 800 */
 $text-muted: #94A3B8; /* Slate 400 */
 $primary-color: #FF2E63;
 $primary-gradient: linear-gradient(135deg, #FF6B95 0%, #FF2E63 100%);
-$accent-gold: #F59E0B; /* Amber 500 - Dorado más premium */
-$shadow-soft: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
-$shadow-hover: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
-$radius: 16px;
+$accent-gold: #F59E0B; 
+
+/* Nuevos colores para las etiquetas (Píldoras) */
+$color-new-bg: #212529; /* Negro elegante para 'Nuevo' */
+$color-discount: #E53E3E; /* Rojo vibrante pero serio para el descuento */
+
+$radius: 12px; /* Borde más limpio y moderno */
 
 * {
   box-sizing: border-box;
 }
 
-/* --- ESTILOS DE LA TARJETA --- */
+/* --- ESTILOS DE LA TARJETA (Estructura Mejorada) --- */
 .product-card {
   background: $card-bg;
   border-radius: $radius;
   overflow: hidden;
   position: relative;
-  border: 1px solid #F1F5F9;
+  border: 1px solid #EBEBEB; /* Borde más suave */
   display: flex;
   flex-direction: column;
   font-family: 'Inter', system-ui, sans-serif;
-  height: 100%; /* ¡CLAVE! Obliga a la tarjeta a estirarse en el slider */
-  
-  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  height: 100%; 
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
-  /* Efecto Hover Limpio y Pro */
+  /* Efecto Hover Limpio con Elevación */
   &:hover {
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08); /* Sombra elegante */
+    transform: translateY(-4px); /* Levitación suave */
+    border-color: #D1D1D1;
+
     .p-image img {
       transform: scale(1.05); 
     }
@@ -60,7 +66,7 @@ $radius: 16px;
       transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
 
-    /* Botón Wishlist (Corazón) */
+    /* Botón Wishlist */
     .wishlist-btn {
       position: absolute;
       top: 12px;
@@ -87,11 +93,11 @@ $radius: 16px;
       }
     }
 
-    /* Tags sobre la imagen */
+    /* 🔥 MODIFICADO: Etiquetas en forma de Píldora */
     .tags-wrapper {
       position: absolute;
       top: 12px; 
-      left: 5px;
+      left: 12px;
       display: flex;
       flex-direction: column;
       gap: 6px;
@@ -99,18 +105,17 @@ $radius: 16px;
       z-index: 5;
 
       .p-tag {
-        color: white;
         font-size: 0.7rem;
-        padding: 4px 10px;
-        border-radius: 6px; 
+        padding: 4px 12px; /* Más padding horizontal para la forma de píldora */
+        border-radius: 20px; /* Borde totalmente redondeado */
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.5px;
         font-family: 'Poppins', sans-serif;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 
-        &.discount { background: $primary-gradient; }
-        &.new { background: #10B981; color: white; }
+        &.discount { background: $color-discount; color: white; }
+        &.new { background: $color-new-bg; color: white; }
       }
     }
   }
@@ -120,7 +125,7 @@ $radius: 16px;
   --------------------------- */
   .p-details {
     padding: 16px;
-    flex: 1; /* ¡CLAVE! Hace que esta sección ocupe todo el espacio sobrante */
+    flex: 1; 
     display: flex;
     flex-direction: column;
 
@@ -135,7 +140,7 @@ $radius: 16px;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
-      min-height: 2.8em; /* ¡FIX 1! Reserva siempre el espacio de 2 líneas */
+      min-height: 2.8em; 
       text-decoration: none;
       cursor: pointer;
       transition: color 0.2s;
@@ -143,7 +148,6 @@ $radius: 16px;
       &:hover { color: $primary-color; }
     }
 
-    /* Estrellas SVG */
     .p-rating {
       display: flex;
       align-items: center;
@@ -156,25 +160,25 @@ $radius: 16px;
       }
     }
 
-    /* Fila de Precio y Botones */
+    /* 🔥 MODIFICADO: Fila de Precio Limpia */
     .p-price-row {
       display: flex;
       justify-content: space-between;
       align-items: flex-end; 
-      margin-top: auto; /* ¡FIX 2! Empuja esta fila al fondo siempre */
+      margin-top: auto; 
       margin-bottom: 12px;
 
       .price-box {
         display: flex;
         flex-direction: column;
-        justify-content: flex-end; /* Alinea los precios hacia abajo */
-        min-height: 48px; /* ¡FIX 3! Reserva espacio para el precio antiguo aunque no exista */
+        justify-content: flex-end; 
+        min-height: 48px; 
         
         .current {
           font-family: 'Poppins', sans-serif;
           font-size: 1.25rem;
           font-weight: 700;
-          color: $primary-color;
+          color: $text-main; /* Precio en oscuro, más profesional */
           line-height: 1.1;
         }
         
@@ -185,7 +189,8 @@ $radius: 16px;
           margin-top: 4px;
         }
       }
-      /* BOTÓN CARRITO (Llamado a la acción principal) */
+
+      /* 🔥 INTACTO: Tu Botón de Acción Original con Animaciones */
       .btn-add-cart {
         width: 48px;
         height: 48px;
@@ -221,7 +226,6 @@ $radius: 16px;
           z-index: 2; 
           transition: transform 0.3s ease;
           
-          /* Ícono ajustado a 22px para compensar el nuevo botón de 48px */
           svg {
             width: 22px; 
             height: 22px;
@@ -232,13 +236,12 @@ $radius: 16px;
           animation: none; 
           transform: scale(1.1) translateY(-3px);
           box-shadow: 0 10px 20px rgba(255, 46, 99, 0.4);
-          
           .icon { transform: scale(1.15); }
         }
 
         &:active { transform: scale(0.9); }
         
-        /* Variante: Ver Más / Sin Stock */
+        /* Variante: Ver Más / Opciones */
         &.outline {
           background: white; 
           border: 2px solid $primary-color; 
@@ -272,12 +275,12 @@ $radius: 16px;
       }
     }
 
-    /* Etiquetas inferiores (Hot) */
+    /* 🔥 INTACTO: Animación de Hot Tag */
     .p-badges {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
-      min-height: 26px; /* ¡FIX 4! Reserva espacio por si el producto NO es Hot */
+      min-height: 26px;
 
       .hot-tag {
         background: #FFF0F3;
@@ -302,7 +305,7 @@ $radius: 16px;
   }
 }
 
-/* --- LA ANIMACIÓN "GAMER HOT" --- */
+/* --- ANIMACIONES ORIGINALES CONSERVADAS --- */
 @keyframes arcadeFire {
   0% { transform: scale(1) rotate(-3deg); filter: drop-shadow(0 0 2px rgba(255, 46, 99, 0.4)); }
   33% { transform: scale(1.1) scaleY(1.15) rotate(3deg); filter: drop-shadow(0 0 5px rgba(255, 46, 99, 0.6)); }
@@ -310,9 +313,6 @@ $radius: 16px;
   100% { transform: scale(1.15) scaleY(1.2) rotate(2deg); filter: drop-shadow(0 0 8px rgba(255, 153, 102, 0.9)); color: #FF9966; }
 }
 
-/* --- ANIMACIONES DE COMPRA IMPULSIVA --- */
-
-/* Latido (Doble pum-pum simulando un corazón acelerado) */
 @keyframes heartbeat {
   0% { transform: scale(1); box-shadow: 0 4px 12px rgba(255, 46, 99, 0.25); }
   5% { transform: scale(1.08); box-shadow: 0 6px 16px rgba(255, 46, 99, 0.45); }
@@ -322,23 +322,20 @@ $radius: 16px;
   100% { transform: scale(1); box-shadow: 0 4px 12px rgba(255, 46, 99, 0.25); }
 }
 
-/* Destello de luz cruzando el botón */
 @keyframes shine {
   0% { left: -100%; }
-  20% { left: 200%; } /* Pasa rápido */
-  100% { left: 200%; } /* Espera antes de volver a pasar */
+  20% { left: 200%; } 
+  100% { left: 200%; } 
 }
 
-/* =========================================
-   📱 RESPONSIVE (Móviles y Tablets pequeños)
-   ========================================= */
+/* --- RESPONSIVE --- */
 @media (max-width: 600px) {
   .product-card {
     .p-details {
-      padding: 12px; /* Reducimos el espaciado interno para ganar área */
+      padding: 12px; 
       
       .p-title {
-        font-size: 0.85rem; /* Texto un poco más pequeño para que entre todo */
+        font-size: 0.85rem; 
         min-height: 2.6em;
       }
 
@@ -351,7 +348,6 @@ $radius: 16px;
           .old { font-size: 0.75rem; }
         }
 
-        /* En celular, reducimos el botón a 40px para asegurar que quepan 2 tarjetas por fila sin chocar */
         .btn-add-cart {
           width: 40px;
           height: 40px;
