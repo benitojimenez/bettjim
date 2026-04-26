@@ -13,7 +13,10 @@
       
       <div class="media-bg">
         <img [src]="urlImage() + slide.image[0]" alt="Hero Bg" class="bg-img ken-burns" />
-        <div class="overlay"></div>
+        @if (slide.title) {
+          <div class="overlay"></div>
+        }
+       
       </div>
 
       @if (slide.title) {
