@@ -16,7 +16,7 @@ export class Seo {
   // Configuración base
   private readonly DOMAIN = 'https://bettjim.com';
   // Fallback seguro por si API_URL no viene
-  private readonly DOMAIN_IMG = environment.API_URL || 'https://api.bettjim.com'; 
+  private readonly DOMAIN_IMG = environment.API_URL || 'https://api.bettjim.com/api/'; 
   private readonly DEFAULT_IMAGE = 'https://bettjim.com/assets/img/bettjim-social-share.jpg';
 
   constructor() { }
@@ -38,7 +38,7 @@ export class Seo {
       imageUrl = `${this.DOMAIN_IMG}${cleanImgPath}`;
     }
 
-    const url = config.slug ? `${this.DOMAIN}/p/${config.slug}` : this.DOMAIN;
+    const url = config.slug ? `${this.DOMAIN}/${config.slug}` : this.DOMAIN;
     const type = config.type || 'website';
 
     // 2. Título y Meta básicos (Estos se sobrescriben, no hay problema)

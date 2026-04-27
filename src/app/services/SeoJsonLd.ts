@@ -147,7 +147,7 @@ export class SeoJsonLd {
       "@type": "ListItem",
       "position": positionCounter,
       "name": product.title,
-      "item": `${this.urlDomain}product/${product.slug}`
+      "item": `${this.urlDomain}p/${product.slug}`
     });
 
     const breadcrumbSchema = {
