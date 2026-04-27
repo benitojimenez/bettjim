@@ -178,7 +178,7 @@ export default class ProductDetailTwo {
           title: `${p.title} | Bettjim.com`,
           description: p.summary || `Compra ${p.title} al mejor precio.`,
           image: `product_imagen/${p.images?.[0]?.src}`,
-          slug: `product/${p.slug}`,
+          slug: `p/${p.slug}`,
           type: 'product',
           price: this.cartService.getDiscount(p),
           currency: 'PEN',

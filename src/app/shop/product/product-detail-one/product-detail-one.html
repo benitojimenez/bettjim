@@ -355,15 +355,11 @@
     ></app-product-slider>
   </div>
 }
-
-<!-- @if (isShareModalOpen()) {
-  <app-share-modal [productUrl]="ps.cleanProductSlug()?.slug || ''" [productTitle]="ps.cleanProductSlug()?.title || ''" (close)="closeShare()"/>
-} -->
 <app-viewer-toast />
 @if (isShareModalOpen()) {
   <app-share-modal
-    [productUrl]="product()?.slug || ''"
-    [productTitle]="product()?.title || ''"
+    [productUrl]="product().slug || ''"
+    [productTitle]="product().title || ''"
     (close)="closeShare()"
   />
 }

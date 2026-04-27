@@ -22,7 +22,7 @@ export const routes: Routes = [
     },
 
     {
-        path: 'product1/:slug',
+        path: 'p1/:slug',
         loadComponent: () => import('./shop/product/product-letf/product-letf').then(c => c.default),
     },
     {

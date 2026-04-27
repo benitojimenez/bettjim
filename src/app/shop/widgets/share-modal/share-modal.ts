@@ -11,7 +11,8 @@ export class ShareModal {
   // Inputs: Qué vamos a compartir
   @Input({ required: true }) productUrl!: string;
   @Input() productTitle: string = 'Mira este producto increíble en Bettjim';
-  domain = 'https://bettjim.com/product/';
+  domain = 'https://bettjim.com/p/';
+  
   
   // Output: Para cerrar el modal desde el padre
   @Output() close = new EventEmitter<void>();

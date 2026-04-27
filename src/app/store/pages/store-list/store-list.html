@@ -1,4 +1,4 @@
-<section class="store-list-container container">
+<div class="store-list-container container">
   <header class="directory-header">
     <div class="header-content">
       <h1>Tiendas Oficiales y Vendedores</h1>
@@ -12,7 +12,7 @@
   </header>
 
   <section class="stores-grid">
-    @for (dummy of [1,2,3,4,5,6]; track $index) {
+    @for (dummy of [1,2,3,4,5]; track $index) {
       <article class="store-card">
         <div class="store-banner">
           <img src="https://empresas.blogthinkbig.com/wp-content/uploads/2019/11/Imagen3-245003649.jpg?fit=960%2C720" alt="Banner Tienda" loading="lazy">
@@ -20,6 +20,7 @@
         
         <div class="store-info">
           <div class="store-logo">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAmIXRbOR7fOQSScB4zs8UIwD7gxpjo_4LEA&s" alt="Logo Tienda" loading="lazy">
             <span>B</span>
           </div>
           
@@ -40,4 +41,4 @@
       </article>
     }
   </section>
-</section>
+</div>
