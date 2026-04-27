@@ -27,7 +27,7 @@ export const routes: Routes = [
     },
     {
         path: 'product/:slug',
-        loadComponent: () => import('./shop/product/product-detail-one/product-detail-one').then(c => c.default),
+        loadComponent: () => import('./shop/product/product-detail-two/product-detail-two').then(c => c.default),
     },
     {
         path: 'checkout',

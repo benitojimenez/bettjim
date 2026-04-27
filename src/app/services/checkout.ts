@@ -55,14 +55,14 @@ export class CheckoutService {
         id: 'standard',
         name: 'Envío Estándar',
         eta: 'Llega en 3 a 5 días hábiles',
-        price: isFree ? 0 : 10.00,
-        originalPrice: isFree ? 10.00 : undefined
+        price: isFree ? 0 : 13.00,
+        originalPrice: isFree ? 13.00 : undefined
       },
       {
         id: 'express',
         name: 'Envío Express (Solo Lima)',
         eta: 'Llega en 24 horas',
-        price: 25.00
+        price: 20.00
       }
     ];
   });

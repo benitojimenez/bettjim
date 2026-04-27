@@ -9,7 +9,7 @@
     </div>
   </div>
 } @else {
-  <section class="product-hero container">
+  <main class="product-hero container" itemscope itemtype="https://schema.org/Product">
     <div class="product-gallery">
       <div class="thumbnail-list">
         @for (img of product().images; track img.image_id) {
@@ -19,7 +19,7 @@
             (mouseenter)="changeImage(img.src)"
             (mouseleave)="changeImage(null)"
             [src]="URL_IMG() + img.src"
-            [alt]="product().title"
+            [alt]="product().title + ' vista ' + ($index + 1)"
           />
         }
       </div>
@@ -33,20 +33,47 @@
             <span class="badge new">NUEVO</span>
           }
         </div>
-        <img [src]="URL_IMG() + activeImage()" [alt]="product().title" class="main-image" />
+
+        <img
+          [src]="URL_IMG() + activeImage()"
+          [alt]="product().title"
+          class="main-image"
+          itemprop="image"
+        />
+
+        <button class="gallery-nav prev" (click)="prevImage()" aria-label="Imagen anterior">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+        <button class="gallery-nav next" (click)="nextImage()" aria-label="Siguiente imagen">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+
         <div class="extract-tag">ENVÍO RÁPIDO</div>
       </div>
     </div>
 
     <div class="product-info">
-      <div class="breadcrumbs">
+      <nav aria-label="breadcrumb" class="breadcrumbs">
         ROPA / <span class="highlight">{{ product().subcategory }}</span>
-      </div>
+      </nav>
 
-      <h1 class="product-title">{{ product().title }}</h1>
+      <h1 class="product-title" itemprop="name">{{ product().title }}</h1>
+
       <div class="product-vendor">
         <div class="product-vendor__icon-box">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <path d="M3 9l9-6 9 6"></path>
             <path d="M21 10v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V10"></path>
             <line x1="10" y1="14" x2="10" y2="20"></line>
@@ -56,36 +83,52 @@
 
         <div class="product-vendor__details">
           <span class="product-vendor__label">Vendido por</span>
-          
           <div class="product-vendor__store">
-            <a href="javascript:void(0)" class="product-vendor__name">
-              {{ product().store }}
-            </a>
+            <a href="javascript:void(0)" class="product-vendor__name">{{ product().store }}</a>
             @if (product().sellerId) {
               <span class="product-vendor__badge">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-              </svg>
-              <span class="product-vendor__badge-text">Verificado</span>
-            </span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+                  />
+                </svg>
+                <span class="product-vendor__badge-text">Verificado</span>
+              </span>
             }
-            
           </div>
         </div>
       </div>
+
       <div class="reviews">
         <span class="stars">★★★★★</span>
         <span class="review-count">4.9 (128 reseñas)</span>
       </div>
 
-      <div class="pricing">
-        <span class="current-price">{{
+      <div class="pricing" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+        <meta itemprop="priceCurrency" content="PEN" />
+        <span class="current-price" itemprop="price">{{
           product().price | appDiscount: product() | currency: ps.Currency.currency
         }}</span>
         @if (isDiscountActive()) {
           <span class="old-price">{{ product().price | currency: ps.Currency.currency }}</span>
         }
       </div>
+      @if (isDiscountActive()) {
+        <div class="flash-deal-box">
+          <div class="flash-header">
+            <span class="flash-title">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+              OFERTA RELÁMPAGO
+            </span>
+            <span class="flash-timer">Termina en: <strong>{{ timeLeft() }}</strong></span>
+          </div>
+          <div class="flash-progress">
+            <div class="progress-bar">
+              <div class="fill" style="width: 85%"></div> </div>
+            <span class="sold-text">85% Vendido</span>
+          </div>
+        </div>
+      }
 
       <div class="stock-status">
         @if (currentStock() > 0) {
@@ -94,9 +137,6 @@
         } @else if (product().type_inventory === 2 && !selectedColor()) {
           <span class="icon-info"></span> Selecciona color y talla para ver disponibilidad
         }
-        <!-- @else {
-          <span class="icon-error" style="color: var(--color-danger)">❌</span> Producto Agotado
-        } -->
       </div>
 
       @if (product().type_inventory === 2) {
@@ -126,7 +166,6 @@
                 >Selecciona un color primero.</span
               >
             }
-
             @for (size of availableSizes(); track $index) {
               <button
                 class="size-btn"
@@ -166,7 +205,7 @@
         <button (click)="openShare()">Compartir</button>
       </div>
     </div>
-  </section>
+  </main>
 
   <section class="product-details-section">
     <div class="container">
@@ -176,17 +215,29 @@
           [class.active]="activeTab() === 'detalles'"
           (click)="activeTab.set('detalles')"
         >
-          DETALLES
+          DESCRIPCIÓN
         </button>
-
+        <!-- <button
+          class="tab-btn"
+          [class.active]="activeTab() === 'especificaciones'"
+          (click)="activeTab.set('especificaciones')"
+        >
+          ESPECIFICACIONES
+        </button> -->
+        <!-- <button
+          class="tab-btn"
+          [class.active]="activeTab() === 'preguntas'"
+          (click)="activeTab.set('preguntas')"
+        >
+          PREGUNTAS
+        </button> -->
         <button
           class="tab-btn"
           [class.active]="activeTab() === 'resenas'"
           (click)="activeTab.set('resenas')"
         >
-          RESEÑAS
+          RESEÑAS (1)
         </button>
-
         <button
           class="tab-btn"
           [class.active]="activeTab() === 'envios'"
@@ -199,60 +250,145 @@
       <div class="details-content">
         @if (activeTab() === 'detalles') {
           <div class="tab-pane fade-in">
-            <div [innerHTML]="product().description"></div>
+            <div [innerHTML]="product().description" itemprop="description"></div>
           </div>
         }
+        @if (activeTab() === 'especificaciones') {
+          <div class="tab-pane fade-in">
+            <div class="specs-container">
+              <h2>Ficha Técnica</h2>
 
+              <div class="specs-table">
+                <div class="spec-row">
+                  <span class="spec-key">Marca</span>
+                  <span class="spec-value">{{ product().brand || 'Bettjim Oficial' }}</span>
+                </div>
+                <div class="spec-row">
+                  <span class="spec-key">Material</span>
+                  <span class="spec-value">Algodón Premium / Acero Quirúrgico (Ejemplo)</span>
+                </div>
+                <div class="spec-row">
+                  <span class="spec-key">Condición</span>
+                  <span class="spec-value">Nuevo</span>
+                </div>
+                <div class="spec-row">
+                  <span class="spec-key">Género</span>
+                  <span class="spec-value">Mujer / Unisex</span>
+                </div>
+                <div class="spec-row">
+                  <span class="spec-key">Garantía</span>
+                  <span class="spec-value">30 días por defectos de fábrica</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+        @if (activeTab() === 'preguntas') {
+          <div class="tab-pane fade-in">
+            <div class="qa-container">
+              <h2>Preguntas al Vendedor</h2>
+
+              <div class="qa-input-box">
+                <input
+                  type="text"
+                  placeholder="Escribe tu duda sobre el producto (tallas, envíos, material)..."
+                  aria-label="Escribe tu pregunta"
+                />
+                <button class="btn-ask">Preguntar</button>
+              </div>
+
+              <div class="qa-list">
+                <article class="qa-item">
+                  <div class="qa-question">
+                    <span class="qa-icon q-icon">Q</span>
+                    <p>¿Tienen en talla L para entrega inmediata en Lima?</p>
+                  </div>
+                  <div class="qa-answer">
+                    <span class="qa-icon a-icon">A</span>
+                    <div class="answer-content">
+                      <p>
+                        ¡Hola! Sí, tenemos stock en talla L. Si compras hoy antes de las 2:00 PM con
+                        Envío Express te llega hoy mismo. ¡Saludos!
+                      </p>
+                      <span class="qa-date">Respondido hace 2 días</span>
+                    </div>
+                  </div>
+                </article>
+
+                <article class="qa-item">
+                  <div class="qa-question">
+                    <span class="qa-icon q-icon">Q</span>
+                    <p>¿El material encoge después de lavarlo?</p>
+                  </div>
+                  <div class="qa-answer">
+                    <span class="qa-icon a-icon">A</span>
+                    <div class="answer-content">
+                      <p>
+                        Hola. No, nuestra tela premium está pre-encogida. Te recomendamos lavarlo
+                        con agua fría para mantener el color intacto por mucho tiempo.
+                      </p>
+                      <span class="qa-date">Respondido hace 1 semana</span>
+                    </div>
+                  </div>
+                </article>
+              </div>
+            </div>
+          </div>
+        }
         @if (activeTab() === 'resenas') {
           <div class="tab-pane fade-in">
             <div class="reviews-container">
               <div class="reviews-header">
                 <div class="rating-summary">
                   <h2 class="rating-score">4.9</h2>
-
                   <div class="stars">★★★★★</div>
-
-                  <p class="rating-count">Basado en 128 reseñas</p>
+                  <p class="rating-count">Basado en 1 reseñas verificadas</p>
                 </div>
-
+                <div class="rating-bars">
+                  <div class="bar-row">
+                    <span>5★</span>
+                    <div class="bar"><div class="fill" style="width: 90%"></div></div>
+                  </div>
+                  <div class="bar-row">
+                    <span>4★</span>
+                    <div class="bar"><div class="fill" style="width: 8%"></div></div>
+                  </div>
+                  <div class="bar-row">
+                    <span>3★</span>
+                    <div class="bar"><div class="fill" style="width: 2%"></div></div>
+                  </div>
+                </div>
                 <button class="btn-write-review">Escribir una reseña</button>
               </div>
 
-              <div class="reviews-list">
+              <!-- <div class="reviews-list">
                 <div class="review-item">
                   <div class="review-meta">
                     <span class="author"
                       >María Gómez <span class="verified">✔ Comprador verificado</span></span
                     >
-
                     <span class="date">Hace 2 semanas</span>
                   </div>
-
                   <div class="stars">★★★★★</div>
-
                   <p class="review-text">
                     ¡Me encanta! Es súper calientita y el diseño de pingüino es adorable. La talla M
                     me quedó perfecta y llegó rapidísimo.
                   </p>
                 </div>
-
                 <div class="review-item">
                   <div class="review-meta">
                     <span class="author"
                       >Lucía R. <span class="verified">✔ Comprador verificado</span></span
                     >
-
                     <span class="date">Hace 1 mes</span>
                   </div>
-
                   <div class="stars">★★★★☆</div>
-
                   <p class="review-text">
                     Muy suave al tacto. La tela es buena y no destiñe al lavarla. Le pongo 4
-                    estrellas solo porque la paquetería tardó un día más de lo esperado.
+                    estrellas solo porque la paquetería tardó un día más.
                   </p>
                 </div>
-              </div>
+              </div> -->
             </div>
           </div>
         }
@@ -260,110 +396,47 @@
         @if (activeTab() === 'envios') {
           <div class="tab-pane fade-in">
             <div class="shipping-container">
-              <h2>Opciones de Entrega</h2>
-
+              <h2>Opciones de Entrega y Devoluciones</h2>
               <p class="shipping-desc">
                 Procesamos todos los pedidos en un plazo de 24 horas laborables.
               </p>
-
               <div class="shipping-grid">
-                @for (option of shippingOptions; track option.id) {
-                  <div class="shipping-card">
-                    <div class="icon-wrap">
-                      @switch (option.id) {
-                        @case ('standard') {
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          >
-                            <rect x="3" y="8" width="15" height="10" rx="2"></rect>
-
-                            <path d="M18 8h2a2 2 0 0 1 2 2v5l-2 2h-2"></path>
-
-                            <circle cx="5.5" cy="18.5" r="1.5"></circle>
-
-                            <circle cx="18.5" cy="18.5" r="1.5"></circle>
-
-                            <path d="M12 18h3"></path>
-                          </svg>
-                        }
-
-                        @case ('express') {
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          >
-                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-                          </svg>
-                        }
-
-                        @case ('province') {
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          >
-                            <path
-                              d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.2-1.1.7l-1.2 3.6 7.6 4.6-3 3-2.8-.9c-.4-.1-.8.1-1 .5l-1.4 2.1 4.5 2 2 4.5 2.1-1.4c.4-.2.6-.6.5-1l-.9-2.8 3-3 4.6 7.6 3.6-1.2c.5-.2.8-.6.7-1.1z"
-                            ></path>
-                          </svg>
-                        }
-                      }
+                @for (item of shippingOptions; track $index) {
+                     <div class="shipping-card">
+                      <div class="shipping-info">
+                         <h3>{{ item.title }}</h3>
+                         <p>{{ item.description }}</p>
+                      </div>
+                      <div class="shipping-price">{{ item.price }}</div>
                     </div>
-
-                    <div class="shipping-info">
-                      <h3>{{ option.title }}</h3>
-
-                      <p>{{ option.description }}</p>
-                    </div>
-
-                    <div class="shipping-price">{{ option.price }}</div>
-                  </div>
                 }
               </div>
 
               <div class="shipping-alert">
                 <strong>Nota:</strong> ¡El envío estándar es <strong>GRATIS</strong> en compras
-                mayores a S/ 150.00!
+                mayores a S/ 99.00!
               </div>
             </div>
           </div>
         }
       </div>
     </div>
-  </section>
+  </section> 
 }
 @if (relatedProducts().length > 0) {
   <div class="product-related">
     <app-product-slider
       [products]="relatedProducts()"
-      [title]="'Productos Similares'"
+      [title]="'También te puede interesar...'"
     ></app-product-slider>
   </div>
 }
 
-<!-- @if (isShareModalOpen()) {
-  <app-share-modal [productUrl]="ps.cleanProductSlug()?.slug || ''" [productTitle]="ps.cleanProductSlug()?.title || ''" (close)="closeShare()"/>
-} -->
 <app-viewer-toast />
 @if (isShareModalOpen()) {
   <app-share-modal
-    [productUrl]="product()?.slug || ''"
-    [productTitle]="product()?.title || ''"
+    [productUrl]="product().slug || ''"
+    [productTitle]="product().title || ''"
     (close)="closeShare()"
   />
 }

@@ -18,14 +18,13 @@ import { ShareModal } from "../../widgets/share-modal/share-modal";
 import { ViewerToast } from "../../widgets/viewer-toast/viewer-toast";
 
 @Component({
-  selector: 'app-product-detail-one',
-  imports: [CommonModule, Breadcrumbs, DiscountPipe, ProductSlider, ShareModal, ViewerToast],
-  templateUrl: './product-detail-one.html',
-  styleUrl: './product-detail-one.scss',
+  selector: 'app-product-detail-two',
+  imports: [CommonModule, Breadcrumbs, DiscountPipe, ProductSlider, ShareModal, ViewerToast],  templateUrl: './product-detail-two.html',
+  styleUrl: './product-detail-two.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export default class ProductDetailOne implements OnInit, OnDestroy {
-
+export default class ProductDetailTwo {
+  
   @Input() slug!: string;
 
   // ================================================================
@@ -39,6 +38,7 @@ export default class ProductDetailOne implements OnInit, OnDestroy {
   private _platformId = inject(PLATFORM_ID);
 
   public URL_IMG = signal(environment.API_URL+'product_imagen/' );
+  
 
   // ================================================================
   // 2. ESTADO BASE (Fuente de Verdad)
@@ -59,7 +59,8 @@ export default class ProductDetailOne implements OnInit, OnDestroy {
   // UI States
   public activeTab = signal('detalles');
   public isShareModalOpen = signal(false);
-  public timeLeft = signal('');
+  timeLeft = signal<string>('05:30:00'); // Hora inicial simulada
+  private timerInterval: any;
   public viewers = signal(12);
 
   // ================================================================
@@ -331,31 +332,41 @@ prevImage() {
   openShare() { this.isShareModalOpen.set(true); }
   closeShare() { this.isShareModalOpen.set(false); }
   setTab(tab: string) { this.activeTab.set(tab); }
-
-  private startCountdown() {
-    const endOfDay = new Date();
-    endOfDay.setHours(23, 59, 59, 999);
-    this.timerSubscription = interval(1000).subscribe(() => {
-      const now = new Date();
-      const diff = endOfDay.getTime() - now.getTime();
-      if (diff <= 0) { this.timeLeft.set('00h 00m 00s'); return; }
-      const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const s = Math.floor((diff % (1000 * 60)) / 1000);
-      this.timeLeft.set(`${h}h ${m}m ${s}s`);
-    });
-  }
-
+  
   private startViewersSimulation() {
     this.viewersInterval = setInterval(() => {
       const change = Math.random() > 0.5 ? 1 : -1;
       this.viewers.update(v => Math.max(5, Math.min(30, v + change)));
     }, 5000);
   }
+  startCountdown() {
+    // Simulamos que faltan 5 horas, 30 minutos y 0 segundos
+    let totalSeconds = (5 * 3600) + (30 * 60); 
 
+    this.timerInterval = setInterval(() => {
+      if (totalSeconds <= 0) {
+        clearInterval(this.timerInterval);
+        this.timeLeft.set('00:00:00');
+        return;
+      }
+
+      totalSeconds--;
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+
+      // Formatear a HH:MM:SS
+      const formatted = 
+        String(hours).padStart(2, '0') + ':' + 
+        String(minutes).padStart(2, '0') + ':' + 
+        String(seconds).padStart(2, '0');
+
+      this.timeLeft.set(formatted);
+    }, 1000);
+  }
   shippingOptions = [
-    { id: 'standard', title: 'Envío Estándar (Lima)', description: 'Entrega en 2 a 3 días hábiles.', price: 'S/ 10.00' },
-    { id: 'express', title: 'Envío Express (Lima)', description: 'Entrega el mismo día (pedidos antes de 1 PM).', price: 'S/ 18.00' },
-    { id: 'province', title: 'Envío a Provincias', description: 'Olva Courier o Shalom (3-5 días).', price: 'S/ 15.00' }
+    { id: 'standard', title: 'Envío Estándar o Provincias', description: 'Olva Courier o Shalom (3-5 días).', price: 'S/ 13.00' },
+    { id: 'express', title: 'Envío Express (Lima)', description: 'Entrega el mismo día (pedidos antes de 12 PM).', price: 'S/ 20.00' },
+    // { id: 'province', title: 'Envío a Provincias', description: 'Olva Courier o Shalom (3-5 días).', price: 'S/ 13.00' }
   ];
 }

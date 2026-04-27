@@ -1,9 +1,14 @@
 {
-  "name": "bettjim",
-  "short_name": "bettjim",
+  "name": "Bettjim - Compras Online",
+  "short_name": "Bettjim",
+  "description": "Tu tienda online de pijamas, joyas y perfumes con envío rápido.",
   "display": "standalone",
-  "scope": "./",
-  "start_url": "./",
+  "orientation": "portrait",
+  "theme_color": "#FF2E63",
+  "background_color": "#FF2E63",
+  "scope": "/",
+  "start_url": "/",
+  "lang": "es-PE",
   "icons": [
     {
       "src": "icons/icon-72x72.png",

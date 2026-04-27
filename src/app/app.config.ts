@@ -11,6 +11,7 @@ import { isDevMode } from '@angular/core';
 // 1. IMPORTAR LIBRERÍAS DE IDIOMA
 import { registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
+import { provideServiceWorker } from '@angular/service-worker';
 
 // 2. REGISTRAR EL IDIOMA
 registerLocaleData(localeEs, 'es');
@@ -30,6 +31,11 @@ export const appConfig: ApplicationConfig = {
     // 3. DEFINIR ESPAÑOL COMO IDIOMA POR DEFECTO
     // { provide: LOCALE_ID, useValue: 'es' },
     provideClientHydration(withEventReplay(), withIncrementalHydration()),
-    provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
+    provideHttpClient(withFetch(), withInterceptors([authInterceptor])), 
+    provideServiceWorker('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      registrationStrategy: 'registerWhenStable:30000'
+    }),
+    
   ]
 };
