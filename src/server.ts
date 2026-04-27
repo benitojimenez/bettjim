@@ -116,7 +116,7 @@ app.get('/sitemap.xml', async (req, res) => {
         // --- 3. Armar el bloque URL ---
         xml += `
         <url>
-          <loc>${domain}/product/${prod.slug}</loc>
+          <loc>${domain}/p/${prod.slug}</loc>
           <lastmod>${new Date(dateStr).toISOString()}</lastmod>
           <changefreq>daily</changefreq>
           <priority>1.0</priority>
