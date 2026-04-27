@@ -1,6 +1,6 @@
 <div class="product-card reveal" #animateItem>
   
-  <div class="p-image" [routerLink]="['/product', product().slug]">
+  <div class="p-image" [routerLink]="['/p', product().slug]">
     
     <button class="wishlist-btn" aria-label="Agregar a lista de deseos">
       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -26,7 +26,7 @@
   </div>
 
   <div class="p-details" [title]="product().summary">
-    <h4 class="p-title" [routerLink]="['/product', product().slug]">{{ product().title }}</h4>
+    <h4 class="p-title" [routerLink]="['/p', product().slug]">{{ product().title }}</h4>
 
     <div class="p-rating">
       <div class="stars-svg">
@@ -65,7 +65,7 @@
           class="btn-add-cart outline"
           [title]="'Ver más de ' + product().title"
           aria-label="Ver detalles"
-          [routerLink]="['/product', product().slug]"
+          [routerLink]="['/p', product().slug]"
         >
           <span class="icon flex-center">
             <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -1,0 +1,307 @@
+/* VARIABLES LOCALES PARA EL COMPONENTE */
+$border-soft: #e2e8f0;
+$text-main: #0f172a;
+$text-muted: #64748b;
+$bg-white: #ffffff;
+$bg-body: #f8fafc;
+
+.store-front-container {
+  background-color: $bg-body;
+  min-height: 100vh;
+  padding-bottom: 5rem;
+}
+
+/* =========================================
+   1. HERO BANNER
+   ========================================= */
+.store-hero {
+  position: relative;
+  width: 100%;
+  height: 320px;
+  background-color: #1e293b;
+
+  @media (max-width: 768px) { height: 200px; }
+
+  .hero-banner {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero-overlay {
+    position: absolute;
+    inset: 0; // top, right, bottom, left = 0
+    background: linear-gradient(to bottom, rgba(0,0,0,0) 40%, rgba(0,0,0,0.4) 100%);
+  }
+}
+
+/* =========================================
+   2. PERFIL FLOTANTE
+   ========================================= */
+.store-profile-wrapper {
+  position: relative;
+  margin-top: -80px; // Hace que la tarjeta suba y flote sobre el banner
+  z-index: 10;
+  margin-bottom: 2rem;
+}
+
+.store-profile-card {
+  background: $bg-white;
+  border-radius: 20px;
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
+  border: 1px solid $border-soft;
+
+  @media (max-width: 992px) {
+    flex-direction: column;
+    text-align: center;
+    padding: 2rem 1.5rem;
+    gap: 1.5rem;
+  }
+
+  .store-logo-wrapper {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: $bg-white;
+    padding: 6px; // Borde blanco grueso interior
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    flex-shrink: 0;
+
+    @media (max-width: 992px) {
+      margin-top: -60px; // En móvil, el logo sale aún más arriba de la tarjeta
+      width: 100px; height: 100px;
+    }
+
+    .store-logo {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1px solid $border-soft;
+    }
+  }
+
+  .store-info {
+    flex: 1;
+
+    .store-name {
+      font-size: 2rem;
+      font-weight: 800;
+      color: $text-main;
+      margin: 0 0 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      letter-spacing: -0.5px;
+
+      @media (max-width: 992px) { justify-content: center; font-size: 1.6rem; }
+
+      .verified-icon { width: 24px; height: 24px; }
+    }
+
+    .store-description {
+      color: $text-muted;
+      font-size: 1rem;
+      margin: 0 0 1.2rem;
+      line-height: 1.5;
+      max-width: 600px;
+      
+      @media (max-width: 992px) { margin: 0 auto 1.2rem; }
+    }
+
+    .store-metrics {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      font-size: 0.95rem;
+      color: $text-main;
+      flex-wrap: wrap;
+
+      @media (max-width: 992px) { justify-content: center; }
+
+      .metric {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        .stars { color: #d97706; letter-spacing: 1px; }
+        .muted { color: $text-muted; font-size: 0.85rem; }
+        .positive { color: #059669; font-weight: 700; background: #ecfdf5; padding: 2px 8px; border-radius: 12px;}
+      }
+
+      .divider { width: 4px; height: 4px; background: #cbd5e1; border-radius: 50%; }
+    }
+  }
+
+  .store-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 180px;
+
+    @media (max-width: 992px) { flex-direction: row; width: 100%; justify-content: center; }
+
+    button {
+      width: 100%;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+
+      @media (max-width: 992px) { flex: 1; }
+    }
+
+    .btn-primary {
+      background: var(--primary, #FF2E63);
+      color: white;
+      border: none;
+      box-shadow: 0 4px 10px rgba(255, 46, 99, 0.2);
+      
+      &:hover { background: #e01a4f; transform: translateY(-2px); }
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: $text-main;
+      border: 1px solid #cbd5e1;
+
+      &:hover { background: #f1f5f9; border-color: #94a3b8; }
+    }
+  }
+}
+
+/* =========================================
+   3. NAVEGACIÓN STICKY
+   ========================================= */
+.store-navigation {
+  background: $bg-white;
+  border-bottom: 1px solid $border-soft;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+
+  .nav-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      gap: 1rem;
+      padding: 1rem 1.5rem;
+    }
+  }
+
+  .nav-links {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    gap: 2rem;
+    overflow-x: auto;
+    
+    &::-webkit-scrollbar { display: none; } // Limpio en móvil
+
+    @media (max-width: 768px) { width: 100%; justify-content: space-between; }
+
+    li {
+      button {
+        background: none;
+        border: none;
+        padding: 1.5rem 0;
+        font-size: 1rem;
+        font-weight: 600;
+        color: $text-muted;
+        cursor: pointer;
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: color 0.2s;
+
+        @media (max-width: 768px) { padding: 0.5rem 0; }
+
+        &:hover { color: $text-main; }
+
+        .badge {
+          background: #10b981;
+          color: white;
+          font-size: 0.65rem;
+          padding: 2px 6px;
+          border-radius: 10px;
+        }
+      }
+
+      &.active button {
+        color: var(--primary, #FF2E63);
+        &::after {
+          content: ''; position: absolute; bottom: -1px; left: 0; width: 100%; height: 3px;
+          background: var(--primary, #FF2E63); border-radius: 3px 3px 0 0;
+        }
+      }
+    }
+  }
+
+  .store-search {
+    display: flex;
+    align-items: center;
+    background: #f1f5f9;
+    border-radius: 50px;
+    padding: 0.5rem 1rem;
+    width: 250px;
+    border: 1px solid transparent;
+    transition: all 0.3s;
+
+    @media (max-width: 768px) { width: 100%; }
+
+    &:focus-within { background: $bg-white; border-color: var(--primary, #FF2E63); box-shadow: 0 0 0 3px rgba(255, 46, 99, 0.1); }
+
+    svg { width: 18px; color: #94a3b8; margin-right: 8px; }
+    
+    input {
+      border: none; background: transparent; outline: none; width: 100%; font-size: 0.9rem; color: $text-main;
+      &::placeholder { color: #94a3b8; }
+    }
+  }
+}
+
+/* =========================================
+   4. CONTENIDO (CATÁLOGO)
+   ========================================= */
+.store-content {
+  padding-top: 3rem;
+
+  .section-header {
+    margin-bottom: 2rem;
+    h2 { font-size: 1.5rem; color: $text-main; font-weight: 800; margin: 0; }
+  }
+
+  .products-grid-placeholder {
+    background: $bg-white;
+    border: 1px dashed #cbd5e1;
+    border-radius: 16px;
+    padding: 4rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    .placeholder-content {
+      text-align: center;
+      color: $text-muted;
+      svg { width: 48px; height: 48px; margin-bottom: 1rem; opacity: 0.5; }
+      p { margin: 0; font-size: 1.1rem; }
+      strong { color: var(--primary, #FF2E63); }
+    }
+  }
+}

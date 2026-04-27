@@ -26,7 +26,7 @@ export const routes: Routes = [
         loadComponent: () => import('./shop/product/product-letf/product-letf').then(c => c.default),
     },
     {
-        path: 'product/:slug',
+        path: 'p/:slug',
         loadComponent: () => import('./shop/product/product-detail-two/product-detail-two').then(c => c.default),
     },
     {
@@ -41,7 +41,7 @@ export const routes: Routes = [
         path: 'devolucion',
         loadComponent: () => import('./pages/returns/returns'),
     },
-    
+
     {
         path: 'privacidad',
         loadComponent: () => import('./pages/privacy/privacy'),
@@ -83,6 +83,15 @@ export const routes: Routes = [
         path: 'account',
         canActivate: [authGuard], // 👮‍♂️ El guardián vigila aquí
         loadChildren: () => import('./account/account.routes').then(m => m.accountRoutes),
+    },
+    // {
+    //     path: 'tienda',
+    //     loadChildren: () => import('./store/store.routes').then(m => m.store),  
+    // },
+    {
+        path: 'product/:slug',
+        redirectTo: 'p/:slug',
+        pathMatch: 'full'
     },
     {
         path: '**',

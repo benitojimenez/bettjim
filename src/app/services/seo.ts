@@ -38,7 +38,7 @@ export class Seo {
       imageUrl = `${this.DOMAIN_IMG}${cleanImgPath}`;
     }
 
-    const url = config.slug ? `${this.DOMAIN}/${config.slug}` : this.DOMAIN;
+    const url = config.slug ? `${this.DOMAIN}/p/${config.slug}` : this.DOMAIN;
     const type = config.type || 'website';
 
     // 2. Título y Meta básicos (Estos se sobrescriben, no hay problema)

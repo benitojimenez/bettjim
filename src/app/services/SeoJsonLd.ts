@@ -52,7 +52,7 @@ export class SeoJsonLd {
     const discountPercent = parseFloat(product.discount) || 0;
     const discountActive = discountPercent > 0 && (product.discount_start || product.start_discount) && (product.discount_end || product.end_discount);
     const discountedPrice = this.cartService.getDiscount(product);
-    const productUrl = `${this.urlDomain}product/${product.slug}`;
+    const productUrl = `${this.urlDomain}p/${product.slug}`;
 
     // --- PASO 3: Construir Schema ---
     const productSchema: any = {
@@ -123,14 +123,14 @@ export class SeoJsonLd {
       "@type": "ListItem",
       "position": positionCounter++,
       "name": categoryName,
-      "item": `${this.urlDomain}shop?cat=${product.category || 'all'}`
+      "item": `${this.urlDomain}shop?category=${product.category || 'all'}`
     });
 
     const subCategory = product.subcategory || product.collections?.[0];
     if (subCategory && subCategory !== categoryName) {
-      let subCategoryUrl = `${this.urlDomain}shop?cat=${product.category}`;
+      let subCategoryUrl = `${this.urlDomain}shop?category=${product.category}`;
       if (product.subcategory) {
-        subCategoryUrl += `&sub=${product.subcategory}`;
+        subCategoryUrl += `?subcategory=${product.subcategory}`;
       } else if (product.collections?.[0]) {
         subCategoryUrl += `&collection=${product.collections[0]}`;
       }

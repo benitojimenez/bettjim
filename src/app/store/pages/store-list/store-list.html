@@ -1,0 +1,43 @@
+<section class="store-list-container container">
+  <header class="directory-header">
+    <div class="header-content">
+      <h1>Tiendas Oficiales y Vendedores</h1>
+      <p>Descubre las mejores marcas y emprendedores verificados en Bettjim.</p>
+      
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" placeholder="Buscar por nombre de tienda..." />
+      </div>
+    </div>
+  </header>
+
+  <section class="stores-grid">
+    @for (dummy of [1,2,3,4,5,6]; track $index) {
+      <article class="store-card">
+        <div class="store-banner">
+          <img src="https://empresas.blogthinkbig.com/wp-content/uploads/2019/11/Imagen3-245003649.jpg?fit=960%2C720" alt="Banner Tienda" loading="lazy">
+        </div>
+        
+        <div class="store-info">
+          <div class="store-logo">
+            <span>B</span>
+          </div>
+          
+          <div class="store-details">
+            <h2 class="store-name">
+              Bettjim Oficial
+              <span class="verified-badge" title="Tienda Verificada">✔</span>
+            </h2>
+            <div class="store-stats">
+              <span class="rating">★ 4.9</span>
+              <span class="divider">•</span>
+              <span class="sales">+10k ventas</span>
+            </div>
+          </div>
+          
+          <a [routerLink]="['/tienda', 'bettjim-oficial']" class="btn-visit">Visitar Tienda</a>
+        </div>
+      </article>
+    }
+  </section>
+</section>
